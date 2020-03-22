@@ -5,6 +5,9 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 entity prfx1_test01 is 
    port (
 	signal clk16m     : in std_logic;
+	signal dac 			: out std_logic_vector( 13 downto 0 );
+	signal dack			: out std_logic;
+
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
 	signal led1			: out std_logic;
@@ -47,9 +50,9 @@ signal clk80m  : std_logic;
 signal sin : std_logic_vector( 15 downto 0 );
 signal cos : std_logic_vector( 15 downto 0 );
 
-signal dac : std_logic_vector( 13 downto 0 );
-
 begin
+
+	dack <= clk80m;
 
    LED_set_p : process (clk16m)
    begin
