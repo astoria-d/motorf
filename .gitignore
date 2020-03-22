@@ -52,3 +52,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+prfx1_test01/MY_NCO.vhd
+*.vpp
+prfx1_test01/greybox_tmp/*
+
+*.log
+
