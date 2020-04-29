@@ -8,6 +8,10 @@ entity prfx1_test01 is
 	signal dac 			: out std_logic_vector( 13 downto 0 );
 	signal dack			: out std_logic;
 
+	signal spiclk		: out std_logic;
+	signal sdi			: out std_logic;
+	signal spics		: out std_logic;
+
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
 	signal led1			: out std_logic;
@@ -46,20 +50,60 @@ component DDR_OUT
 	);
 END component;
 
+component spi_init_data
+   port (
+		signal clk80m     : in std_logic;
+		signal reset_n		: in std_logic;
+		signal indata		: out std_logic_vector( 15 downto 0 );
+		signal trig			: out std_logic
+	);
+end component;
+
+component spi_out_dac
+   port (
+		signal clk80m     : in std_logic;
+		signal indata		: in std_logic_vector( 15 downto 0 );
+		signal trig			: in std_logic;
+
+		signal spiclk		: out std_logic;
+		signal spics		: out std_logic;
+		signal sdi			: out std_logic
+	);
+END component;
+
+
 signal clk80m  : std_logic;
 signal sin : std_logic_vector( 15 downto 0 );
 signal cos : std_logic_vector( 15 downto 0 );
+
+signal reset_n : std_logic := '1';
+
+signal spi_data_trigger : std_logic;
+signal spi_data : std_logic_vector( 15 downto 0 );
 
 begin
 
 	dack <= clk80m;
 
    LED_set_p : process (clk16m)
+	variable rst_cnt : integer range 0 to 1600000 := 0;
    begin
 		if (rising_edge(clk16m)) then
 			led1 <= sw2;
 			led2 <= sw1;
 			led3 <= '0';
+
+			if (sw1 = '1') then
+				reset_n <= '0';
+			else
+				----1,600,000 clk (100ms) is reset period.
+				if (rst_cnt < 1600000) then
+					rst_cnt := rst_cnt + 1;
+				else
+					reset_n <= '0';
+				end if;
+			end if;
+
 		end if;
 	end process;
 
@@ -82,5 +126,20 @@ begin
 		dataout	=> dac
 	);
 
-end rtl;
+	SPI_DATA_inst : spi_init_data PORT MAP (
+		clk80m => clk80m,
+		reset_n => reset_n,
+		indata => spi_data,
+		trig => spi_data_trigger
+	);
 
+	SPI_OUT_inst : spi_out_dac PORT MAP (
+		clk80m => clk80m,
+		indata=> spi_data,
+		trig => spi_data_trigger,
+		spiclk => spiclk,
+		sdi => sdi,
+		spics => spics
+	);
+
+end rtl;
