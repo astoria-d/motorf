@@ -43,7 +43,6 @@ USE altera_mf.altera_mf_components.all;
 ENTITY DDR_OUT IS
 	PORT
 	(
-		aclr		: IN STD_LOGIC ;
 		datain_h		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
 		datain_l		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
 		outclock		: IN STD_LOGIC ;
@@ -71,7 +70,6 @@ BEGIN
 		width => 14
 	)
 	PORT MAP (
-		aclr => aclr,
 		datain_h => datain_h,
 		datain_l => datain_l,
 		outclock => outclock,
@@ -95,8 +93,6 @@ END SYN;
 -- Retrieval info: CONSTANT: OE_REG STRING "UNREGISTERED"
 -- Retrieval info: CONSTANT: POWER_UP_HIGH STRING "OFF"
 -- Retrieval info: CONSTANT: WIDTH NUMERIC "14"
--- Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT NODEFVAL "aclr"
--- Retrieval info: CONNECT: @aclr 0 0 0 0 aclr 0 0 0 0
 -- Retrieval info: USED_PORT: datain_h 0 0 14 0 INPUT NODEFVAL "datain_h[13..0]"
 -- Retrieval info: CONNECT: @datain_h 0 0 14 0 datain_h 0 0 14 0
 -- Retrieval info: USED_PORT: datain_l 0 0 14 0 INPUT NODEFVAL "datain_l[13..0]"

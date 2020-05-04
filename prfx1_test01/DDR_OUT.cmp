@@ -17,7 +17,6 @@
 component DDR_OUT
 	PORT
 	(
-		aclr		: IN STD_LOGIC ;
 		datain_h		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
 		datain_l		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
 		outclock		: IN STD_LOGIC ;

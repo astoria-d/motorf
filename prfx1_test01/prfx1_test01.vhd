@@ -6,7 +6,7 @@ entity prfx1_test01 is
    port (
 	signal clk16m     : in std_logic;
 	signal dac 			: out std_logic_vector( 13 downto 0 );
-	signal dack			: out std_logic;
+	signal dac_clk		: out std_logic;
 
 	signal spiclk		: out std_logic;
 	signal sdi			: out std_logic;
@@ -83,7 +83,7 @@ signal spi_data : std_logic_vector( 15 downto 0 );
 
 begin
 
-	dack <= clk80m;
+	dac_clk <= clk80m;
 
    LED_set_p : process (clk16m)
 	variable rst_cnt : integer range 0 to 1600000 := 0;

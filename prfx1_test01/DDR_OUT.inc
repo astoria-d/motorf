@@ -16,7 +16,6 @@
 
 FUNCTION DDR_OUT 
 (
-	aclr,
 	datain_h[13..0],
 	datain_l[13..0],
 	outclock
