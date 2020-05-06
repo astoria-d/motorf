@@ -58,8 +58,8 @@ begin
 		sdi			=> sdi,
 		spics		=> spics,
 
-		sw1     	=> '0',
-		sw2     	=> reset_input,
+		sw1     	=> reset_input,
+		sw2     	=> '0',
 		led1		=> led1,
 		led2		=> led2,
 		led3		=> led3
@@ -68,13 +68,13 @@ begin
     --- input reset.
     reset_p: process
     begin
-        reset_input <= '1';
+        reset_input <= '0';
         wait for powerup_time;
 
-        reset_input <= '0';
+        reset_input <= '1';
         wait for reset_time;
 
-        reset_input <= '1';
+        reset_input <= '0';
         wait;
     end process;
 

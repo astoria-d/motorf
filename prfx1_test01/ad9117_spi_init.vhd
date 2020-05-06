@@ -37,7 +37,7 @@ begin
 	variable cnt16 : integer range 0 to 16 := 0;
    begin
 		if (falling_edge(clk80m)) then
-			if (reset_n = '1') then
+			if (reset_n = '0') then
 				indata <= (others => '0');
 				trig <= '1';
 				cnt5 := 0;
@@ -45,15 +45,15 @@ begin
 			else
 				if (cnt5 < 5) then
 					if (cnt16 < 16) then
-						indata <= spi_data(cnt16).addr & spi_data(cnt16).data;
+						indata <= spi_data(cnt5).addr & spi_data(cnt5).data;
 						trig <= '0';
 						cnt16 := cnt16 + 1;
 					else
 						indata <= (others => '0');
 						trig <= '1';
 						cnt16 := 0;
+						cnt5 := cnt5 + 1;
 					end if;
-					cnt5 := cnt5 + 1;
 				else
 					indata <= (others => '0');
 					trig <= '1';
@@ -94,24 +94,20 @@ begin
 	spiclk <= clk80m;
 
    spi_p : process (clk80m)
-	variable do_output : boolean := false;
-	variable old_trig : std_logic;
-	variable cnt : integer range 0 to 15 := 0;
+	variable cnt : integer range 0 to 16 := 0;
    begin
 		if (falling_edge(clk80m)) then
-			old_trig := trig;
 
-			if (old_trig = '0' and trig = '1') then
-				do_output := true;
+			if (trig = '1') then
+				cnt := 0;
 				spics <= '1';
 			else
-				if (cnt < 15) then
+				if (cnt < 16) then
 					spics <= '0';
-					sdi <= indata(cnt);
+					sdi <= indata(15 - cnt);
 					cnt := cnt + 1;
 				else
 					cnt := 0;
-					do_output := false;
 					spics <= '1';
 				end if;
 			end if;

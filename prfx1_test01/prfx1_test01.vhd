@@ -95,12 +95,14 @@ begin
 
 			if (sw1 = '1') then
 				reset_n <= '0';
+				rst_cnt := 0;
 			else
-				----1,600,000 clk (100ms) is reset period.
-				if (rst_cnt < 1600000) then
+				----1,600,000 clk (1ms) is reset period.
+				if (rst_cnt < 10) then
 					rst_cnt := rst_cnt + 1;
-				else
 					reset_n <= '0';
+				else
+					reset_n <= '1';
 				end if;
 			end if;
 
