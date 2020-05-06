@@ -131,14 +131,14 @@ Explicit = 1
 [vsim]
 ; Simulator resolution
 ; Set to fs, ps, ns, us, ms, or sec with optional prefix of 1, 10, or 100.
-Resolution = ps
+Resolution = ns
 
 ; User time unit for run commands
 ; Set to default, fs, ps, ns, us, ms, or sec. The default is to use the
 ; unit specified for Resolution. For example, if Resolution is 100ps,
 ; then UserTimeUnit defaults to ps.
 ; Should generally be set to default.
-UserTimeUnit = default
+UserTimeUnit = ns
 
 ; Default run length
 RunLength = 100 ps
