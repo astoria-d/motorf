@@ -116,14 +116,14 @@ begin
 
 	NCO_1MHz : MY_NCO PORT MAP (
 		clk	=> clk80m,
+		frq   => conv_std_logic_vector(53687091, 32),
 		sin	=> sin,
-		cos	=> cos,
-		frq   => conv_std_logic_vector(53687091, 32)
+		cos	=> cos
 	);
 
 	DDR_OUT_inst : DDR_OUT PORT MAP (
-		datain_h	=> sin (13 downto 0),
-		datain_l	=> cos (13 downto 0),
+		datain_h	=> sin (15 downto 2),
+		datain_l	=> cos (15 downto 2),
 		outclock	=> clk80m,
 		dataout	=> dac
 	);

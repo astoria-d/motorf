@@ -61,8 +61,8 @@ set_global_assignment -name VHDL_FILE prfx1_test01.vhd
 set_global_assignment -name VHDL_FILE ad9117_spi_init.vhd
 set_global_assignment -name QIP_FILE DDR_OUT.qip
 set_global_assignment -name QIP_FILE PLL.qip
-#set_global_assignment -name VERILOG_FILE MY_NCO.v
-set_global_assignment -name VHDL_FILE MY_NCO.vhd
+set_global_assignment -name VERILOG_FILE MY_NCO.v
+#set_global_assignment -name VHDL_FILE MY_NCO.vhd
 set_global_assignment -name SDC_FILE prfx1_test01.sdc
 
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to sdi
