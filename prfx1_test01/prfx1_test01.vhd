@@ -90,7 +90,7 @@ begin
    begin
 		if (rising_edge(clk16m)) then
 			led1 <= sw2;
-			led2 <= sw1;
+--			led2 <= sw1;
 			led3 <= '0';
 
 			if (sw1 = '1') then
