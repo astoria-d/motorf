@@ -15,7 +15,8 @@ component prfx1_test01
 
 	signal spiclk		: out std_logic;
 	signal sdi			: out std_logic;
-	signal spics		: out std_logic;
+	signal spics_dac	: out std_logic;
+	signal spics_pll	: out std_logic;
 
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
@@ -43,7 +44,8 @@ signal dac_clk		: std_logic;
 
 signal spiclk		: std_logic;
 signal sdi			: std_logic;
-signal spics		: std_logic;
+signal spics_dac	: std_logic;
+signal spics_pll	: std_logic;
 
 signal led1			: std_logic;
 signal led2			: std_logic;
@@ -53,8 +55,8 @@ signal theta        : std_logic_vector(18 downto 0);
 signal sin          : std_logic_vector(15 downto 0);
 signal o_sin        : std_logic;
 
-constant powerup_time   : time := 2 us;
-constant reset_time     : time := 890 ns;
+constant powerup_time   : time := 500 ns;
+constant reset_time     : time := 1 us;
 
 ---clock frequency = 16,000,000 Hz
 --constant base_clock_time : time := 62.5 ns;
@@ -69,7 +71,8 @@ begin
 
 		spiclk		=> spiclk,
 		sdi			=> sdi,
-		spics		=> spics,
+		spics_dac	=> spics_dac,
+		spics_pll	=> spics_pll,
 
 		sw1     	=> reset_input,
 		sw2     	=> '0',
@@ -115,8 +118,8 @@ begin
     begin
 		if (rising_edge(base_clk)) then
 		    theta <= conv_std_logic_vector(cnt, 19);
-		    if (cnt < 360000 - 2000) then
-    		    cnt := cnt + 2000;
+		    if (cnt < 360000 - 10000) then
+    		    cnt := cnt + 10000;
 		    else
     		    cnt := 0;
 		    end if;

@@ -10,7 +10,8 @@ entity prfx1_test01 is
 
 	signal spiclk		: out std_logic;
 	signal sdi			: out std_logic;
-	signal spics		: out std_logic;
+	signal spics_dac	: out std_logic;
+	signal spics_pll	: out std_logic;
 
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
@@ -50,7 +51,7 @@ component DDR_OUT
 	);
 END component;
 
-component spi_init_data
+component dac_spi_init_data
    port (
 		signal clk80m     : in std_logic;
 		signal reset_n		: in std_logic;
@@ -59,7 +60,7 @@ component spi_init_data
 	);
 end component;
 
-component spi_out_dac
+component dac_spi_out
    port (
 		signal clk80m     : in std_logic;
 		signal indata		: in std_logic_vector( 15 downto 0 );
@@ -86,26 +87,12 @@ begin
 	dac_clk <= clk80m;
 
    LED_set_p : process (clk16m)
-	variable rst_cnt : integer range 0 to 1600000 := 0;
    begin
 		if (rising_edge(clk16m)) then
-			led1 <= sw2;
---			led2 <= sw1;
+			led1 <= sw1;
+			led2 <= sw2;
 			led3 <= '0';
-
-			if (sw1 = '1') then
-				reset_n <= '0';
-				rst_cnt := 0;
-			else
-				----1,600,000 clk (1ms) is reset period.
-				if (rst_cnt < 10) then
-					rst_cnt := rst_cnt + 1;
-					reset_n <= '0';
-				else
-					reset_n <= '1';
-				end if;
-			end if;
-
+			reset_n <= not sw1;
 		end if;
 	end process;
 
@@ -128,20 +115,20 @@ begin
 		dataout	=> dac
 	);
 
-	SPI_DATA_inst : spi_init_data PORT MAP (
+	dac_spi_init_data_inst : dac_spi_init_data PORT MAP (
 		clk80m => clk80m,
 		reset_n => reset_n,
 		indata => spi_data,
 		trig => spi_data_trigger
 	);
 
-	SPI_OUT_inst : spi_out_dac PORT MAP (
+	dac_spi_out_inst : dac_spi_out PORT MAP (
 		clk80m => clk80m,
 		indata=> spi_data,
 		trig => spi_data_trigger,
 		spiclk => spiclk,
 		sdi => sdi,
-		spics => spics
+		spics => spics_dac
 	);
 
 end rtl;

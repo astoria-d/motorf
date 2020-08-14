@@ -91,16 +91,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to dac[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to dac[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to dac
 
-set_location_assignment PIN_7 -to sdi
-set_location_assignment PIN_10 -to spiclk
-set_location_assignment PIN_28 -to spics
 set_location_assignment PIN_23 -to clk16m
-set_location_assignment PIN_69 -to led1
-set_location_assignment PIN_71 -to led2
-set_location_assignment PIN_72 -to led3
-set_location_assignment PIN_31 -to sw1
-set_location_assignment PIN_30 -to sw2
-set_location_assignment PIN_113 -to dac_clk
 set_location_assignment PIN_144 -to dac[13]
 set_location_assignment PIN_143 -to dac[12]
 set_location_assignment PIN_142 -to dac[11]
@@ -115,6 +106,18 @@ set_location_assignment PIN_121 -to dac[3]
 set_location_assignment PIN_120 -to dac[2]
 set_location_assignment PIN_119 -to dac[1]
 set_location_assignment PIN_115 -to dac[0]
+set_location_assignment PIN_113 -to dac_clk
+
+set_location_assignment PIN_10 -to spiclk
+set_location_assignment PIN_7 -to sdi
+set_location_assignment PIN_28 -to spics_dac
+set_location_assignment PIN_11 -to spics_pll
+
+set_location_assignment PIN_31 -to sw1
+set_location_assignment PIN_30 -to sw2
+set_location_assignment PIN_69 -to led1
+set_location_assignment PIN_71 -to led2
+set_location_assignment PIN_72 -to led3
 
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
