@@ -54,6 +54,7 @@ END component;
 component dac_spi_init_data
    port (
 		signal clk80m     : in std_logic;
+		signal oe_n			: in std_logic;
 		signal reset_n		: in std_logic;
 		signal indata		: out std_logic_vector( 15 downto 0 );
 		signal trig			: out std_logic
@@ -77,22 +78,44 @@ signal clk80m  : std_logic;
 signal sin : std_logic_vector( 15 downto 0 );
 signal cos : std_logic_vector( 15 downto 0 );
 
-signal reset_n : std_logic := '1';
+signal reset_n : std_logic;
 
 signal spi_data_trigger : std_logic;
 signal spi_data : std_logic_vector( 15 downto 0 );
+signal spi_dac_oe_n : std_logic;
+
+constant RESET_WAIT1 : integer := 10;
 
 begin
 
 	dac_clk <= clk80m;
 
-   LED_set_p : process (clk16m)
+   led_p : process (clk16m)
+	variable cnt : integer range 0 to 5 := 0;
    begin
 		if (rising_edge(clk16m)) then
 			led1 <= sw1;
 			led2 <= sw2;
 			led3 <= '0';
 			reset_n <= not sw1;
+		end if;
+	end process;
+
+   set_p : process (clk16m)
+	variable cnt : integer range 0 to 10000 := 0;
+   begin
+		if (rising_edge(clk16m)) then
+			if (reset_n = '0') then
+				cnt := 0;
+				spi_dac_oe_n <= '1';
+			else
+				if (cnt < RESET_WAIT1) then
+					cnt := cnt + 1;
+					spi_dac_oe_n <= '1';
+				else
+					spi_dac_oe_n <= '0';
+				end if;
+			end if;
 		end if;
 	end process;
 
@@ -117,6 +140,7 @@ begin
 
 	dac_spi_init_data_inst : dac_spi_init_data PORT MAP (
 		clk80m => clk80m,
+		oe_n => spi_dac_oe_n,
 		reset_n => reset_n,
 		indata => spi_data,
 		trig => spi_data_trigger

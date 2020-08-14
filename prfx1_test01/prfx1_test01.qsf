@@ -58,7 +58,7 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name VHDL_FILE prfx1_test01.vhd
-set_global_assignment -name VHDL_FILE ad9117_spi_init.vhd
+set_global_assignment -name VHDL_FILE spi_init.vhd
 set_global_assignment -name QIP_FILE DDR_OUT.qip
 set_global_assignment -name QIP_FILE PLL.qip
 set_global_assignment -name VERILOG_FILE MY_NCO.v
@@ -67,7 +67,8 @@ set_global_assignment -name SDC_FILE prfx1_test01.sdc
 
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to sdi
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to spiclk
-set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to spics
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to spics_dac
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to spics_pll
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to clk16m
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to led1
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to led2

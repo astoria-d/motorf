@@ -6,6 +6,7 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 entity dac_spi_init_data is 
    port (
 	signal clk80m     : in std_logic;
+	signal oe_n			: in std_logic;
 	signal reset_n		: in std_logic;
 	signal indata		: out std_logic_vector( 15 downto 0 );
 	signal trig			: out std_logic
@@ -65,7 +66,7 @@ begin
 	variable cnt16 : integer range 0 to 16 := 0;
    begin
 		if (falling_edge(clk80m)) then
-			if (reset_n = '0') then
+			if (reset_n = '0' or oe_n = '1') then
 				indata <= (others => '0');
 				trig <= '1';
 				cnt5 := 0;

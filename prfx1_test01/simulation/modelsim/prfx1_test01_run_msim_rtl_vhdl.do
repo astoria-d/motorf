@@ -8,7 +8,7 @@ vmap work rtl_work
 vlog -vlog01compat -work work +incdir+E:/daisuke/rf/repo/motorf/prfx1_test01 {E:/daisuke/rf/repo/motorf/prfx1_test01/MY_NCO.v}
 vlog -vlog01compat -work work +incdir+E:/daisuke/rf/repo/motorf/prfx1_test01/db {E:/daisuke/rf/repo/motorf/prfx1_test01/db/pll_altpll.v}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/prfx1_test01.vhd}
-vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/ad9117_spi_init.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/spi_init.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/DDR_OUT.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/PLL.vhd}
 #vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/MY_NCO.vhd}
@@ -40,10 +40,11 @@ add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/da
 
 add wave -divider spi
 add wave -label spics_dac       sim:/testbench_prfx1_test01/sim_board/spics_dac;
+add wave -label spics_pll       sim:/testbench_prfx1_test01/sim_board/spics_pll;
 add wave -label spiclk          sim:/testbench_prfx1_test01/sim_board/spiclk;
 add wave -label sdi             sim:/testbench_prfx1_test01/sim_board/sdi;
 
-add wave -divider dac_spi
+add wave -divider dac
 add wave -label dac_clk     -radix hex  sim:/testbench_prfx1_test01/sim_board/dac_clk;
 add wave -label dac                     sim:/testbench_prfx1_test01/sim_board/dac;
 
