@@ -61,30 +61,49 @@ component dac_spi_init_data
 	);
 end component;
 
-component dac_spi_out
+component pll_spi_init_data
    port (
-		signal clk80m     : in std_logic;
-		signal indata		: in std_logic_vector( 15 downto 0 );
-		signal trig			: in std_logic;
-
-		signal spiclk		: out std_logic;
-		signal spics		: out std_logic;
-		signal sdi			: out std_logic
+	signal clk80m     : in std_logic;
+	signal oe_n			: in std_logic;
+	signal reset_n		: in std_logic;
+	signal indata		: out std_logic_vector(31 downto 0);
+	signal trig			: out std_logic
 	);
-END component;
+end component;
+
+component spi_out
+	generic (bus_size : integer := 16);
+   port (
+	signal clk80m     : in std_logic;
+	signal indata		: in std_logic_vector(bus_size - 1 downto 0);
+	signal trig			: in std_logic;
+
+	signal spics		: out std_logic;
+	signal sdi			: out std_logic
+	);
+end component;
 
 
 signal clk80m  : std_logic;
-signal sin : std_logic_vector( 15 downto 0 );
-signal cos : std_logic_vector( 15 downto 0 );
+signal sin : std_logic_vector(15 downto 0);
+signal cos : std_logic_vector(15 downto 0);
 
 signal reset_n : std_logic;
 
-signal spi_data_trigger : std_logic;
-signal spi_data : std_logic_vector( 15 downto 0 );
-signal spi_dac_oe_n : std_logic;
+signal dac_en : std_logic;
+signal dac_spi_data : std_logic_vector(15 downto 0);
+signal dac_spi_oe_n : std_logic;
+
+signal pll_en : std_logic;
+signal pll_spi_data : std_logic_vector(31 downto 0);
+signal pll_spi_oe_n : std_logic;
+
+signal dac_sdi		: std_logic;
+signal pll_sdi		: std_logic;
 
 constant RESET_WAIT1 : integer := 10;
+constant RESET_WAIT2 : integer := 30;
+constant RESET_INC_MAX : integer := 40;
 
 begin
 
@@ -107,13 +126,23 @@ begin
 		if (rising_edge(clk16m)) then
 			if (reset_n = '0') then
 				cnt := 0;
-				spi_dac_oe_n <= '1';
+				dac_spi_oe_n <= '1';
+				pll_spi_oe_n <= '1';
 			else
-				if (cnt < RESET_WAIT1) then
+				if (cnt < RESET_INC_MAX) then
 					cnt := cnt + 1;
-					spi_dac_oe_n <= '1';
+				end if;
+
+				if (cnt < RESET_WAIT1) then
+					dac_spi_oe_n <= '1';
 				else
-					spi_dac_oe_n <= '0';
+					dac_spi_oe_n <= '0';
+				end if;
+
+				if (cnt < RESET_WAIT2) then
+					pll_spi_oe_n <= '1';
+				else
+					pll_spi_oe_n <= '0';
 				end if;
 			end if;
 		end if;
@@ -140,19 +169,37 @@ begin
 
 	dac_spi_init_data_inst : dac_spi_init_data PORT MAP (
 		clk80m => clk80m,
-		oe_n => spi_dac_oe_n,
+		oe_n => dac_spi_oe_n,
 		reset_n => reset_n,
-		indata => spi_data,
-		trig => spi_data_trigger
+		indata => dac_spi_data,
+		trig => dac_en
 	);
 
-	dac_spi_out_inst : dac_spi_out PORT MAP (
+	pll_spi_init_data_inst : pll_spi_init_data PORT MAP (
 		clk80m => clk80m,
-		indata=> spi_data,
-		trig => spi_data_trigger,
-		spiclk => spiclk,
-		sdi => sdi,
+		oe_n => pll_spi_oe_n,
+		reset_n => reset_n,
+		indata => pll_spi_data,
+		trig => pll_en
+	);
+
+	dac_spi_out_inst : spi_out generic map (16) PORT MAP (
+		clk80m => clk80m,
+		indata=> dac_spi_data,
+		trig => dac_en,
+		sdi => dac_sdi,
 		spics => spics_dac
 	);
+
+	pll_spi_out_inst : spi_out generic map (32) PORT MAP (
+		clk80m => clk80m,
+		indata=> pll_spi_data,
+		trig => pll_en,
+		sdi => pll_sdi,
+		spics => spics_pll
+	);
+	
+	spiclk <= clk80m;
+	sdi <= dac_sdi and pll_sdi;
 
 end rtl;

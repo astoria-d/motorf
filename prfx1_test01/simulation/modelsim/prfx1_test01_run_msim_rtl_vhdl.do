@@ -36,7 +36,11 @@ add wave -label clk80m                  sim:/testbench_prfx1_test01/sim_board/da
 add wave -label indata     -radix hex   sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/indata;
 add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/trig;
 
-
+add wave -divider pll_spi_data
+add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/reset_n;
+add wave -label clk80m                  sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/clk80m;
+add wave -label indata     -radix hex   sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/indata;
+add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/trig;
 
 add wave -divider spi
 add wave -label spics_dac       sim:/testbench_prfx1_test01/sim_board/spics_dac;
@@ -82,5 +86,5 @@ add wave -label sin      -analog -min -1000 -max 1000 -height 100  -radix decima
 view structure
 view signals
 #run 50 us
-run 5 us
+run 8 us
 wave zoom full

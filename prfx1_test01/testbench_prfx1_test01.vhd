@@ -82,7 +82,7 @@ begin
 	);
 
     cordic_inst : CORDIC port map (
-        i_clk   => base_clk,
+        i_clk   => spiclk,
         i_theta => theta,
         i_ena   => '1',
         o_ena   => o_sin,
@@ -112,14 +112,14 @@ begin
         wait for base_clock_time / 2;
     end process;
 
-    theta_p : process (base_clk)
+    theta_p : process (spiclk)
     use ieee.std_logic_arith.conv_std_logic_vector;
     variable cnt : integer range 0 to 360000 := 0;
     begin
-		if (rising_edge(base_clk)) then
+		if (rising_edge(spiclk)) then
 		    theta <= conv_std_logic_vector(cnt, 19);
-		    if (cnt < 360000 - 10000) then
-    		    cnt := cnt + 10000;
+		    if (cnt < 360000 - 2000) then
+    		    cnt := cnt + 2000;
 		    else
     		    cnt := 0;
 		    end if;
