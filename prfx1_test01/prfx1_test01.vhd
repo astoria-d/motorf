@@ -53,7 +53,7 @@ END component;
 
 component dac_spi_init_data
    port (
-		signal clk80m     : in std_logic;
+		signal clk16m     : in std_logic;
 		signal oe_n			: in std_logic;
 		signal reset_n		: in std_logic;
 		signal indata		: out std_logic_vector( 15 downto 0 );
@@ -63,7 +63,7 @@ end component;
 
 component pll_spi_init_data
    port (
-	signal clk80m     : in std_logic;
+	signal clk16m     : in std_logic;
 	signal oe_n			: in std_logic;
 	signal reset_n		: in std_logic;
 	signal indata		: out std_logic_vector(31 downto 0);
@@ -74,7 +74,7 @@ end component;
 component spi_out
 	generic (bus_size : integer := 16);
    port (
-	signal clk80m     : in std_logic;
+	signal clk16m     : in std_logic;
 	signal indata		: in std_logic_vector(bus_size - 1 downto 0);
 	signal trig			: in std_logic;
 
@@ -102,8 +102,8 @@ signal dac_sdi		: std_logic;
 signal pll_sdi		: std_logic;
 
 constant RESET_WAIT1 : integer := 10;
-constant RESET_WAIT2 : integer := 30;
-constant RESET_INC_MAX : integer := 40;
+constant RESET_WAIT2 : integer := 150;
+constant RESET_INC_MAX : integer := 200;
 
 begin
 
@@ -112,7 +112,7 @@ begin
    led_p : process (clk16m)
 	variable cnt : integer range 0 to 5 := 0;
    begin
-		if (rising_edge(clk16m)) then
+		if (falling_edge(clk16m)) then
 			led1 <= sw1;
 			led2 <= sw2;
 			led3 <= '0';
@@ -123,7 +123,7 @@ begin
    set_p : process (clk16m)
 	variable cnt : integer range 0 to 10000 := 0;
    begin
-		if (rising_edge(clk16m)) then
+		if (falling_edge(clk16m)) then
 			if (reset_n = '0') then
 				cnt := 0;
 				dac_spi_oe_n <= '1';
@@ -168,7 +168,7 @@ begin
 	);
 
 	dac_spi_init_data_inst : dac_spi_init_data PORT MAP (
-		clk80m => clk80m,
+		clk16m => clk16m,
 		oe_n => dac_spi_oe_n,
 		reset_n => reset_n,
 		indata => dac_spi_data,
@@ -176,7 +176,7 @@ begin
 	);
 
 	pll_spi_init_data_inst : pll_spi_init_data PORT MAP (
-		clk80m => clk80m,
+		clk16m => clk16m,
 		oe_n => pll_spi_oe_n,
 		reset_n => reset_n,
 		indata => pll_spi_data,
@@ -184,7 +184,7 @@ begin
 	);
 
 	dac_spi_out_inst : spi_out generic map (16) PORT MAP (
-		clk80m => clk80m,
+		clk16m => clk16m,
 		indata=> dac_spi_data,
 		trig => dac_en,
 		sdi => dac_sdi,
@@ -192,14 +192,14 @@ begin
 	);
 
 	pll_spi_out_inst : spi_out generic map (32) PORT MAP (
-		clk80m => clk80m,
+		clk16m => clk16m,
 		indata=> pll_spi_data,
 		trig => pll_en,
 		sdi => pll_sdi,
 		spics => spics_pll
 	);
 	
-	spiclk <= clk80m;
+	spiclk <= clk16m;
 	sdi <= dac_sdi and pll_sdi;
 
 end rtl;

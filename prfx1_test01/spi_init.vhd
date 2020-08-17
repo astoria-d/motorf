@@ -5,7 +5,7 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 
 entity dac_spi_init_data is 
    port (
-	signal clk80m     : in std_logic;
+	signal clk16m     : in std_logic;
 	signal oe_n			: in std_logic;
 	signal reset_n		: in std_logic;
 	signal indata		: out std_logic_vector(15 downto 0);
@@ -61,11 +61,11 @@ constant spi_data : spi_data_arr_t := (
 
 
 begin
-   spi_p : process (clk80m)
+   spi_p : process (clk16m)
 	variable cnt5 : integer range 0 to 5 := 0;
 	variable cnt16 : integer range 0 to 16 := 0;
    begin
-		if (falling_edge(clk80m)) then
+		if (falling_edge(clk16m)) then
 			if (reset_n = '0' or oe_n = '1') then
 				indata <= (others => '0');
 				trig <= '1';
@@ -106,7 +106,7 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 
 entity pll_spi_init_data is 
    port (
-	signal clk80m     : in std_logic;
+	signal clk16m     : in std_logic;
 	signal oe_n			: in std_logic;
 	signal reset_n		: in std_logic;
 	signal indata		: out std_logic_vector(31 downto 0);
@@ -167,11 +167,11 @@ constant spi_data : spi_data_arr_t := (
 
 
 begin
-   spi_p : process (clk80m)
+   spi_p : process (clk16m)
 	variable cnt6 : integer range 0 to 6 := 0;
 	variable cnt32 : integer range 0 to 32 := 0;
    begin
-		if (falling_edge(clk80m)) then
+		if (falling_edge(clk16m)) then
 			if (reset_n = '0' or oe_n = '1') then
 				indata <= (others => '0');
 				trig <= '1';
@@ -213,7 +213,7 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 entity spi_out is 
 	generic (bus_size : integer := 16);
    port (
-	signal clk80m     : in std_logic;
+	signal clk16m     : in std_logic;
 	signal indata		: in std_logic_vector(bus_size - 1 downto 0);
 	signal trig			: in std_logic;
 
@@ -226,10 +226,10 @@ architecture rtl of spi_out is
 
 begin
 
-   spi_p : process (clk80m)
+   spi_p : process (clk16m)
 	variable cnt : integer range 0 to bus_size := 0;
    begin
-		if (falling_edge(clk80m)) then
+		if (falling_edge(clk16m)) then
 
 			if (trig = '1') then
 				cnt := 0;
