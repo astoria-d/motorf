@@ -11,7 +11,7 @@ vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/prfx1_test01.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/spi_init.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/DDR_OUT.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/PLL.vhd}
-vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/sin10.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/wave_mem.vhd}
 #vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/MY_NCO.vhd}
 
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/cordic/CORDIC_CORE.vhd}
@@ -35,7 +35,9 @@ add wave -label count_76us       -radix decimal  sim:/testbench_prfx1_test01/sim
 add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/count_100sym;
 
 add wave -divider baseband
-add wave -label bb_data -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data;
+add wave -label address  -radix decimal  sim:/testbench_prfx1_test01/sim_board/address;
+add wave -label bb_data_sin10 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_sin10;
+add wave -label bb_data_cos10 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_cos10;
 
 add wave -divider dac_spi_data
 add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/reset_n;
@@ -93,5 +95,5 @@ add wave -label sin      -analog -min -1000 -max 1000 -height 100  -radix decima
 view structure
 view signals
 #run 50 us
-run 30 us
+run 78 us
 wave zoom full

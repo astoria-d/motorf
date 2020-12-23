@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.conv_std_logic_vector;
+use ieee.std_logic_unsigned.all;
 
 entity prfx1_test01 is 
    port (
@@ -83,7 +84,17 @@ component spi_out
 	);
 end component;
 
-component sin10
+--component sin10
+--	PORT
+--	(
+--		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
+--		clock		: IN STD_LOGIC  := '1';
+--		q		: OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
+--	);
+--end component;
+--
+component wave_mem
+	generic (mif_file : string := "null-file.mif");
 	PORT
 	(
 		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
@@ -119,14 +130,14 @@ signal count_100sym	: integer range 0 to CNT_100_MAX := 0;
 signal count_76us		: integer range 0 to CNT_76US_MAX:= 0;
 
 signal address : std_logic_vector(8 downto 0);
-signal bb_data : std_logic_vector(15 downto 0);
+signal bb_data_sin10 : std_logic_vector(15 downto 0);
+signal bb_data_cos10 : std_logic_vector(15 downto 0);
 
 begin
 
 	dac_clk <= clk80m;
 	spiclk <= clk16m;
 	sdi <= dac_sdi and pll_sdi;
-	address <= conv_std_logic_vector(count_76us, 9);
 
 	--PLL instance
 	PLL_inst : PLL PORT MAP (
@@ -151,14 +162,21 @@ begin
 	);
 
 	--baseband sin freq10
-	sin10_inst : sin10 PORT MAP (
+	sin10_inst : wave_mem generic map ("sin-10.mif")
+	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
-		q	=> bb_data
+		q	=> bb_data_sin10
 	);
-
+	cos10_inst : wave_mem generic map ("cos-10.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos10
+	);
+	
 	--16mhz flipflop setting
-   set_p : process (clk16m)
+   set_p16 : process (clk16m)
 	variable cnt : integer range 0 to 10000 := 0;
    begin
 		if (falling_edge(clk16m)) then
@@ -199,6 +217,26 @@ begin
 					end if;
 
 				end if;
+			end if;
+		end if;
+	end process;
+
+	--80mhz flipflop setting
+   set_p80 : process (clk80m)
+	variable cnt16 : integer range 0 to 15 := 0;
+   begin
+		if (falling_edge(clk80m)) then
+			if (reset_n = '0') then
+				cnt16 := 0;
+				address <= (others => '0');
+			else
+				if (cnt16 = 15) then
+					cnt16 := 0;
+					address <= address + 1;
+				else
+					cnt16 := cnt16 + 1;
+				end if;
+
 			end if;
 		end if;
 	end process;

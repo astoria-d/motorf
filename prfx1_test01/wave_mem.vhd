@@ -40,17 +40,18 @@ USE ieee.std_logic_1164.all;
 LIBRARY altera_mf;
 USE altera_mf.altera_mf_components.all;
 
-ENTITY sin10 IS
+ENTITY wave_mem IS
+	generic (mif_file : string := "null-file.mif");
 	PORT
 	(
 		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
 		clock		: IN STD_LOGIC  := '1';
 		q		: OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
 	);
-END sin10;
+END wave_mem;
 
 
-ARCHITECTURE SYN OF sin10 IS
+ARCHITECTURE SYN OF wave_mem IS
 
 	SIGNAL sub_wire0	: STD_LOGIC_VECTOR (15 DOWNTO 0);
 
@@ -62,7 +63,7 @@ BEGIN
 		address_aclr_a => "NONE",
 		clock_enable_input_a => "BYPASS",
 		clock_enable_output_a => "BYPASS",
-		init_file => "sin-10.mif",
+		init_file => mif_file,
 		intended_device_family => "Cyclone IV E",
 		lpm_hint => "ENABLE_RUNTIME_MOD=NO",
 		lpm_type => "altsyncram",
