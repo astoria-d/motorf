@@ -36,14 +36,14 @@ add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim
 
 add wave -divider baseband
 add wave -label address  -radix decimal  sim:/testbench_prfx1_test01/sim_board/address;
-add wave -label bb_data_sin4 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_sin4;
-add wave -label bb_data_cos4 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_cos4;
-add wave -label bb_data_sin8 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_sin8;
-add wave -label bb_data_cos8 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_cos8;
-add wave -label bb_data_sin12 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_sin12;
-add wave -label bb_data_cos12 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_cos12;
-add wave -label bb_data_sin16 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_sin16;
-add wave -label bb_data_cos16 -analog -min 0 -max 65565 -height 40  sim:/testbench_prfx1_test01/sim_board/bb_data_cos16;
+add wave -label bb_data_sin4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin4;
+add wave -label bb_data_cos4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos4;
+add wave -label bb_data_sin8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin8;
+add wave -label bb_data_cos8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos8;
+add wave -label bb_data_sin12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin12;
+add wave -label bb_data_cos12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos12;
+add wave -label bb_data_sin16 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin16;
+add wave -label bb_data_cos16 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos16;
 
 add wave -divider dac_spi_data
 add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/reset_n;
