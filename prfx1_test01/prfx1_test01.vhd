@@ -84,15 +84,6 @@ component spi_out
 	);
 end component;
 
---component sin10
---	PORT
---	(
---		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
---		clock		: IN STD_LOGIC  := '1';
---		q		: OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
---	);
---end component;
---
 component wave_mem
 	generic (mif_file : string := "null-file.mif");
 	PORT
@@ -130,8 +121,15 @@ signal count_100sym	: integer range 0 to CNT_100_MAX := 0;
 signal count_76us		: integer range 0 to CNT_76US_MAX:= 0;
 
 signal address : std_logic_vector(8 downto 0);
-signal bb_data_sin10 : std_logic_vector(15 downto 0);
-signal bb_data_cos10 : std_logic_vector(15 downto 0);
+signal bb_data_sin4 : std_logic_vector(15 downto 0);
+signal bb_data_sin8 : std_logic_vector(15 downto 0);
+signal bb_data_sin12 : std_logic_vector(15 downto 0);
+signal bb_data_sin16 : std_logic_vector(15 downto 0);
+
+signal bb_data_cos4 : std_logic_vector(15 downto 0);
+signal bb_data_cos8 : std_logic_vector(15 downto 0);
+signal bb_data_cos12 : std_logic_vector(15 downto 0);
+signal bb_data_cos16 : std_logic_vector(15 downto 0);
 
 begin
 
@@ -161,18 +159,55 @@ begin
 		cos	=> cos
 	);
 
-	--baseband sin freq10
-	sin10_inst : wave_mem generic map ("sin-10.mif")
+	--baseband
+	sin4_inst : wave_mem generic map ("wave-sin4.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
-		q	=> bb_data_sin10
+		q	=> bb_data_sin4
 	);
-	cos10_inst : wave_mem generic map ("cos-10.mif")
+	sin8_inst : wave_mem generic map ("wave-sin8.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
-		q	=> bb_data_cos10
+		q	=> bb_data_sin8
+	);
+	sin12_inst : wave_mem generic map ("wave-sin12.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin12
+	);
+	sin16_inst : wave_mem generic map ("wave-sin16.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin16
+	);
+
+	cos4_inst : wave_mem generic map ("wave-cos4.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos4
+	);
+	cos8_inst : wave_mem generic map ("wave-cos8.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos8
+	);
+	cos12_inst : wave_mem generic map ("wave-cos12.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos12
+	);
+	cos16_inst : wave_mem generic map ("wave-cos16.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos16
 	);
 	
 	--16mhz flipflop setting
