@@ -215,32 +215,14 @@ begin
 --	end
 --end
    step1 : process (clk)
---	variable sft_x : signed(18 downto 0);
---	variable sft_y : signed(18 downto 0);
    begin
 		if (rising_edge(clk)) then
-
---for use ieee.std_logic_arith.all;
---			sft_x := SHR(x0, conv_std_logic_vector(1, 19));
---			sft_y := SHR(y0, conv_std_logic_vector(1, 19));
-
---old. not supported.
---https://stackoverflow.com/questions/36021163/sra-not-working-in-vhdl
---			sft_x := (x0 sra 1);
---			sft_y := (y0 sra 1);
-
---			sft_x := shift_right(x0, 1);
---			sft_y := shift_right(y0, 1);
 			if (judge1 = 1) then
 				temp1 <= temp0 - to_signed(38688, 19);
---				x1 <= x0 + sft_x;
---				y1 <= y0 - sft_y;
 				x1 <= x0 + y0 / 2;
 				y1 <= y0 - x0 / 2;		
 			else
 				temp1 <= temp0 + to_signed(38688, 19);
---				x1 <= x0 - sft_x;
---				y1 <= y0 + sft_y;
 				x1 <= x0 - y0 / 2;
 				y1 <= y0 + x0 / 2;
 			end if;
