@@ -1173,14 +1173,14 @@ begin
 				var_cos := std_logic_vector(x17 / 8);
 				var_sin := std_logic_vector(y17 / 8);
 			elsif (phase17(18 downto 17) = "01") then
-				var_cos := std_logic_vector(-x17 / 8);
-				var_sin := std_logic_vector(y17 / 8);
+				var_cos := std_logic_vector(-y17 / 8);
+				var_sin := std_logic_vector(x17 / 8);
 			elsif (phase17(18 downto 17) = "10") then
 				var_cos := std_logic_vector(-x17 / 8);
 				var_sin := std_logic_vector(-y17 / 8);
 			else
-				var_cos := std_logic_vector(x17 / 8);
-				var_sin := std_logic_vector(-y17 / 8);
+				var_cos := std_logic_vector(y17 / 8);
+				var_sin := std_logic_vector(-x17 / 8);
 			end if;
 			cos <= var_cos(15 downto 0);
 			sin <= var_sin(15 downto 0);
