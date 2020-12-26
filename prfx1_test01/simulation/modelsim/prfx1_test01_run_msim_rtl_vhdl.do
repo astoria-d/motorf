@@ -98,36 +98,36 @@ add wave -label sdi             sim:/testbench_prfx1_test01/sim_board/sdi;
 
 add wave -divider dac
 add wave -label dac_clk     -radix hex  sim:/testbench_prfx1_test01/sim_board/dac_clk;
-add wave -label dac   -analog -min 0 -max 65565 -height 100 -radix decimal sim:/testbench_prfx1_test01/sim_board/dac;
+add wave -label dac   -analog -min -7000 -max 7000 -height 300 -radix decimal sim:/testbench_prfx1_test01/sim_board/dac;
 
 
-add wave -divider codic
-
-#add wave -label x0                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x0
-#add wave -label x1                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x1
-#add wave -label x2                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x2
-#add wave -label x3                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x3
-#add wave -label x4                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x4
-#add wave -label x5                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x5
-#add wave -label x6                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x6
-#add wave -label x7                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x7
-#add wave -label x8                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x8
-#add wave -label x9                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x9
-#add wave -label x10                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x10
-#add wave -label x11                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x11
-#add wave -label x12                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x12
-#add wave -label x13                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x13
-#add wave -label x14                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x14
-#add wave -label x15                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x15
-#add wave -label x16                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x16
-#add wave -label x17                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x17
+#add wave -divider codic
 #
-#add wave -label sin    -analog -min 0 -max 5 -height 100              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/sin;
-#add wave -label cos    -analog -min 0 -max 5 -height 100              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/cos;
-
-
-add wave -label theta    -analog -min 0 -max 524287   -height 100  -radix unsigned sim:/testbench_prfx1_test01/theta;
-add wave -label sin      -analog -min -1000 -max 1000 -height 100  -radix decimal sim:/testbench_prfx1_test01/sin;
+##add wave -label x0                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x0
+##add wave -label x1                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x1
+##add wave -label x2                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x2
+##add wave -label x3                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x3
+##add wave -label x4                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x4
+##add wave -label x5                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x5
+##add wave -label x6                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x6
+##add wave -label x7                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x7
+##add wave -label x8                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x8
+##add wave -label x9                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x9
+##add wave -label x10                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x10
+##add wave -label x11                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x11
+##add wave -label x12                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x12
+##add wave -label x13                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x13
+##add wave -label x14                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x14
+##add wave -label x15                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x15
+##add wave -label x16                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x16
+##add wave -label x17                              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x17
+##
+##add wave -label sin    -analog -min 0 -max 5 -height 100              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/sin;
+##add wave -label cos    -analog -min 0 -max 5 -height 100              sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/cos;
+#
+#
+#add wave -label theta    -analog -min 0 -max 524287   -height 100  -radix unsigned sim:/testbench_prfx1_test01/theta;
+#add wave -label sin      -analog -min -1000 -max 1000 -height 100  -radix decimal sim:/testbench_prfx1_test01/sin;
 
 
 

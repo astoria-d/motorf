@@ -122,11 +122,11 @@ signal y16 : signed(18 downto 0);
 
 signal judge17 : integer range 0 to 1;
 signal phase17 : std_logic_vector(18 downto 0);
-signal temp17 : signed(18 downto 0);
+--signal temp17 : signed(18 downto 0);
 signal x17 : signed(18 downto 0);
 signal y17 : signed(18 downto 0);
 
-signal phase18 : std_logic_vector(18 downto 0);
+--signal phase18 : std_logic_vector(18 downto 0);
 
 
 function rshift(op1 : in std_logic_vector; op2 : in std_logic_vector) return std_logic_vector is
@@ -276,7 +276,7 @@ begin
 			phase15 <= phase14;
 			phase16 <= phase15;
 			phase17 <= phase16;
-			phase18 <= phase17;
+			--phase18 <= phase17;
 		end if;
 	end process;
 
@@ -1133,11 +1133,11 @@ begin
    begin
 		if (rising_edge(clk)) then
 			if (judge17 = 1) then
-				temp17 <= temp16 - to_signed(0, 19);
+				--temp17 <= temp16 - to_signed(0, 19);
 				x17 <= x16 + SHIFT17(y16);
 				y17 <= y16 - SHIFT17(x16);
 			else
-				temp17 <= temp16 + to_signed(0, 19);
+				--temp17 <= temp16 + to_signed(0, 19);
 				x17 <= x16 - SHIFT17(y16);
 				y17 <= y16 + SHIFT17(x16);
 			end if;
