@@ -42,6 +42,16 @@ component MY_NCO
 	);
 END component;
 
+component moto_nco
+	PORT
+	(
+		clk : in std_logic;
+		frq : in std_logic_vector( 31 downto 0 );
+		sin : out std_logic_vector( 15 downto 0 );
+		cos : out std_logic_vector( 15 downto 0 )
+	);
+END component;
+
 component DDR_OUT
 	PORT
 	(
@@ -151,8 +161,16 @@ begin
 		dataout	=> dac
 	);
 
+--	--NCO instance
+--	NCO_1MHz : MY_NCO PORT MAP (
+--		clk	=> clk80m,
+--		frq   => conv_std_logic_vector(53687091, 32),
+--		sin	=> sin,
+--		cos	=> cos
+--	);
+
 	--NCO instance
-	NCO_1MHz : MY_NCO PORT MAP (
+	NCO_1MHz : moto_nco PORT MAP (
 		clk	=> clk80m,
 		frq   => conv_std_logic_vector(53687091, 32),
 		sin	=> sin,
