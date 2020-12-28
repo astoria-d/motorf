@@ -24,15 +24,17 @@ end prfx1_test01;
 
 architecture rtl of prfx1_test01 is
 
-component PLL
+component wave_mem
+	generic (mif_file : string := "null-file.mif");
 	PORT
 	(
-		inclk0	: IN STD_LOGIC  := '0';
-		c0			: OUT STD_LOGIC 
+		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
+		clock		: IN STD_LOGIC  := '1';
+		q		: OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
 	);
-END component;
+end component;
 
-component MY_NCO
+component moto_nco
 	PORT
 	(
 		clk : in std_logic;
@@ -42,7 +44,25 @@ component MY_NCO
 	);
 END component;
 
-component moto_nco
+component tx_data
+	PORT
+	(
+		signal clk16m : in std_logic;
+		signal reset_n : in std_logic;
+		signal next_sym_en : in std_logic;
+		signal outdata : out std_logic_vector(31 downto 0)
+	);
+END component;
+
+component PLL
+	PORT
+	(
+		inclk0	: IN STD_LOGIC  := '0';
+		c0			: OUT STD_LOGIC 
+	);
+END component;
+
+component MY_NCO
 	PORT
 	(
 		clk : in std_logic;
@@ -94,16 +114,6 @@ component spi_out
 	);
 end component;
 
-component wave_mem
-	generic (mif_file : string := "null-file.mif");
-	PORT
-	(
-		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
-		clock		: IN STD_LOGIC  := '1';
-		q		: OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
-	);
-end component;
-
 signal clk80m  : std_logic;
 signal sin : std_logic_vector(15 downto 0);
 signal cos : std_logic_vector(15 downto 0);
@@ -130,6 +140,7 @@ constant CNT_76US_MAX : integer := 76 * 16 - 1;
 signal count_100sym	: integer range 0 to CNT_100_MAX := 0;
 signal count_76us		: integer range 0 to CNT_76US_MAX:= 0;
 
+signal reset_address : boolean;
 signal address : std_logic_vector(8 downto 0);
 signal bb_data_sin4 : std_logic_vector(15 downto 0);
 signal bb_data_sin8 : std_logic_vector(15 downto 0);
@@ -141,25 +152,14 @@ signal bb_data_cos8 : std_logic_vector(15 downto 0);
 signal bb_data_cos12 : std_logic_vector(15 downto 0);
 signal bb_data_cos16 : std_logic_vector(15 downto 0);
 
+signal next_sym_en : std_logic;
+signal tx_data_sym : std_logic_vector(31 downto 0);
+
 begin
 
 	dac_clk <= clk80m;
 	spiclk <= clk16m;
 	sdi <= dac_sdi and pll_sdi;
-
-	--PLL instance
-	PLL_inst : PLL PORT MAP (
-		inclk0	=> clk16m,
-		c0	 		=> clk80m
-	);
-
-	--DDR instance
-	DDR_OUT_inst : DDR_OUT PORT MAP (
-		datain_h	=> sin (15 downto 2),
-		datain_l	=> cos (15 downto 2),
-		outclock	=> clk80m,
-		dataout	=> dac
-	);
 
 --	--NCO instance
 --	NCO_1MHz : MY_NCO PORT MAP (
@@ -228,6 +228,28 @@ begin
 		q	=> bb_data_cos16
 	);
 	
+	tx_data_inst : tx_data PORT map
+	(
+		clk16m,
+		reset_n,
+		next_sym_en,
+		tx_data_sym
+	);
+
+	--PLL instance
+	PLL_inst : PLL PORT MAP (
+		inclk0	=> clk16m,
+		c0	 		=> clk80m
+	);
+
+	--DDR instance
+	DDR_OUT_inst : DDR_OUT PORT MAP (
+		datain_h	=> sin (15 downto 2),
+		datain_l	=> cos (15 downto 2),
+		outclock	=> clk80m,
+		dataout	=> dac
+	);
+
 	--16mhz flipflop setting
    set_p16 : process (clk16m)
 	variable cnt : integer range 0 to 10000 := 0;
@@ -239,6 +261,8 @@ begin
 				pll_spi_oe_n <= '1';
 				count_100sym <= 0;
 				count_76us <= 0;
+				reset_address <= true;
+				next_sym_en <= '0';
 			else
 				if (cnt < RESET_INC_MAX) then
 					cnt := cnt + 1;
@@ -268,8 +292,20 @@ begin
 					else
 						count_100sym <= 0;
 					end if;
-
 				end if;
+
+				if (count_76us = CNT_76US_MAX - 1) then
+					reset_address <= true;
+				else
+					reset_address <= false;
+				end if;
+
+				if ((count_76us = CNT_76US_MAX - 1) and (count_100sym = CNT_100_MAX)) then
+					next_sym_en <= '1';
+				else
+					next_sym_en <= '0';
+				end if;
+
 			end if;
 		end if;
 	end process;
@@ -285,11 +321,14 @@ begin
 			else
 				if (cnt16 = 15) then
 					cnt16 := 0;
-					address <= address + 1;
+					if (reset_address = true) then
+						address <= (others => '0');
+					else
+						address <= address + 1;
+					end if;
 				else
 					cnt16 := cnt16 + 1;
 				end if;
-
 			end if;
 		end if;
 	end process;
@@ -336,7 +375,11 @@ begin
 		if (falling_edge(clk16m)) then
 			led1 <= sw1;
 			led2 <= sw2;
-			led3 <= '0';
+			if (tx_data_sym < 30) then
+				led3 <= '1';
+			else
+				led3 <= '0';
+			end if;
 			reset_n <= not sw1;
 		end if;
 	end process;
