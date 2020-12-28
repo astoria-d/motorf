@@ -275,36 +275,73 @@ begin
 					bb_i <= (others => '0');
 					bb_q <= (others => '0');
 				elsif (count_100sym = 1) then
-					bb_i <= bb_data_sin16;
-					bb_q <= bb_data_cos16;
+					bb_i <= bb_data_cos16;
+					bb_q <= bb_data_sin16;
 				elsif (count_100sym = 2) then
-					bb_i <= bb_data_sin0 + bb_data_sin2 + bb_data_sin4 + bb_data_sin6 
-								+ bb_data_sin8 + bb_data_sin10 + bb_data_sin12 + bb_data_sin14 
-								+ bb_data_sin16;
-					bb_q <= bb_data_cos0 + bb_data_cos2 + bb_data_cos4 + bb_data_cos6 
-								+ bb_data_cos8 + bb_data_cos10 + bb_data_cos12 + bb_data_cos14 
-								+ bb_data_cos16;
-				else
 					bb_i <=
-						get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(7 downto 6)) +
-						get_sym_i(bb_data_sin2, bb_data_cos2, tx_data(5 downto 4)) +
-						get_sym_i(bb_data_sin4, bb_data_cos4, tx_data(3 downto 2)) +
-						get_sym_i(bb_data_sin6, bb_data_cos6, tx_data(1 downto 0)) +
-						get_sym_i(bb_data_sin8, bb_data_cos8, tx_data(7 downto 6)) +
-						get_sym_i(bb_data_sin10, bb_data_cos10, tx_data(5 downto 4)) +
-						get_sym_i(bb_data_sin12, bb_data_cos12, tx_data(3 downto 2)) +
-						get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(1 downto 0)) +
-						bb_data_sin16;
-					bb_q <=
-						get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(7 downto 6)) +
-						get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(5 downto 4)) +
-						get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(3 downto 2)) +
-						get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(1 downto 0)) +
-						get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(7 downto 6)) +
-						get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(5 downto 4)) +
-						get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(3 downto 2)) +
-						get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(1 downto 0)) +
-						bb_data_cos16;
+							bb_data_cos0 +
+							bb_data_cos2 +
+							bb_data_cos4 +
+							bb_data_cos6 +
+							bb_data_cos8 +
+							bb_data_cos10 +
+							bb_data_cos12 +
+							bb_data_cos14 +
+							bb_data_cos16;
+						bb_q <=
+							bb_data_sin0 +
+							bb_data_sin2 +
+							bb_data_sin4 +
+							bb_data_sin6 +
+							bb_data_sin8 +
+							bb_data_sin10 +
+							bb_data_sin12 +
+							bb_data_sin14 +
+							bb_data_sin16;
+				else
+					if (count_100sym mod 2 = 1) then
+						bb_i <=
+							get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(15 downto 14)) +
+							get_sym_i(bb_data_sin2, bb_data_cos2, tx_data(13 downto 12)) +
+							get_sym_i(bb_data_sin4, bb_data_cos4, tx_data(11 downto 10)) +
+							get_sym_i(bb_data_sin6, bb_data_cos6, tx_data(9 downto 8)) +
+							get_sym_i(bb_data_sin8, bb_data_cos8, tx_data(7 downto 6)) +
+							get_sym_i(bb_data_sin10, bb_data_cos10, tx_data(5 downto 4)) +
+							get_sym_i(bb_data_sin12, bb_data_cos12, tx_data(3 downto 2)) +
+							get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(1 downto 0)) +
+							bb_data_cos16;
+						bb_q <=
+							get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(15 downto 14)) +
+							get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(13 downto 12)) +
+							get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(11 downto 10)) +
+							get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(9 downto 8)) +
+							get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(7 downto 6)) +
+							get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(5 downto 4)) +
+							get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(3 downto 2)) +
+							get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(1 downto 0)) +
+							bb_data_sin16;
+					else
+						bb_i <=
+							get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(31 downto 30)) +
+							get_sym_i(bb_data_sin2, bb_data_cos2, tx_data(29 downto 28)) +
+							get_sym_i(bb_data_sin4, bb_data_cos4, tx_data(27 downto 26)) +
+							get_sym_i(bb_data_sin6, bb_data_cos6, tx_data(25 downto 24)) +
+							get_sym_i(bb_data_sin8, bb_data_cos8, tx_data(23 downto 22)) +
+							get_sym_i(bb_data_sin10, bb_data_cos10, tx_data(21 downto 20)) +
+							get_sym_i(bb_data_sin12, bb_data_cos12, tx_data(19 downto 18)) +
+							get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(17 downto 16)) +
+							bb_data_cos16;
+						bb_q <=
+							get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(31 downto 30)) +
+							get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(29 downto 28)) +
+							get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(27 downto 26)) +
+							get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(25 downto 24)) +
+							get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(23 downto 22)) +
+							get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(21 downto 20)) +
+							get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(19 downto 18)) +
+							get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(17 downto 16)) +
+							bb_data_sin16;
+					end if;
 				end if;
 			end if;
 		end if;
