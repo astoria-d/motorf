@@ -6,12 +6,14 @@ vlib rtl_work
 vmap work rtl_work
 
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/prfx1_test01.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/tx_baseband.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/wave_mem.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/tx_data.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/moto_nco.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/spi_init.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/DDR_OUT.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/PLL.vhd}
-vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/wave_mem.vhd}
-vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/moto_nco.vhd}
-vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/tx_data.vhd}
+
 
 #vlog -vlog01compat -work work +incdir+E:/daisuke/rf/repo/motorf/prfx1_test01 {E:/daisuke/rf/repo/motorf/prfx1_test01/MY_NCO.v}
 #vcom -93 -work work {E:/daisuke/rf/repo/motorf/cordic/CORDIC_CORE.vhd}
@@ -30,24 +32,29 @@ add wave -label sw1                     sim:/testbench_prfx1_test01/sim_board/sw
 add wave -label sw2                     sim:/testbench_prfx1_test01/sim_board/sw2;
 add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/reset_n;
 
-add wave -divider regs
-add wave -label count_76us       -radix decimal  sim:/testbench_prfx1_test01/sim_board/count_76us;
-add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/count_100sym;
+add wave -divider tx_data
 add wave -label tx_data_sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_data_sym;
 
 add wave -divider baseband
-add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/address;
-add wave -label bb_data_sin4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin4;
-add wave -label bb_data_cos4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos4;
-add wave -label bb_data_sin8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin8;
-add wave -label bb_data_cos8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos8;
-add wave -label bb_data_sin12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin12;
-add wave -label bb_data_cos12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos12;
-add wave -label bb_data_sin16 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_sin16;
-add wave -label bb_data_cos16 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_data_cos16;
+add wave -label count_76us       -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_76us;
+add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_100sym;
+
+add wave -label bb_sin -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_sin;
+add wave -label bb_cos -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_cos;
 
 
-add wave -divider codic
+add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
+add wave -label bb_data_sin4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin4;
+add wave -label bb_data_cos4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos4;
+add wave -label bb_data_sin8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin8;
+add wave -label bb_data_cos8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos8;
+add wave -label bb_data_sin12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin12;
+add wave -label bb_data_cos12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos12;
+add wave -label bb_data_sin16 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin16;
+add wave -label bb_data_cos16 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos16;
+
+
+add wave -divider upconv_1mhz
 
 #add wave -label phase32  -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/phase32
 #
@@ -76,27 +83,27 @@ add wave -divider codic
 #add wave -label x16 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x16
 #add wave -label x17 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x17
 
-add wave -label sin -analog -min 0 -max 65565 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/sin;
-add wave -label cos -analog -min 0 -max 65565 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/cos;
+add wave -label sin -analog -min -32768 -max 32768 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/sin;
+add wave -label cos -analog -min -32768 -max 32768 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/cos;
 
 
-add wave -divider dac_spi_data
-add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/reset_n;
-add wave -label clk16m                  sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/clk16m;
-add wave -label indata     -radix hex   sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/indata;
-add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/trig;
-
-add wave -divider pll_spi_data
-add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/reset_n;
-add wave -label clk16m                  sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/clk16m;
-add wave -label indata     -radix hex   sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/indata;
-add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/trig;
-
-add wave -divider spi
-add wave -label spics_dac       sim:/testbench_prfx1_test01/sim_board/spics_dac;
-add wave -label spics_pll       sim:/testbench_prfx1_test01/sim_board/spics_pll;
-add wave -label spiclk          sim:/testbench_prfx1_test01/sim_board/spiclk;
-add wave -label sdi             sim:/testbench_prfx1_test01/sim_board/sdi;
+#add wave -divider dac_spi_data
+#add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/reset_n;
+#add wave -label clk16m                  sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/clk16m;
+#add wave -label indata     -radix hex   sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/indata;
+#add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/dac_spi_init_data_inst/trig;
+#
+#add wave -divider pll_spi_data
+#add wave -label reset_n                 sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/reset_n;
+#add wave -label clk16m                  sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/clk16m;
+#add wave -label indata     -radix hex   sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/indata;
+#add wave -label trig                    sim:/testbench_prfx1_test01/sim_board/pll_spi_init_data_inst/trig;
+#
+#add wave -divider spi
+#add wave -label spics_dac       sim:/testbench_prfx1_test01/sim_board/spics_dac;
+#add wave -label spics_pll       sim:/testbench_prfx1_test01/sim_board/spics_pll;
+#add wave -label spiclk          sim:/testbench_prfx1_test01/sim_board/spiclk;
+#add wave -label sdi             sim:/testbench_prfx1_test01/sim_board/sdi;
 
 #add wave -divider dac
 #add wave -label dac_clk     -radix hex  sim:/testbench_prfx1_test01/sim_board/dac_clk;
