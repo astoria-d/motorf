@@ -31,8 +31,8 @@ component tx_baseband
 		signal clk80m : in std_logic;
 		signal reset_n : in std_logic;
 		signal tx_data : in std_logic_vector(31 downto 0);
-		signal bb_sin : out std_logic_vector(15 downto 0);
-		signal bb_cos : out std_logic_vector(15 downto 0);
+		signal bb_i : out std_logic_vector(15 downto 0);
+		signal bb_q : out std_logic_vector(15 downto 0);
 		signal next_sym_en : out std_logic
 	);
 end component;
@@ -123,8 +123,8 @@ signal cos : std_logic_vector(15 downto 0);
 
 signal reset_n : std_logic;
 
-signal bb_sin : std_logic_vector(15 downto 0);
-signal bb_cos : std_logic_vector(15 downto 0);
+signal bb_i : std_logic_vector(15 downto 0);
+signal bb_q : std_logic_vector(15 downto 0);
 
 signal dac_en : std_logic;
 signal dac_spi_data : std_logic_vector(15 downto 0);
@@ -156,8 +156,8 @@ begin
 		clk80m,
 		reset_n,
 		tx_data_sym,
-		bb_sin,
-		bb_cos,
+		bb_i,
+		bb_q,
 		next_sym_en
 	);
 

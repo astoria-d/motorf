@@ -39,8 +39,8 @@ add wave -divider baseband
 add wave -label count_76us       -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_76us;
 add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_100sym;
 
-add wave -label bb_sin -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_sin;
-add wave -label bb_cos -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_cos;
+add wave -label bb_i -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_i;
+add wave -label bb_q -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_q;
 
 
 add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
