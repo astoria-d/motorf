@@ -62,8 +62,9 @@ function negative(
 	is
 variable outdata : std_logic_vector(15 downto 0);
 begin
-	outdata := unsigned_data;
-	return outdata;
+	--two's complemental + 1.
+	outdata := not unsigned_data;
+	return outdata + 1;
 end negative;
 
 
