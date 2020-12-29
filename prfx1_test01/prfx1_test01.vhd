@@ -160,26 +160,6 @@ begin
 		bb_q,
 		next_sym_en
 	);
---	--get next symbol
---   symbol_feed_p : process (clk16m)
---	variable cnt1 : std_logic_vector (16 downto 0);
---   begin
---		if (falling_edge(clk16m)) then
---			if (reset_n = '0') then
---				cnt1 := (others => '0');
---				tx_data_sym <= (others => '0');
---			else
---				cnt1 := cnt1 + 1;
---				if (cnt1 = 0) then
---					if (conv_integer(tx_data_sym) < 128) then
---						tx_data_sym <= tx_data_sym + 1;
---					else
---						tx_data_sym <= (others => '0');
---					end if;
---				end if;
---			end if;
---		end if;
---	end process;
 
 --	--NCO instance
 --	NCO_1MHz : MY_NCO PORT MAP (
