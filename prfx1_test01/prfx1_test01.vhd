@@ -147,7 +147,7 @@ signal tx_data_sym : std_logic_vector(31 downto 0);
 begin
 
 	dac_clk <= clk80m;
-	spiclk <= clk16m;
+	spiclk <= not clk16m;
 	sdi <= dac_sdi and pll_sdi;
 
 	tx_baseband_inst : tx_baseband port map
@@ -202,7 +202,7 @@ begin
    set_p16 : process (clk16m)
 	variable cnt : integer range 0 to 10000 := 0;
    begin
-		if (falling_edge(clk16m)) then
+		if (rising_edge(clk16m)) then
 			if (reset_n = '0') then
 				cnt := 0;
 				dac_spi_oe_n <= '1';
@@ -266,7 +266,7 @@ begin
 	--led signal handling
    led_p : process (clk16m)
    begin
-		if (falling_edge(clk16m)) then
+		if (rising_edge(clk16m)) then
 			--sw1 = reset
 			if (sw1 = '1') then
 				led1 <= '0';

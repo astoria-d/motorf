@@ -231,7 +231,7 @@ begin
 	variable sym6 : std_logic_vector (1 downto 0);
 	variable sym7 : std_logic_vector (1 downto 0);
    begin
-		if (falling_edge(clk16m)) then
+		if (rising_edge(clk16m)) then
 			if (reset_n = '0') then
 				reset_address <= true;
 				count_100sym <= 0;
