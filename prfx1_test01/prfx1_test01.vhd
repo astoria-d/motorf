@@ -37,6 +37,16 @@ component tx_baseband
 	);
 end component;
 
+component tx_data
+	PORT
+	(
+		signal clk16m : in std_logic;
+		signal reset_n : in std_logic;
+		signal next_sym_en : in std_logic;
+		signal tx_data_sym : out std_logic_vector(31 downto 0)
+	);
+END component;
+
 component moto_nco
 	PORT
 	(
@@ -44,16 +54,6 @@ component moto_nco
 		frq : in std_logic_vector( 31 downto 0 );
 		sin : out std_logic_vector( 15 downto 0 );
 		cos : out std_logic_vector( 15 downto 0 )
-	);
-END component;
-
-component tx_data
-	PORT
-	(
-		signal clk16m : in std_logic;
-		signal reset_n : in std_logic;
-		signal next_sym_en : in std_logic;
-		signal outdata : out std_logic_vector(31 downto 0)
 	);
 END component;
 
@@ -160,6 +160,26 @@ begin
 		bb_q,
 		next_sym_en
 	);
+--	--get next symbol
+--   symbol_feed_p : process (clk16m)
+--	variable cnt1 : std_logic_vector (16 downto 0);
+--   begin
+--		if (falling_edge(clk16m)) then
+--			if (reset_n = '0') then
+--				cnt1 := (others => '0');
+--				tx_data_sym <= (others => '0');
+--			else
+--				cnt1 := cnt1 + 1;
+--				if (cnt1 = 0) then
+--					if (conv_integer(tx_data_sym) < 128) then
+--						tx_data_sym <= tx_data_sym + 1;
+--					else
+--						tx_data_sym <= (others => '0');
+--					end if;
+--				end if;
+--			end if;
+--		end if;
+--	end process;
 
 --	--NCO instance
 --	NCO_1MHz : MY_NCO PORT MAP (
@@ -267,12 +287,19 @@ begin
    led_p : process (clk16m)
    begin
 		if (falling_edge(clk16m)) then
-			led1 <= sw1;
-			led2 <= sw2;
-			if (tx_data_sym < 30) then
-				led3 <= '1';
-			else
+			--sw1 = reset
+			if (sw1 = '1') then
+				led1 <= '0';
+				led2 <= '0';
 				led3 <= '0';
+			else
+				led1 <= sw2;
+				led3 <= '1';
+				if (tx_data_sym < 30) then
+					led2 <= '1';
+				else
+					led2 <= '0';
+				end if;
 			end if;
 			reset_n <= not sw1;
 		end if;

@@ -9,18 +9,17 @@ entity tx_data is
 		signal clk16m : in std_logic;
 		signal reset_n : in std_logic;
 		signal next_sym_en : in std_logic;
-		signal outdata : out std_logic_vector(31 downto 0)
+		signal tx_data_sym : out std_logic_vector(31 downto 0)
 	);
 end tx_data;
 
 architecture rtl of tx_data is
 
-signal outdata_reg : std_logic_vector(6 downto 0);
+signal outdata_reg : std_logic_vector(31 downto 0);
 
 begin
 
-	outdata <= "0000000000000000000000000" & outdata_reg;
-
+	tx_data_sym <= outdata_reg;
    set_p16m : process (clk16m)
    begin
 		if (falling_edge(clk16m)) then
@@ -28,7 +27,11 @@ begin
 				outdata_reg <= (others => '0');
 			else
 				if (next_sym_en = '1') then
-					outdata_reg <= outdata_reg + 1;
+					if (conv_integer(outdata_reg) > 128) then
+						outdata_reg <= (others => '0');
+					else
+						outdata_reg <= outdata_reg + 1;
+					end if;
 				end if;
 			end if;
 		end if;
