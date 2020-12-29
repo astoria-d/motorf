@@ -56,8 +56,6 @@ signal bb_data_cos12 : std_logic_vector(15 downto 0);
 signal bb_data_cos14 : std_logic_vector(15 downto 0);
 signal bb_data_cos16 : std_logic_vector(15 downto 0);
 
-signal get_next_symbol : std_logic;
-
 function negative(
 	signal unsigned_data : in std_logic_vector
 	) return std_logic_vector
@@ -110,8 +108,6 @@ begin
 end get_sym_q;
 
 begin
-
-	next_sym_en <= get_next_symbol;
 
 	--baseband
 	sin0_inst : wave_mem generic map ("wave-sin0.mif")
@@ -240,7 +236,7 @@ begin
 				reset_address <= true;
 				count_100sym <= 0;
 				count_76us <= 0;
-				get_next_symbol <= '0';
+				next_sym_en <= '0';
 				bb_i <= (others => '0');
 				bb_q <= (others => '0');
 			else
@@ -266,9 +262,9 @@ begin
 				end if;
 
 				if ((count_76us = CNT_76US_MAX - 1) and ((count_100sym > 1) and (count_100sym mod 2 = 0))) then
-					get_next_symbol <= '1';
+					next_sym_en <= '1';
 				else
-					get_next_symbol <= '0';
+					next_sym_en <= '0';
 				end if;
 
 				if (count_100sym = 0) then
