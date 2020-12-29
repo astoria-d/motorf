@@ -27,7 +27,7 @@ begin
 				outdata_reg <= (others => '0');
 			else
 				if (next_sym_en = '1') then
-					if (conv_integer(outdata_reg) > 128) then
+					if (conv_integer(outdata_reg) > 10000) then
 						outdata_reg <= (others => '0');
 					else
 						outdata_reg <= outdata_reg + 1;

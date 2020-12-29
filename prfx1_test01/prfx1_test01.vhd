@@ -275,7 +275,7 @@ begin
 			else
 				led1 <= sw2;
 				led3 <= '1';
-				if (tx_data_sym < 30) then
+				if (tx_data_sym < 5000) then
 					led2 <= '1';
 				else
 					led2 <= '0';
