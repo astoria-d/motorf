@@ -9,6 +9,7 @@ vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/prfx1_test01.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/tx_baseband.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/wave_mem.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/tx_data.vhd}
+vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/upconv.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/moto_nco.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/spi_init.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test01/DDR_OUT.vhd}
@@ -83,8 +84,8 @@ add wave -divider upconv_1mhz
 #add wave -label x16 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x16
 #add wave -label x17 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/x17
 
-add wave -label sin -analog -min -32768 -max 32768 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/sin;
-add wave -label cos -analog -min -32768 -max 32768 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/cos;
+#add wave -label sin -analog -min -32768 -max 32768 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/sin;
+#add wave -label cos -analog -min -32768 -max 32768 -height 40 -radix decimal sim:/testbench_prfx1_test01/sim_board/NCO_1MHz/cos;
 
 
 #add wave -divider dac_spi_data

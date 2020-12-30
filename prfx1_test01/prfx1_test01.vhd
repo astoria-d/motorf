@@ -47,13 +47,16 @@ component tx_data
 	);
 END component;
 
-component moto_nco
+component upconv
 	PORT
 	(
-		clk : in std_logic;
-		frq : in std_logic_vector( 31 downto 0 );
-		sin : out std_logic_vector( 15 downto 0 );
-		cos : out std_logic_vector( 15 downto 0 )
+		signal clk16m : in std_logic;
+		signal clk80m : in std_logic;
+		signal reset_n : in std_logic;
+		signal bb_i : in std_logic_vector(15 downto 0);
+		signal bb_q : in std_logic_vector(15 downto 0);
+		signal if_i : out std_logic_vector(15 downto 0);
+		signal if_q : out std_logic_vector(15 downto 0)
 	);
 END component;
 
@@ -62,16 +65,6 @@ component PLL
 	(
 		inclk0	: IN STD_LOGIC  := '0';
 		c0			: OUT STD_LOGIC 
-	);
-END component;
-
-component MY_NCO
-	PORT
-	(
-		clk : in std_logic;
-		frq : in std_logic_vector( 31 downto 0 );
-		sin : out std_logic_vector( 15 downto 0 );
-		cos : out std_logic_vector( 15 downto 0 )
 	);
 END component;
 
@@ -118,13 +111,12 @@ component spi_out
 end component;
 
 signal clk80m  : std_logic;
-signal sin : std_logic_vector(15 downto 0);
-signal cos : std_logic_vector(15 downto 0);
-
 signal reset_n : std_logic;
 
 signal bb_i : std_logic_vector(15 downto 0);
 signal bb_q : std_logic_vector(15 downto 0);
+signal if_i : std_logic_vector(15 downto 0);
+signal if_q : std_logic_vector(15 downto 0);
 
 signal dac_en : std_logic;
 signal dac_spi_data : std_logic_vector(15 downto 0);
@@ -161,27 +153,23 @@ begin
 		next_sym_en
 	);
 
---	--NCO instance
---	NCO_1MHz : MY_NCO PORT MAP (
---		clk	=> clk80m,
---		frq   => conv_std_logic_vector(53687091, 32),
---		sin	=> sin,
---		cos	=> cos
---	);
-	--NCO instance
-	NCO_1MHz : moto_nco PORT MAP (
-		clk	=> clk80m,
-		frq   => conv_std_logic_vector(53687091, 32),
-		sin	=> sin,
-		cos	=> cos
-	);
-
 	tx_data_inst : tx_data PORT map
 	(
 		clk16m,
 		reset_n,
 		next_sym_en,
 		tx_data_sym
+	);
+
+	upconv_inst : upconv PORT map
+	(
+		clk16m,
+		clk80m,
+		reset_n,
+		bb_i,
+		bb_q,
+		if_i,
+		if_q
 	);
 
 	--PLL instance
@@ -192,8 +180,8 @@ begin
 
 	--DDR instance
 	DDR_OUT_inst : DDR_OUT PORT MAP (
-		datain_h	=> sin (15 downto 2),
-		datain_l	=> cos (15 downto 2),
+		datain_h	=> if_i (15 downto 2),
+		datain_l	=> if_q (15 downto 2),
 		outclock	=> clk80m,
 		dataout	=> dac
 	);

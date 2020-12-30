@@ -20,8 +20,8 @@ signal outdata_reg : std_logic_vector(31 downto 0);
 begin
 
 	tx_data_sym <= outdata_reg;
-   set_p16m : process (clk16m)
-   begin
+	set_p16m : process (clk16m)
+	begin
 		if (rising_edge(clk16m)) then
 			if (reset_n = '0') then
 				outdata_reg <= (others => '0');
@@ -36,25 +36,5 @@ begin
 			end if;
 		end if;
 	end process;
-
---   set_p16m : process (clk16m)
---	variable cnt1 : std_logic_vector (16 downto 0);
---   begin
---		if (rising_edge(clk16m)) then
---			if (reset_n = '0') then
---				cnt1 := (others => '0');
---				outdata_reg <= (others => '0');
---			else
---				cnt1 := cnt1 + 1;
---				if (cnt1 = 0) then
---					if (conv_integer(outdata_reg) < 128) then
---						outdata_reg <= outdata_reg + 1;
---					else
---						outdata_reg <= (others => '0');
---					end if;
---				end if;
---			end if;
---		end if;
---	end process;
 
 end rtl;
