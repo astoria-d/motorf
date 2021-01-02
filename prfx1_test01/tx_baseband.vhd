@@ -37,23 +37,39 @@ signal count_76us		: integer range 0 to CNT_76US_MAX:= 0;
 signal reset_address : boolean;
 signal address : std_logic_vector(8 downto 0);
 signal bb_data_sin0 : std_logic_vector(15 downto 0);
+signal bb_data_sin1 : std_logic_vector(15 downto 0);
 signal bb_data_sin2 : std_logic_vector(15 downto 0);
+signal bb_data_sin3 : std_logic_vector(15 downto 0);
 signal bb_data_sin4 : std_logic_vector(15 downto 0);
+signal bb_data_sin5 : std_logic_vector(15 downto 0);
 signal bb_data_sin6 : std_logic_vector(15 downto 0);
+signal bb_data_sin7 : std_logic_vector(15 downto 0);
 signal bb_data_sin8 : std_logic_vector(15 downto 0);
+signal bb_data_sin9 : std_logic_vector(15 downto 0);
 signal bb_data_sin10 : std_logic_vector(15 downto 0);
+signal bb_data_sin11 : std_logic_vector(15 downto 0);
 signal bb_data_sin12 : std_logic_vector(15 downto 0);
+signal bb_data_sin13 : std_logic_vector(15 downto 0);
 signal bb_data_sin14 : std_logic_vector(15 downto 0);
+signal bb_data_sin15 : std_logic_vector(15 downto 0);
 signal bb_data_sin16 : std_logic_vector(15 downto 0);
 
 signal bb_data_cos0 : std_logic_vector(15 downto 0);
+signal bb_data_cos1 : std_logic_vector(15 downto 0);
 signal bb_data_cos2 : std_logic_vector(15 downto 0);
+signal bb_data_cos3 : std_logic_vector(15 downto 0);
 signal bb_data_cos4 : std_logic_vector(15 downto 0);
+signal bb_data_cos5 : std_logic_vector(15 downto 0);
 signal bb_data_cos6 : std_logic_vector(15 downto 0);
+signal bb_data_cos7 : std_logic_vector(15 downto 0);
 signal bb_data_cos8 : std_logic_vector(15 downto 0);
+signal bb_data_cos9 : std_logic_vector(15 downto 0);
 signal bb_data_cos10 : std_logic_vector(15 downto 0);
+signal bb_data_cos11 : std_logic_vector(15 downto 0);
 signal bb_data_cos12 : std_logic_vector(15 downto 0);
+signal bb_data_cos13 : std_logic_vector(15 downto 0);
 signal bb_data_cos14 : std_logic_vector(15 downto 0);
+signal bb_data_cos15 : std_logic_vector(15 downto 0);
 signal bb_data_cos16 : std_logic_vector(15 downto 0);
 
 function negative(
@@ -117,11 +133,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_sin0
 	);
+	sin1_inst : wave_mem generic map ("wave-sin1.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin1
+	);
 	sin2_inst : wave_mem generic map ("wave-sin2.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_sin2
+	);
+	sin3_inst : wave_mem generic map ("wave-sin3.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin3
 	);
 	sin4_inst : wave_mem generic map ("wave-sin4.mif")
 	PORT MAP (
@@ -129,11 +157,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_sin4
 	);
+	sin5_inst : wave_mem generic map ("wave-sin5.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin5
+	);
 	sin6_inst : wave_mem generic map ("wave-sin6.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_sin6
+	);
+	sin7_inst : wave_mem generic map ("wave-sin7.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin7
 	);
 	sin8_inst : wave_mem generic map ("wave-sin8.mif")
 	PORT MAP (
@@ -141,11 +181,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_sin8
 	);
+	sin9_inst : wave_mem generic map ("wave-sin9.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin9
+	);
 	sin10_inst : wave_mem generic map ("wave-sin10.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_sin10
+	);
+	sin11_inst : wave_mem generic map ("wave-sin11.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin11
 	);
 	sin12_inst : wave_mem generic map ("wave-sin12.mif")
 	PORT MAP (
@@ -153,11 +205,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_sin12
 	);
+	sin13_inst : wave_mem generic map ("wave-sin13.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin13
+	);
 	sin114_inst : wave_mem generic map ("wave-sin14.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_sin14
+	);
+	sin15_inst : wave_mem generic map ("wave-sin15.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_sin15
 	);
 	sin16_inst : wave_mem generic map ("wave-sin16.mif")
 	PORT MAP (
@@ -172,11 +236,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_cos0
 	);
+	cos1_inst : wave_mem generic map ("wave-cos1.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos1
+	);
 	cos2_inst : wave_mem generic map ("wave-cos2.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_cos2
+	);
+	cos3_inst : wave_mem generic map ("wave-cos3.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos3
 	);
 	cos4_inst : wave_mem generic map ("wave-cos4.mif")
 	PORT MAP (
@@ -184,11 +260,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_cos4
 	);
+	cos5_inst : wave_mem generic map ("wave-cos5.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos5
+	);
 	cos6_inst : wave_mem generic map ("wave-cos6.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_cos6
+	);
+	cos7_inst : wave_mem generic map ("wave-cos7.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos7
 	);
 	cos8_inst : wave_mem generic map ("wave-cos8.mif")
 	PORT MAP (
@@ -196,11 +284,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_cos8
 	);
+	cos9_inst : wave_mem generic map ("wave-cos9.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos9
+	);
 	cos10_inst : wave_mem generic map ("wave-cos10.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_cos10
+	);
+	cos11_inst : wave_mem generic map ("wave-cos11.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos11
 	);
 	cos12_inst : wave_mem generic map ("wave-cos12.mif")
 	PORT MAP (
@@ -208,11 +308,23 @@ begin
 		clock	=> clk16m,
 		q	=> bb_data_cos12
 	);
+	cos13_inst : wave_mem generic map ("wave-cos13.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos13
+	);
 	cos14_inst : wave_mem generic map ("wave-cos14.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
 		q	=> bb_data_cos14
+	);
+	cos15_inst : wave_mem generic map ("wave-cos15.mif")
+	PORT MAP (
+		address   => address,
+		clock	=> clk16m,
+		q	=> bb_data_cos15
 	);
 	cos16_inst : wave_mem generic map ("wave-cos16.mif")
 	PORT MAP (
@@ -223,14 +335,6 @@ begin
 	
 	--16mhz flipflop setting
    set_p16 : process (clk16m)
-	variable sym0 : std_logic_vector (1 downto 0);
-	variable sym1 : std_logic_vector (1 downto 0);
-	variable sym2 : std_logic_vector (1 downto 0);
-	variable sym3 : std_logic_vector (1 downto 0);
-	variable sym4 : std_logic_vector (1 downto 0);
-	variable sym5 : std_logic_vector (1 downto 0);
-	variable sym6 : std_logic_vector (1 downto 0);
-	variable sym7 : std_logic_vector (1 downto 0);
    begin
 		if (rising_edge(clk16m)) then
 			if (reset_n = '0') then
@@ -262,7 +366,7 @@ begin
 					reset_address <= false;
 				end if;
 
-				if ((count_76us = CNT_76US_MAX - 1) and ((count_100sym > 1) and (count_100sym mod 2 = 0))) then
+				if ((count_76us = CNT_76US_MAX - 1) and (count_100sym > 1)) then
 					next_sym_en <= '1';
 				else
 					next_sym_en <= '0';
@@ -277,68 +381,77 @@ begin
 				elsif (count_100sym = 2) then
 					bb_i <=
 							bb_data_cos0 +
+							bb_data_cos1 +
 							bb_data_cos2 +
+							bb_data_cos3 +
 							bb_data_cos4 +
+							bb_data_cos5 +
 							bb_data_cos6 +
+							bb_data_cos7 +
 							bb_data_cos8 +
+							bb_data_cos9 +
 							bb_data_cos10 +
+							bb_data_cos11 +
 							bb_data_cos12 +
+							bb_data_cos13 +
 							bb_data_cos14 +
+							bb_data_cos15 +
 							bb_data_cos16;
 						bb_q <=
 							bb_data_sin0 +
+							bb_data_sin1 +
 							bb_data_sin2 +
+							bb_data_sin3 +
 							bb_data_sin4 +
+							bb_data_sin5 +
 							bb_data_sin6 +
+							bb_data_sin7 +
 							bb_data_sin8 +
+							bb_data_sin9 +
 							bb_data_sin10 +
+							bb_data_sin11 +
 							bb_data_sin12 +
+							bb_data_sin13 +
 							bb_data_sin14 +
+							bb_data_sin15 +
 							bb_data_sin16;
 				else
-					if (count_100sym mod 2 = 1) then
-						bb_i <=
-							get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(15 downto 14)) +
-							get_sym_i(bb_data_sin2, bb_data_cos2, tx_data(13 downto 12)) +
-							get_sym_i(bb_data_sin4, bb_data_cos4, tx_data(11 downto 10)) +
-							get_sym_i(bb_data_sin6, bb_data_cos6, tx_data(9 downto 8)) +
-							get_sym_i(bb_data_sin8, bb_data_cos8, tx_data(7 downto 6)) +
-							get_sym_i(bb_data_sin10, bb_data_cos10, tx_data(5 downto 4)) +
-							get_sym_i(bb_data_sin12, bb_data_cos12, tx_data(3 downto 2)) +
-							get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(1 downto 0)) +
-							bb_data_cos16;
-						bb_q <=
-							get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(15 downto 14)) +
-							get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(13 downto 12)) +
-							get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(11 downto 10)) +
-							get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(9 downto 8)) +
-							get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(7 downto 6)) +
-							get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(5 downto 4)) +
-							get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(3 downto 2)) +
-							get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(1 downto 0)) +
-							bb_data_sin16;
-					else
-						bb_i <=
-							get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(31 downto 30)) +
-							get_sym_i(bb_data_sin2, bb_data_cos2, tx_data(29 downto 28)) +
-							get_sym_i(bb_data_sin4, bb_data_cos4, tx_data(27 downto 26)) +
-							get_sym_i(bb_data_sin6, bb_data_cos6, tx_data(25 downto 24)) +
-							get_sym_i(bb_data_sin8, bb_data_cos8, tx_data(23 downto 22)) +
-							get_sym_i(bb_data_sin10, bb_data_cos10, tx_data(21 downto 20)) +
-							get_sym_i(bb_data_sin12, bb_data_cos12, tx_data(19 downto 18)) +
-							get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(17 downto 16)) +
-							bb_data_cos16;
-						bb_q <=
-							get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(31 downto 30)) +
-							get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(29 downto 28)) +
-							get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(27 downto 26)) +
-							get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(25 downto 24)) +
-							get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(23 downto 22)) +
-							get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(21 downto 20)) +
-							get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(19 downto 18)) +
-							get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(17 downto 16)) +
-							bb_data_sin16;
-					end if;
+					bb_i <=
+						get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(31 downto 30)) +
+						get_sym_i(bb_data_sin1, bb_data_cos1, tx_data(29 downto 28)) +
+						get_sym_i(bb_data_sin2, bb_data_cos2, tx_data(27 downto 26)) +
+						get_sym_i(bb_data_sin3, bb_data_cos3, tx_data(25 downto 24)) +
+						get_sym_i(bb_data_sin4, bb_data_cos4, tx_data(23 downto 22)) +
+						get_sym_i(bb_data_sin5, bb_data_cos5, tx_data(21 downto 20)) +
+						get_sym_i(bb_data_sin6, bb_data_cos6, tx_data(19 downto 18)) +
+						get_sym_i(bb_data_sin7, bb_data_cos7, tx_data(17 downto 16)) +
+						get_sym_i(bb_data_sin8, bb_data_cos8, tx_data(15 downto 14)) +
+						get_sym_i(bb_data_sin9, bb_data_cos9, tx_data(13 downto 12)) +
+						get_sym_i(bb_data_sin10, bb_data_cos10, tx_data(11 downto 10)) +
+						get_sym_i(bb_data_sin11, bb_data_cos11, tx_data(9 downto 8)) +
+						get_sym_i(bb_data_sin12, bb_data_cos12, tx_data(7 downto 6)) +
+						get_sym_i(bb_data_sin13, bb_data_cos13, tx_data(5 downto 4)) +
+						get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(3 downto 2)) +
+						get_sym_i(bb_data_sin15, bb_data_cos15, tx_data(1 downto 0)) +
+						bb_data_cos16;
+					bb_q <=
+						get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(31 downto 30)) +
+						get_sym_q(bb_data_cos1, bb_data_cos1, tx_data(29 downto 28)) +
+						get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(27 downto 26)) +
+						get_sym_q(bb_data_cos3, bb_data_cos3, tx_data(25 downto 24)) +
+						get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(23 downto 22)) +
+						get_sym_q(bb_data_cos5, bb_data_cos5, tx_data(21 downto 20)) +
+						get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(19 downto 18)) +
+						get_sym_q(bb_data_cos7, bb_data_cos7, tx_data(17 downto 16)) +
+						get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(15 downto 14)) +
+						get_sym_q(bb_data_cos9, bb_data_cos9, tx_data(13 downto 12)) +
+						get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(11 downto 10)) +
+						get_sym_q(bb_data_cos11, bb_data_cos11, tx_data(9 downto 8)) +
+						get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(7 downto 6)) +
+						get_sym_q(bb_data_cos13, bb_data_cos13, tx_data(5 downto 4)) +
+						get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(3 downto 2)) +
+						get_sym_q(bb_data_cos15, bb_data_cos15, tx_data(1 downto 0)) +
+						bb_data_sin16;
 				end if;
 			end if;
 		end if;
