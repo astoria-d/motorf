@@ -43,8 +43,10 @@ signal cos : std_logic_vector(15 downto 0);
 
 begin
 
-	if_i <= sin;
-	if_q <= cos;
+	if_i <= bb_i;
+	if_q <= bb_q;
+--	if_i <= sin;
+--	if_q <= cos;
 
 --	--NCO instance
 --	NCO_1MHz : MY_NCO PORT MAP (

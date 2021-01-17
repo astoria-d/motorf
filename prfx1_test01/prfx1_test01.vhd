@@ -24,6 +24,16 @@ end prfx1_test01;
 
 architecture rtl of prfx1_test01 is
 
+component tx_data
+	PORT
+	(
+		signal clk16m : in std_logic;
+		signal reset_n : in std_logic;
+		signal next_sym_en : in std_logic;
+		signal tx_data_sym : out std_logic_vector(31 downto 0)
+	);
+END component;
+
 component tx_baseband
 	PORT
 	(
@@ -36,16 +46,6 @@ component tx_baseband
 		signal next_sym_en : out std_logic
 	);
 end component;
-
-component tx_data
-	PORT
-	(
-		signal clk16m : in std_logic;
-		signal reset_n : in std_logic;
-		signal next_sym_en : in std_logic;
-		signal tx_data_sym : out std_logic_vector(31 downto 0)
-	);
-END component;
 
 component upconv
 	PORT
@@ -60,14 +60,6 @@ component upconv
 	);
 END component;
 
-component PLL
-	PORT
-	(
-		inclk0	: IN STD_LOGIC  := '0';
-		c0			: OUT STD_LOGIC 
-	);
-END component;
-
 component DDR_OUT
 	PORT
 	(
@@ -75,6 +67,14 @@ component DDR_OUT
 		datain_l		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
 		outclock		: IN STD_LOGIC ;
 		dataout		: OUT STD_LOGIC_VECTOR (13 DOWNTO 0)
+	);
+END component;
+
+component PLL
+	PORT
+	(
+		inclk0	: IN STD_LOGIC  := '0';
+		c0			: OUT STD_LOGIC 
 	);
 END component;
 
@@ -142,6 +142,14 @@ begin
 	spiclk <= not clk16m;
 	sdi <= dac_sdi and pll_sdi;
 
+	tx_data_inst : tx_data PORT map
+	(
+		clk16m,
+		reset_n,
+		next_sym_en,
+		tx_data_sym
+	);
+
 	tx_baseband_inst : tx_baseband port map
 	(
 		clk16m,
@@ -151,14 +159,6 @@ begin
 		bb_i,
 		bb_q,
 		next_sym_en
-	);
-
-	tx_data_inst : tx_data PORT map
-	(
-		clk16m,
-		reset_n,
-		next_sym_en,
-		tx_data_sym
 	);
 
 	upconv_inst : upconv PORT map
@@ -172,18 +172,18 @@ begin
 		if_q
 	);
 
-	--PLL instance
-	PLL_inst : PLL PORT MAP (
-		inclk0	=> clk16m,
-		c0	 		=> clk80m
-	);
-
 	--DDR instance
 	DDR_OUT_inst : DDR_OUT PORT MAP (
 		datain_h	=> if_i (15 downto 2),
 		datain_l	=> if_q (15 downto 2),
 		outclock	=> clk80m,
 		dataout	=> dac
+	);
+
+	--PLL instance
+	PLL_inst : PLL PORT MAP (
+		inclk0	=> clk16m,
+		c0	 		=> clk80m
 	);
 
 	--16mhz flipflop setting
