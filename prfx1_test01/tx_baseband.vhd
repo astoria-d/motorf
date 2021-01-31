@@ -435,22 +435,22 @@ begin
 						get_sym_i(bb_data_sin15, bb_data_cos15, tx_data(1 downto 0)) +
 						bb_data_cos16;
 					bb_q <=
-						get_sym_q(bb_data_cos0, bb_data_cos0, tx_data(31 downto 30)) +
-						get_sym_q(bb_data_cos1, bb_data_cos1, tx_data(29 downto 28)) +
-						get_sym_q(bb_data_cos2, bb_data_cos2, tx_data(27 downto 26)) +
-						get_sym_q(bb_data_cos3, bb_data_cos3, tx_data(25 downto 24)) +
-						get_sym_q(bb_data_cos4, bb_data_cos4, tx_data(23 downto 22)) +
-						get_sym_q(bb_data_cos5, bb_data_cos5, tx_data(21 downto 20)) +
-						get_sym_q(bb_data_cos6, bb_data_cos6, tx_data(19 downto 18)) +
-						get_sym_q(bb_data_cos7, bb_data_cos7, tx_data(17 downto 16)) +
-						get_sym_q(bb_data_cos8, bb_data_cos8, tx_data(15 downto 14)) +
-						get_sym_q(bb_data_cos9, bb_data_cos9, tx_data(13 downto 12)) +
-						get_sym_q(bb_data_cos10, bb_data_cos10, tx_data(11 downto 10)) +
-						get_sym_q(bb_data_cos11, bb_data_cos11, tx_data(9 downto 8)) +
-						get_sym_q(bb_data_cos12, bb_data_cos12, tx_data(7 downto 6)) +
-						get_sym_q(bb_data_cos13, bb_data_cos13, tx_data(5 downto 4)) +
-						get_sym_q(bb_data_cos14, bb_data_cos14, tx_data(3 downto 2)) +
-						get_sym_q(bb_data_cos15, bb_data_cos15, tx_data(1 downto 0)) +
+						get_sym_q(bb_data_sin0, bb_data_cos0, tx_data(31 downto 30)) +
+						get_sym_q(bb_data_sin1, bb_data_cos1, tx_data(29 downto 28)) +
+						get_sym_q(bb_data_sin2, bb_data_cos2, tx_data(27 downto 26)) +
+						get_sym_q(bb_data_sin3, bb_data_cos3, tx_data(25 downto 24)) +
+						get_sym_q(bb_data_sin4, bb_data_cos4, tx_data(23 downto 22)) +
+						get_sym_q(bb_data_sin5, bb_data_cos5, tx_data(21 downto 20)) +
+						get_sym_q(bb_data_sin6, bb_data_cos6, tx_data(19 downto 18)) +
+						get_sym_q(bb_data_sin7, bb_data_cos7, tx_data(17 downto 16)) +
+						get_sym_q(bb_data_sin8, bb_data_cos8, tx_data(15 downto 14)) +
+						get_sym_q(bb_data_sin9, bb_data_cos9, tx_data(13 downto 12)) +
+						get_sym_q(bb_data_sin10, bb_data_cos10, tx_data(11 downto 10)) +
+						get_sym_q(bb_data_sin11, bb_data_cos11, tx_data(9 downto 8)) +
+						get_sym_q(bb_data_sin12, bb_data_cos12, tx_data(7 downto 6)) +
+						get_sym_q(bb_data_sin13, bb_data_cos13, tx_data(5 downto 4)) +
+						get_sym_q(bb_data_sin14, bb_data_cos14, tx_data(3 downto 2)) +
+						get_sym_q(bb_data_sin15, bb_data_cos15, tx_data(1 downto 0)) +
 						bb_data_sin16;
 				end if;
 			end if;
