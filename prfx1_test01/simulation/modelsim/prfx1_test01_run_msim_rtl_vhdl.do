@@ -40,9 +40,11 @@ add wave -divider baseband
 add wave -label count_76us       -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_76us;
 add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_100sym;
 
-add wave -label bb_i -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_i;
-add wave -label bb_q -analog -min -32768 -max 32768 -height 100  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_q;
+add wave -label bb_i -analog -min -2097152 -max 2097152 -height 500  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_i;
+add wave -label bb_q -analog -min -2097152 -max 2097152 -height 500  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_q;
 
+add wave -label tmp_i -analog -min -2097152 -max 2097152 -height 500  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_i;
+add wave -label tmp_q -analog -min -2097152 -max 2097152 -height 500  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_q;
 
 add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
 add wave -label bb_data_sin0 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin0;
