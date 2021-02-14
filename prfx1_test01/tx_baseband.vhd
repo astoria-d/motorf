@@ -53,7 +53,7 @@ signal mem_data_sin12 : std_logic_vector(15 downto 0);
 signal mem_data_sin13 : std_logic_vector(15 downto 0);
 signal mem_data_sin14 : std_logic_vector(15 downto 0);
 signal mem_data_sin15 : std_logic_vector(15 downto 0);
-signal mem_data_sin16 : std_logic_vector(15 downto 0);
+signal mem_data_sin_cw : std_logic_vector(15 downto 0);
 
 signal mem_data_cos0 : std_logic_vector(15 downto 0);
 signal mem_data_cos1 : std_logic_vector(15 downto 0);
@@ -71,7 +71,7 @@ signal mem_data_cos12 : std_logic_vector(15 downto 0);
 signal mem_data_cos13 : std_logic_vector(15 downto 0);
 signal mem_data_cos14 : std_logic_vector(15 downto 0);
 signal mem_data_cos15 : std_logic_vector(15 downto 0);
-signal mem_data_cos16 : std_logic_vector(15 downto 0);
+signal mem_data_cos_cw : std_logic_vector(15 downto 0);
 
 signal bb_data_sin0 : std_logic_vector(20 downto 0);
 signal bb_data_sin1 : std_logic_vector(20 downto 0);
@@ -89,7 +89,7 @@ signal bb_data_sin12 : std_logic_vector(20 downto 0);
 signal bb_data_sin13 : std_logic_vector(20 downto 0);
 signal bb_data_sin14 : std_logic_vector(20 downto 0);
 signal bb_data_sin15 : std_logic_vector(20 downto 0);
-signal bb_data_sin16 : std_logic_vector(20 downto 0);
+signal bb_data_sin_cw : std_logic_vector(20 downto 0);
 
 signal bb_data_cos0 : std_logic_vector(20 downto 0);
 signal bb_data_cos1 : std_logic_vector(20 downto 0);
@@ -107,7 +107,7 @@ signal bb_data_cos12 : std_logic_vector(20 downto 0);
 signal bb_data_cos13 : std_logic_vector(20 downto 0);
 signal bb_data_cos14 : std_logic_vector(20 downto 0);
 signal bb_data_cos15 : std_logic_vector(20 downto 0);
-signal bb_data_cos16 : std_logic_vector(20 downto 0);
+signal bb_data_cos_cw : std_logic_vector(20 downto 0);
 
 signal tmp_i : std_logic_vector(20 downto 0);
 signal tmp_q : std_logic_vector(20 downto 0);
@@ -276,11 +276,11 @@ begin
 		clock	=> clk16m,
 		q	=> mem_data_sin15
 	);
-	sin16_inst : wave_mem generic map ("wave-sin16.mif")
+	sin_cw_inst : wave_mem generic map ("wave-sin-cw.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
-		q	=> mem_data_sin16
+		q	=> mem_data_sin_cw
 	);
 
 	cos0_inst : wave_mem generic map ("wave-cos0.mif")
@@ -379,11 +379,11 @@ begin
 		clock	=> clk16m,
 		q	=> mem_data_cos15
 	);
-	cos16_inst : wave_mem generic map ("wave-cos16.mif")
+	cos_cw_inst : wave_mem generic map ("wave-cos-cw.mif")
 	PORT MAP (
 		address   => address,
 		clock	=> clk16m,
-		q	=> mem_data_cos16
+		q	=> mem_data_cos_cw
 	);
 	
 	--16mhz flipflop setting
@@ -416,7 +416,7 @@ begin
 				bb_data_sin13 <= (others => '0');
 				bb_data_sin14 <= (others => '0');
 				bb_data_sin15 <= (others => '0');
-				bb_data_sin16 <= (others => '0');
+				bb_data_sin_cw <= (others => '0');
 
 				bb_data_cos0 <= (others => '0');
 				bb_data_cos1 <= (others => '0');
@@ -434,7 +434,7 @@ begin
 				bb_data_cos13 <= (others => '0');
 				bb_data_cos14 <= (others => '0');
 				bb_data_cos15 <= (others => '0');
-				bb_data_cos16 <= (others => '0');
+				bb_data_cos_cw <= (others => '0');
 
 			else
 
@@ -457,7 +457,7 @@ begin
 				bb_data_cos13 <= cast_signed(mem_data_cos13);
 				bb_data_cos14 <= cast_signed(mem_data_cos14);
 				bb_data_cos15 <= cast_signed(mem_data_cos15);
-				bb_data_cos16 <= cast_signed(mem_data_cos16);
+				bb_data_cos_cw <= cast_signed(mem_data_cos_cw);
 
 				bb_data_sin0 <= cast_signed(mem_data_sin0);
 				bb_data_sin1 <= cast_signed(mem_data_sin1);
@@ -475,7 +475,7 @@ begin
 				bb_data_sin13 <= cast_signed(mem_data_sin13);
 				bb_data_sin14 <= cast_signed(mem_data_sin14);
 				bb_data_sin15 <= cast_signed(mem_data_sin15);
-				bb_data_sin16 <= cast_signed(mem_data_sin16);
+				bb_data_sin_cw <= cast_signed(mem_data_sin_cw);
 
 				if (count_76us < CNT_76US_MAX) then
 					count_76us <= count_76us + 1;
@@ -507,8 +507,8 @@ begin
 					tmp_i <= (others => '0');
 					tmp_q <= (others => '0');
 				elsif (count_100sym = 1) then
-					tmp_i <= bb_data_cos16;
-					tmp_q <= bb_data_sin16;
+					tmp_i <= bb_data_cos_cw;
+					tmp_q <= bb_data_sin_cw;
 				elsif (count_100sym = 2) then
 					tmp_i <=
 							bb_data_cos0 +
@@ -527,7 +527,7 @@ begin
 							bb_data_cos13 +
 							bb_data_cos14 +
 							bb_data_cos15 +
-							bb_data_cos16;
+							bb_data_cos_cw;
 					tmp_q <=
 							bb_data_sin0 +
 							bb_data_sin1 +
@@ -545,7 +545,7 @@ begin
 							bb_data_sin13 +
 							bb_data_sin14 +
 							bb_data_sin15 +
-							bb_data_sin16;
+							bb_data_sin_cw;
 				else
 					tmp_i <=
 						get_sym_i(bb_data_sin0, bb_data_cos0, tx_data(31 downto 30)) +
@@ -564,7 +564,7 @@ begin
 						get_sym_i(bb_data_sin13, bb_data_cos13, tx_data(5 downto 4)) +
 						get_sym_i(bb_data_sin14, bb_data_cos14, tx_data(3 downto 2)) +
 						get_sym_i(bb_data_sin15, bb_data_cos15, tx_data(1 downto 0)) +
-						bb_data_cos16;
+						bb_data_cos_cw;
 					tmp_q <=
 						get_sym_q(bb_data_sin0, bb_data_cos0, tx_data(31 downto 30)) +
 						get_sym_q(bb_data_sin1, bb_data_cos1, tx_data(29 downto 28)) +
@@ -582,7 +582,7 @@ begin
 						get_sym_q(bb_data_sin13, bb_data_cos13, tx_data(5 downto 4)) +
 						get_sym_q(bb_data_sin14, bb_data_cos14, tx_data(3 downto 2)) +
 						get_sym_q(bb_data_sin15, bb_data_cos15, tx_data(1 downto 0)) +
-						bb_data_sin16;
+						bb_data_sin_cw;
 				end if;
 			end if;
 		end if;
