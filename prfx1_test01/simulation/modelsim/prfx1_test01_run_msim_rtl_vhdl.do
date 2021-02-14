@@ -42,7 +42,7 @@ add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim
 
 add wave -label bb_i -analog -min -65565 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_i;
 
-add wave -label tmp_i -analog -min -65565 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_i;
+add wave -label tmp_i -analog -min -250000 -max 250000 -height 200  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_i;
 
 add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
 
