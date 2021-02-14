@@ -44,6 +44,8 @@ add wave -label bb_i -analog -min -65565 -max 65565 -height 40  -radix decimal  
 
 add wave -label tmp_i -analog -min -65565 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_i;
 
+add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
+
 add wave -label bb_data_cos0 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos0;
 add wave -label bb_data_cos1 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos1;
 add wave -label bb_data_cos2 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos2;
@@ -66,7 +68,6 @@ add wave -label bb_data_cos_cw -analog -min 0 -max 65565 -height 40  -radix deci
 #
 #add wave -label tmp_q -analog -min -65565 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_q;
 #
-#add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
 #add wave -label bb_data_sin0 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin0;
 #add wave -label bb_data_sin1 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin1;
 #add wave -label bb_data_sin2 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_sin2;
@@ -177,4 +178,4 @@ view signals
 #run 50 us
 run 78 us
 wave zoom full
-run 150 us
+run 155 us
