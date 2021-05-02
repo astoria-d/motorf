@@ -59,3 +59,5 @@ prfx1_test01/greybox_tmp/*
 *.log
 
 old/*
+
+prfx1_test02_tx/*
