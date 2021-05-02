@@ -40,29 +40,31 @@ add wave -divider baseband
 add wave -label count_76us       -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_76us;
 add wave -label count_100sym     -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/count_100sym;
 
+add wave -label bb_i -analog -min -250000 -max 250000 -height 200  -radix decimal  sim:/testbench_prfx1_test01/sim_board/upconv_inst/bb_i;
+add wave -label if_i -analog -min -250000 -max 250000 -height 200  -radix decimal  sim:/testbench_prfx1_test01/sim_board/upconv_inst/if_i;
 add wave -label bb_i -analog -min -65565 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_i;
 
-add wave -label tmp_i -analog -min -250000 -max 250000 -height 200  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_i;
+#add wave -label tmp_i -analog -min -250000 -max 250000 -height 200  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/tmp_i;
 
-add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
+#add wave -label address  -radix unsigned  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/address;
 
-add wave -label bb_data_cos0 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos0;
-add wave -label bb_data_cos1 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos1;
-add wave -label bb_data_cos2 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos2;
-add wave -label bb_data_cos3 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos3;
-add wave -label bb_data_cos4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos4;
-add wave -label bb_data_cos5 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos5;
-add wave -label bb_data_cos6 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos6;
-add wave -label bb_data_cos7 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos7;
-add wave -label bb_data_cos8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos8;
-add wave -label bb_data_cos9 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos9;
-add wave -label bb_data_cos10 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos10;
-add wave -label bb_data_cos11 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos11;
-add wave -label bb_data_cos12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos12;
-add wave -label bb_data_cos13 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos13;
-add wave -label bb_data_cos14 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos14;
-add wave -label bb_data_cos15 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos15;
-add wave -label bb_data_cos_cw -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos_cw;
+#add wave -label bb_data_cos0 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos0;
+#add wave -label bb_data_cos1 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos1;
+#add wave -label bb_data_cos2 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos2;
+#add wave -label bb_data_cos3 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos3;
+#add wave -label bb_data_cos4 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos4;
+#add wave -label bb_data_cos5 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos5;
+#add wave -label bb_data_cos6 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos6;
+#add wave -label bb_data_cos7 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos7;
+#add wave -label bb_data_cos8 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos8;
+#add wave -label bb_data_cos9 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos9;
+#add wave -label bb_data_cos10 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos10;
+#add wave -label bb_data_cos11 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos11;
+#add wave -label bb_data_cos12 -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos12;
+#add wave -label bb_data_cos13 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos13;
+#add wave -label bb_data_cos14 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos14;
+#add wave -label bb_data_cos15 -analog -min 0 -max 65565 -height 40   -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos15;
+#add wave -label bb_data_cos_cw -analog -min 0 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/tx_baseband_inst/bb_data_cos_cw;
 
 #add wave -label bb_q -analog -min -65565 -max 65565 -height 40  -radix decimal  sim:/testbench_prfx1_test01/sim_board/bb_q;
 #
