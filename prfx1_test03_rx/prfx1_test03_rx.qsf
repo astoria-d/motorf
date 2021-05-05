@@ -73,4 +73,34 @@ set_location_assignment PIN_69 -to led1
 set_location_assignment PIN_71 -to led2
 set_location_assignment PIN_72 -to led3
 
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[11]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[10]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc_clk
+
+set_location_assignment PIN_76 -to adc[11]
+set_location_assignment PIN_77 -to adc[10]
+set_location_assignment PIN_80 -to adc[9]
+set_location_assignment PIN_85 -to adc[7]
+set_location_assignment PIN_83 -to adc[8]
+set_location_assignment PIN_86 -to adc[6]
+set_location_assignment PIN_87 -to adc[5]
+set_location_assignment PIN_98 -to adc[4]
+set_location_assignment PIN_99 -to adc[3]
+set_location_assignment PIN_100 -to adc[2]
+set_location_assignment PIN_101 -to adc[1]
+set_location_assignment PIN_103 -to adc[0]
+set_location_assignment PIN_112 -to adc_clk
+
+# need this for pin_101 conflicts.
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

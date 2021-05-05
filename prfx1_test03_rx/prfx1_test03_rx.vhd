@@ -6,7 +6,7 @@ use ieee.std_logic_unsigned.all;
 entity prfx1_test03_rx is 
    port (
 	signal clk16m     : in std_logic;
-	signal adc 			: out std_logic_vector( 13 downto 0 );
+	signal adc 			: in std_logic_vector(11 downto 0);
 	signal adc_clk		: out std_logic;
 
 	signal spiclk		: out std_logic;
@@ -23,6 +23,10 @@ end prfx1_test03_rx;
 
 architecture rtl of prfx1_test03_rx is
 
+signal clk80m     : std_logic;
+signal clk40m     : std_logic;
+signal clk12m     : std_logic;
+signal clk5m     : std_logic;
 
 begin
 
