@@ -23,12 +23,34 @@ end prfx1_test03_rx;
 
 architecture rtl of prfx1_test03_rx is
 
+component pll
+	PORT
+	(
+		inclk0		: IN STD_LOGIC  := '0';
+		c0		: OUT STD_LOGIC ;
+		c1		: OUT STD_LOGIC ;
+		c2		: OUT STD_LOGIC ;
+		c3		: OUT STD_LOGIC 
+	);
+end component;
+
 signal clk80m     : std_logic;
 signal clk40m     : std_logic;
 signal clk12m     : std_logic;
 signal clk5m     : std_logic;
 
 begin
+
+	adc_clk <= clk40m;
+
+	--PLL instance
+	pll_inst : pll PORT MAP (
+		inclk0	=> clk16m,
+		c0	 		=> clk80m,
+		c1	 		=> clk40m,
+		c2	 		=> clk12m,
+		c3	 		=> clk5m
+	);
 
 	--led signal handling
    led_p : process (clk16m)
