@@ -34,6 +34,7 @@ signal sdi			: std_logic;
 signal spics_pll	: std_logic;
 
 signal base_clk         : std_logic;
+signal reset_input      : std_logic;
 
 signal sw1			: std_logic;
 signal sw2			: std_logic;
@@ -59,13 +60,26 @@ begin
 		sdi			=> sdi,
 		spics_pll	=> spics_pll,
 
-		sw1     	=> sw1,
-		sw2     	=> sw2,
+		sw1     	=> reset_input,
+		sw2     	=> '0',
 		led1		=> led1,
 		led2		=> led2,
 		led3		=> led3
 	);
 
+
+    --- input reset.
+    reset_p: process
+    begin
+        reset_input <= '0';
+        wait for powerup_time;
+
+        reset_input <= '1';
+        wait for reset_time;
+
+        reset_input <= '0';
+        wait;
+    end process;
 
     --- generate base clock.
     clock_p: process
