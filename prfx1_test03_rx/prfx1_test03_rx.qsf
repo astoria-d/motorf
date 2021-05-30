@@ -92,6 +92,13 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to adc_clk
 
+set_location_assignment PIN_110 -to attn_oe
+set_location_assignment PIN_114 -to attn[4]
+set_location_assignment PIN_111 -to attn[3]
+set_location_assignment PIN_106 -to attn[2]
+set_location_assignment PIN_105 -to attn[1]
+set_location_assignment PIN_104 -to attn[0]
+
 set_location_assignment PIN_76 -to adc[11]
 set_location_assignment PIN_77 -to adc[10]
 set_location_assignment PIN_80 -to adc[9]
@@ -105,6 +112,13 @@ set_location_assignment PIN_100 -to adc[2]
 set_location_assignment PIN_101 -to adc[1]
 set_location_assignment PIN_103 -to adc[0]
 set_location_assignment PIN_112 -to adc_clk
+
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to attn_oe
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to attn[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to attn[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to attn[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to attn[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to attn[0]
 
 set_location_assignment PIN_10 -to spiclk
 set_location_assignment PIN_7 -to sdi

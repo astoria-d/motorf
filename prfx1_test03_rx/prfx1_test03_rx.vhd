@@ -10,6 +10,9 @@ entity prfx1_test03_rx is
 	signal clk5m     	: out std_logic;
 	signal adc_clk		: out std_logic;
 
+	signal attn			: out std_logic_vector(4 downto 0);
+	signal attn_oe		: out std_logic;
+
 	signal spiclk		: out std_logic;
 	signal sdi			: out std_logic;
 	signal spics_pll	: out std_logic;
@@ -56,6 +59,9 @@ signal raw_adc 		: std_logic_vector(11 downto 0);
 begin
 
 	adc_clk <= clk40m;
+
+	attn_oe <= '1';
+	attn <= conv_std_logic_vector(16#10#, 5);
 
 	--PLL instance
 	pll_inst : pll PORT MAP (
