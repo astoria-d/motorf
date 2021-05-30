@@ -2,17 +2,17 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.conv_std_logic_vector;
 
-entity pll_spi_init_data is 
-   port (
-	signal clk16m     : in std_logic;
-	signal oe_n			: in std_logic;
+entity pll_spi_data is 
+	port (
+	signal clk16m		: in std_logic;
 	signal reset_n		: in std_logic;
-	signal indata		: out std_logic_vector(31 downto 0);
-	signal trig			: out std_logic
+	signal spiclk		: out std_logic;
+	signal spics		: out std_logic;
+	signal sdi			: out std_logic
 	);
-end pll_spi_init_data;
+end pll_spi_data;
 
-architecture rtl of pll_spi_init_data is
+architecture rtl of pll_spi_data is
 
 type spi_data_arr_t is array(0 to 5) of std_logic_vector(31 downto 0);
 
@@ -64,85 +64,49 @@ constant spi_data : spi_data_arr_t := (
 );
 
 
+signal out_clk			: std_logic;
+
 begin
-   spi_p : process (clk16m)
+	spi_p : process (clk16m)
 	variable cnt6 : integer range 0 to 6 := 0;
-	variable cnt32 : integer range 0 to 32 := 0;
-   begin
+	variable cnt100 : integer range 0 to 100 := 0;
+	begin
 		if (rising_edge(clk16m)) then
-			if (reset_n = '0' or oe_n = '1') then
-				indata <= (others => '0');
-				trig <= '1';
+
+			if (reset_n = '0') then
 				cnt6 := 0;
-				cnt32 := 0;
-			else
-				if (cnt6 < 6) then
-					if (cnt32 < 32) then
-						indata <= spi_data(cnt6);
-						trig <= '0';
-						cnt32 := cnt32 + 1;
-					else
-						indata <= (others => '0');
-						trig <= '1';
-						cnt32 := 0;
-						cnt6 := cnt6 + 1;
-					end if;
-				else
-					indata <= (others => '0');
-					trig <= '1';
-				end if;
-			end if;
-		end if;
-	end process;
-end rtl;
-
-
-
---------------------------------
---------------------------------
---------------------------------
-
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.conv_std_logic_vector;
-
-entity spi_out is 
-	generic (bus_size : integer := 16);
-   port (
-	signal clk16m     : in std_logic;
-	signal indata		: in std_logic_vector(bus_size - 1 downto 0);
-	signal trig			: in std_logic;
-
-	signal spics		: out std_logic;
-	signal sdi			: out std_logic
-	);
-end spi_out;
-
-architecture rtl of spi_out is
-
-begin
-
-   spi_p : process (clk16m)
-	variable cnt : integer range 0 to bus_size := 0;
-   begin
-		if (rising_edge(clk16m)) then
-
-			if (trig = '1') then
-				cnt := 0;
+				cnt100 := 0;
 				spics <= '1';
 				sdi <= '1';
+				out_clk <= '0';
 			else
-				if (cnt < bus_size) then
+
+				if (cnt100 < 32 and cnt6 < 6) then
 					spics <= '0';
-					sdi <= indata(bus_size - 1 - cnt);
-					cnt := cnt + 1;
+					out_clk <= '1';
+					sdi <= spi_data(cnt6)(31 - cnt100);
 				else
-					cnt := 0;
 					spics <= '1';
+					out_clk <= '0';
+					sdi <= '1';
 				end if;
+
+				if (cnt100 < 100) then
+					cnt100 := cnt100 + 1;
+				else
+					cnt100 := 0;
+					if (cnt6 < 6) then
+						cnt6 := cnt6 + 1;
+					end if;
+				end if;
+
 			end if;
+
 		end if;
 	end process;
+
+
+	spiclk <= not clk16m when out_clk = '1' else '1';
+
 
 end rtl;

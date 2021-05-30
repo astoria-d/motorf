@@ -20,7 +20,7 @@ add wave -label spiclk sim:/testbench_prfx1_test01/sim_board/spiclk
 add wave -label sdi -radix hex sim:/testbench_prfx1_test01/sim_board/sdi
 add wave -label spics_pll sim:/testbench_prfx1_test01/sim_board/spics_pll
 
-run 20us
+run 60us
 
 wave zoom full
 
