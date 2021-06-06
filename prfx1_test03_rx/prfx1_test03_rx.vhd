@@ -17,6 +17,8 @@ entity prfx1_test03_rx is
 	signal sdi			: out std_logic;
 	signal spics_pll	: out std_logic;
 
+	signal uart_out	: out std_logic;
+
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
 	signal led1			: out std_logic;
@@ -48,6 +50,22 @@ component pll_spi_data
 	);
 end component;
 
+component conv_signed
+	port (
+	signal clk80m		: in std_logic;
+	signal udata		: in std_logic_vector(11 downto 0);
+	signal sdata		: out std_logic_vector(11 downto 0)
+	);
+end component;
+
+component output_uart
+	port (
+	signal clk80m		: in std_logic;
+	signal indata		: in std_logic_vector(11 downto 0);
+	signal uart_out	: out std_logic
+	);
+end component;
+
 signal reset_n : std_logic;
 
 signal clk80m     : std_logic;
@@ -55,6 +73,7 @@ signal clk40m     : std_logic;
 signal clk12m     : std_logic;
 
 signal raw_adc 		: std_logic_vector(11 downto 0);
+signal s_adc			: std_logic_vector(11 downto 0);
 
 begin
 
@@ -81,8 +100,16 @@ begin
 			else
 				raw_adc <= adc;
 			end if;
+--			s_adc <= raw_adc;
 		end if;
 	end process;
+
+	--convert from raw adc value to signed adc
+	conv_u2s_inst : conv_signed port map (
+		clk80m => clk80m,
+		udata => raw_adc,
+		sdata => s_adc
+	);
 
 	--spi output module for pll
 	pll_spi_out_inst : pll_spi_data port map (
@@ -91,6 +118,12 @@ begin
 		spiclk => spiclk,
 		spics => spics_pll,
 		sdi => sdi
+	);
+
+	uart_out_inst : output_uart port map (
+		clk80m => clk80m,
+		indata => s_adc,
+		uart_out => uart_out
 	);
 
 	--led signal handling
