@@ -74,6 +74,8 @@ signal clk12m     : std_logic;
 
 signal raw_adc 		: std_logic_vector(11 downto 0);
 signal s_adc			: std_logic_vector(11 downto 0);
+signal wr_cmv_adc			: std_logic_vector(11 downto 0);
+
 
 begin
 
@@ -100,7 +102,7 @@ begin
 			else
 				raw_adc <= adc;
 			end if;
---			s_adc <= raw_adc;
+			s_adc <= wr_cmv_adc;
 		end if;
 	end process;
 
@@ -108,7 +110,7 @@ begin
 	conv_u2s_inst : conv_signed port map (
 		clk80m => clk80m,
 		udata => raw_adc,
-		sdata => s_adc
+		sdata => wr_cmv_adc
 	);
 
 	--spi output module for pll
