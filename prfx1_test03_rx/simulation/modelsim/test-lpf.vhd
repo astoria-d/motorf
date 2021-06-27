@@ -24,6 +24,7 @@ end component;
 
 signal addr_cnt : std_logic_vector(8 downto 0);
 signal mem_data_cos_cw : std_logic_vector(15 downto 0);
+signal in_data1 : std_logic_vector(11 downto 0);
 
 begin
 
@@ -42,6 +43,7 @@ begin
 			end if;
 		end if;
 	end process;
+    in_data1 <= mem_data_cos_cw (15 downto 4);
 
 	cos_cw_inst : wave_mem generic map ("wave-cos-cw.mif")
 	PORT MAP (
@@ -49,6 +51,7 @@ begin
 		clock	=> clk80m,
 		q	=> mem_data_cos_cw
 	);
+
 
 end stimulus;
 

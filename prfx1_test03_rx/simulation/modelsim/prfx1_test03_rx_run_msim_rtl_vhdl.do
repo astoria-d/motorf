@@ -26,6 +26,7 @@ add wave -label spics_pll sim:/testbench_prfx1_test01/sim_board/spics_pll
 
 add wave -label addr_cnt sim:/testbench_prfx1_test01/lpf_test_inst/addr_cnt
 add wave -label mem_data_cos_cw  -analog -min -32768 -max 32768 -height 40 -radix decimal  sim:/testbench_prfx1_test01/lpf_test_inst/mem_data_cos_cw
+add wave -label in_data1  -analog -min -2048 -max 2047 -height 40 -radix decimal  sim:/testbench_prfx1_test01/lpf_test_inst/in_data1
 
 
 run 60us
