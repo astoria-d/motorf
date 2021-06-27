@@ -25,6 +25,12 @@ component prfx1_test03_rx
 	);
 end component;
 
+component test_lpf
+	port (
+	signal clk80m       : in std_logic;
+	signal reset        : in std_logic
+	);
+end component;
 
 signal adc 			: std_logic_vector(11 downto 0);
 signal adc_clk		: std_logic;
@@ -67,6 +73,10 @@ begin
 		led3		=> led3
 	);
 
+    lpf_test_inst : test_lpf port map (
+    	clk80m => base_clk,
+    	reset => reset_input
+	);
 
     --- input reset.
     reset_p: process
