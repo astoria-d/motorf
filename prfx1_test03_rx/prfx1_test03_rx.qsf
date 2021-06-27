@@ -163,13 +163,6 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=36" -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_global_assignment -name VHDL_FILE prfx1_test03_rx.vhd
-set_global_assignment -name SDC_FILE prfx1_test03_rx.sdc
-set_global_assignment -name SIGNALTAP_FILE prfx1_test03_rx.stp
-set_global_assignment -name QIP_FILE pll.qip
-set_global_assignment -name VHDL_FILE spi_init.vhd
-set_global_assignment -name VHDL_FILE input_data.vhd
-set_global_assignment -name VHDL_FILE output_data.vhd
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
@@ -248,5 +241,13 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_global_assignment -name SLD_FILE db/prfx1_test03_rx_auto_stripped.stp
+set_global_assignment -name VHDL_FILE prfx1_test03_rx.vhd
+set_global_assignment -name SDC_FILE prfx1_test03_rx.sdc
+set_global_assignment -name SIGNALTAP_FILE prfx1_test03_rx.stp
+set_global_assignment -name QIP_FILE pll.qip
+set_global_assignment -name VHDL_FILE spi_init.vhd
+set_global_assignment -name VHDL_FILE input_data.vhd
+set_global_assignment -name VHDL_FILE sync_data.vhd
+set_global_assignment -name VHDL_FILE output_data.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SLD_FILE db/prfx1_test03_rx_auto_stripped.stp

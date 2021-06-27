@@ -66,6 +66,15 @@ component output_uart
 	);
 end component;
 
+component sync_symbol
+	port (
+	signal clk80m		: in std_logic;
+	signal in_data		: in std_logic_vector(11 downto 0);
+	signal symbol_num : out std_logic_vector(7 downto 0);
+	signal symbol_cnt : out std_logic_vector(15 downto 0)
+	);
+end component;
+
 signal reset_n : std_logic;
 
 signal clk80m     : std_logic;
@@ -76,6 +85,8 @@ signal raw_adc 		: std_logic_vector(11 downto 0);
 signal s_adc			: std_logic_vector(11 downto 0);
 signal wr_cmv_adc			: std_logic_vector(11 downto 0);
 
+signal symbol_num : std_logic_vector(7 downto 0);
+signal symbol_cnt : std_logic_vector(15 downto 0);
 
 begin
 
@@ -111,6 +122,13 @@ begin
 		clk80m => clk80m,
 		udata => raw_adc,
 		sdata => wr_cmv_adc
+	);
+
+	sync_symbol_inst : sync_symbol port map (
+		clk80m => clk80m,
+		in_data => s_adc,
+		symbol_num => symbol_num,
+		symbol_cnt => symbol_cnt
 	);
 
 	--spi output module for pll

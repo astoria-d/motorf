@@ -15,7 +15,6 @@ architecture rtl of conv_signed is
 
 begin
 
-	-----still not work!!!!
 	conv_p : process (clk80m)
 	variable tmp : std_logic_vector(10 downto 0);
 	begin
