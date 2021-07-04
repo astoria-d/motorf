@@ -58,6 +58,14 @@ component conv_signed
 	);
 end component;
 
+component zero_offset
+	port (
+	signal clk80m		: in std_logic;
+	signal indata		: in std_logic_vector(11 downto 0);
+	signal outdata		: in std_logic_vector(11 downto 0)
+	);
+end component;
+
 component output_uart
 	port (
 	signal clk80m		: in std_logic;
@@ -75,6 +83,14 @@ component sync_symbol
 	);
 end component;
 
+component lpf_28tap
+	port (
+	signal clk80m		: in std_logic;
+	signal indata       : in std_logic_vector(11 downto 0);
+	signal outdata      : out std_logic_vector(15 downto 0)
+	);
+end component;
+
 signal reset_n : std_logic;
 
 signal clk80m     : std_logic;
@@ -83,7 +99,8 @@ signal clk12m     : std_logic;
 
 signal raw_adc 		: std_logic_vector(11 downto 0);
 signal s_adc			: std_logic_vector(11 downto 0);
-signal wr_cmv_adc			: std_logic_vector(11 downto 0);
+signal wr_cnv_adc		: std_logic_vector(11 downto 0);
+signal lp_filtered	: std_logic_vector(15 downto 0);
 
 signal symbol_num : std_logic_vector(7 downto 0);
 signal symbol_cnt : std_logic_vector(15 downto 0);
@@ -113,7 +130,7 @@ begin
 			else
 				raw_adc <= adc;
 			end if;
-			s_adc <= wr_cmv_adc;
+			s_adc <= wr_cnv_adc;
 		end if;
 	end process;
 
@@ -121,7 +138,15 @@ begin
 	conv_u2s_inst : conv_signed port map (
 		clk80m => clk80m,
 		udata => raw_adc,
-		sdata => wr_cmv_adc
+		sdata => wr_cnv_adc
+	);
+
+	--lpf
+	lpf_inst : lpf_28tap
+	PORT MAP (
+		clk80m => clk80m,
+		indata => s_adc,
+		outdata => lp_filtered
 	);
 
 	sync_symbol_inst : sync_symbol port map (
