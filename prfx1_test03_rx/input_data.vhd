@@ -56,6 +56,19 @@ signal sum	: std_logic_vector(29 downto 0);
 signal offset	: std_logic_vector(11 downto 0);
 signal cnt		: integer range 0 to 72 * 80 * 10 := 0;
 
+function sign_extend (
+	signal indata : in std_logic_vector
+	) return std_logic_vector
+	is
+variable retdata : std_logic_vector(29 downto 0);
+begin
+	if (indata(11) = '0') then
+		retdata := "000000000000000000" & indata;
+	else
+		retdata := "111111111111111111" & indata;
+	end if;
+	return retdata;
+end sign_extend;
 
 begin
 
@@ -77,8 +90,8 @@ begin
 				sum <= (others => '0');
 			else
 				sum <= sum
-					+ ("000000000000000000" & indata)
-					+ ("000000000000000000" & offset);
+					+ sign_extend(indata)
+					+ sign_extend(offset);
 			end if;
 		end if;
 	end process;
