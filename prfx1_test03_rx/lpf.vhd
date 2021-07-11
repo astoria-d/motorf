@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.conv_std_logic_vector;
 use ieee.std_logic_unsigned.all;
+use work.motorf.all;
 
 entity lpf_28tap is 
 	port (
@@ -208,20 +209,21 @@ begin
 
 	sum_p : process (clk80m)
 	begin
-		sum1 <= ("0" & multi1)
-			+ ("0" & multi2)
-			+ ("0" & multi3)
-			+ ("0" & multi4)
-			+ ("0" & multi5)
-			+ ("0" & multi6)
-			+ ("0" & multi7);
-		sum2 <= ("0" & multi8)
-		+ ("0" & multi9)
-		+ ("0" & multi10)
-		+ ("0" & multi11)
-		+ ("0" & multi12)
-		+ ("0" & multi13)
-		+ ("0" & multi14);
+--		need to extend with sign!!!!!
+		sum1 <= sign_extend_24_to_25(multi1)
+			+ sign_extend_24_to_25(multi2)
+			+ sign_extend_24_to_25(multi3)
+			+ sign_extend_24_to_25(multi4)
+			+ sign_extend_24_to_25(multi5)
+			+ sign_extend_24_to_25(multi6)
+			+ sign_extend_24_to_25(multi7);
+		sum2 <= sign_extend_24_to_25(multi8)
+		+ sign_extend_24_to_25(multi9)
+		+ sign_extend_24_to_25(multi10)
+		+ sign_extend_24_to_25(multi11)
+		+ sign_extend_24_to_25(multi12)
+		+ sign_extend_24_to_25(multi13)
+		+ sign_extend_24_to_25(multi14);
 	end process;
 
 	final_p : process (clk80m)

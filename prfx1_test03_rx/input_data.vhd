@@ -40,6 +40,7 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
+use work.motorf.all;
 
 entity zero_offset is
 	port (
@@ -56,19 +57,6 @@ signal sum	: std_logic_vector(29 downto 0);
 signal offset	: std_logic_vector(11 downto 0);
 signal cnt		: integer range 0 to 72 * 80 * 10 := 0;
 
-function sign_extend (
-	signal indata : in std_logic_vector
-	) return std_logic_vector
-	is
-variable retdata : std_logic_vector(29 downto 0);
-begin
-	if (indata(11) = '0') then
-		retdata := "000000000000000000" & indata;
-	else
-		retdata := "111111111111111111" & indata;
-	end if;
-	return retdata;
-end sign_extend;
 
 begin
 
@@ -90,8 +78,8 @@ begin
 				sum <= (others => '0');
 			else
 				sum <= sum
-					+ sign_extend(indata)
-					+ sign_extend(offset);
+					+ sign_extend_11_to_29(indata)
+					+ sign_extend_11_to_29(offset);
 			end if;
 		end if;
 	end process;
