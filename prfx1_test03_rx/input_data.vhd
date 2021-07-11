@@ -20,15 +20,13 @@ begin
 	sdata <= reg_sdata;
 
 	conv_p : process (clk80m)
-	variable tmp : std_logic_vector(10 downto 0);
+	variable tmp1 : std_logic_vector(12 downto 0);
+	variable tmp2 : std_logic_vector(12 downto 0);
 	begin
 		if (rising_edge(clk80m)) then
-			tmp := udata(11 downto 1);
-			if (tmp(10) = '1') then
-				reg_sdata <= tmp + conv_std_logic_vector(16#07ff#, 12);
-			else
-				reg_sdata <= tmp - conv_std_logic_vector(16#07ff#, 12);
-			end if;
+			tmp1 := "0" & udata;
+			tmp2 := tmp1 - conv_std_logic_vector(2048, 13);
+			reg_sdata <= tmp2(11 downto 0);
 		end if;
 	end process;
 
