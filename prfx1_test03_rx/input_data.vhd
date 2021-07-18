@@ -76,8 +76,8 @@ begin
 				sum <= (others => '0');
 			else
 				sum <= sum
-					+ sign_extend_11_to_29(indata)
-					+ sign_extend_11_to_29(offset);
+					+ sign_extend_12_to_30(indata)
+					+ sign_extend_12_to_30(offset);
 			end if;
 		end if;
 	end process;

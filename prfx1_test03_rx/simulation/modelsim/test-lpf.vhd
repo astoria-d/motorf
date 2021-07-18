@@ -30,10 +30,19 @@ component lpf_28tap
 	);
 end component;
 
+component lpf_fir
+	port (
+	signal clk			: in std_logic;
+	signal indata     : in std_logic_vector(11 downto 0);
+	signal outdata    : out std_logic_vector(15 downto 0)
+	);
+end component;
+
 signal addr_cnt : std_logic_vector(8 downto 0);
 signal mem_data_cos_cw : std_logic_vector(15 downto 0);
 signal in_data1 : std_logic_vector(11 downto 0);
 signal lp_filtered : std_logic_vector(15 downto 0);
+signal lp_filtered_sample : std_logic_vector(15 downto 0);
 
 begin
 
@@ -66,6 +75,13 @@ begin
 		clk80m => clk80m,
 		indata => in_data1,
 		outdata => lp_filtered
+	);
+
+	lpf_sample_inst : lpf_fir
+	PORT MAP (
+		clk => clk80m,
+		indata => in_data1,
+		outdata => lp_filtered_sample
 	);
 
 end stimulus;
