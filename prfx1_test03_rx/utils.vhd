@@ -30,6 +30,14 @@ package motorf is
 		signal indata_12 : in std_logic_vector
 		) return std_logic_vector;
 
+	function sign_extend_24_to_27 (
+		signal indata_24 : in std_logic_vector
+		) return std_logic_vector;
+
+	function sign_extend_27_to_29 (
+		signal indata_27 : in std_logic_vector
+		) return std_logic_vector;
+
 end package motorf;
 
 package body motorf is
@@ -158,6 +166,36 @@ begin
 	end if;
 	return retdata;
 end sign_extend_12_to_16;
+
+function sign_extend_24_to_27 (
+	signal indata_24 : in std_logic_vector
+	) return std_logic_vector
+	is
+variable retdata : std_logic_vector(26 downto 0);
+begin
+	if (indata_24(23) = '0') then
+		retdata := "000" & indata_24;
+	else
+		retdata := "111" & indata_24;
+	end if;
+	return retdata;
+end sign_extend_24_to_27;
+
+function sign_extend_27_to_29 (
+	signal indata_27 : in std_logic_vector
+	) return std_logic_vector
+	is
+variable retdata : std_logic_vector(28 downto 0);
+begin
+	if (indata_27(26) = '0') then
+		retdata := "00" & indata_27;
+	else
+		retdata := "11" & indata_27;
+	end if;
+	return retdata;
+end sign_extend_27_to_29;
+
+
 
 end package body motorf;
 

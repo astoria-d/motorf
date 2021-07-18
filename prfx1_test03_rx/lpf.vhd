@@ -73,24 +73,24 @@ constant coef26 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-114, 1
 constant coef27 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-163, 12);
 constant coef28 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-190, 12);
 
-signal multi1 : std_logic_vector(24 downto 0);
-signal multi2 : std_logic_vector(24 downto 0);
-signal multi3 : std_logic_vector(24 downto 0);
-signal multi4 : std_logic_vector(24 downto 0);
-signal multi5 : std_logic_vector(24 downto 0);
-signal multi6 : std_logic_vector(24 downto 0);
-signal multi7 : std_logic_vector(24 downto 0);
-signal multi8 : std_logic_vector(24 downto 0);
-signal multi9 : std_logic_vector(24 downto 0);
-signal multi10 : std_logic_vector(24 downto 0);
-signal multi11 : std_logic_vector(24 downto 0);
-signal multi12 : std_logic_vector(24 downto 0);
-signal multi13 : std_logic_vector(24 downto 0);
-signal multi14 : std_logic_vector(24 downto 0);
+signal multi1 : std_logic_vector(23 downto 0);
+signal multi2 : std_logic_vector(23 downto 0);
+signal multi3 : std_logic_vector(23 downto 0);
+signal multi4 : std_logic_vector(23 downto 0);
+signal multi5 : std_logic_vector(23 downto 0);
+signal multi6 : std_logic_vector(23 downto 0);
+signal multi7 : std_logic_vector(23 downto 0);
+signal multi8 : std_logic_vector(23 downto 0);
+signal multi9 : std_logic_vector(23 downto 0);
+signal multi10 : std_logic_vector(23 downto 0);
+signal multi11 : std_logic_vector(23 downto 0);
+signal multi12 : std_logic_vector(23 downto 0);
+signal multi13 : std_logic_vector(23 downto 0);
+signal multi14 : std_logic_vector(23 downto 0);
 
-signal sum1 : std_logic_vector(25 downto 0);
-signal sum2 : std_logic_vector(25 downto 0);
-signal pre_out : std_logic_vector(25 downto 0);
+signal sum1 : std_logic_vector(26 downto 0);
+signal sum2 : std_logic_vector(26 downto 0);
+signal pre_out : std_logic_vector(28 downto 0);
 signal out_reg : std_logic_vector(15 downto 0);
 
 signal toggle : std_logic := '0';
@@ -174,35 +174,35 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (toggle = '0') then
-				multi1 <= mul_ex(indata1, coef1);
-				multi2 <= mul_ex(indata3, coef3);
-				multi3 <= mul_ex(indata5, coef5);
-				multi4 <= mul_ex(indata7, coef7);
-				multi5 <= mul_ex(indata9, coef9);	
-				multi6 <= mul_ex(indata11, coef11);
-				multi7 <= mul_ex(indata13, coef13);
-				multi8 <= mul_ex(indata15, coef15);
-				multi9 <= mul_ex(indata17, coef17);
-				multi10 <= mul_ex(indata19, coef19);
-				multi11 <= mul_ex(indata21, coef21);
-				multi12 <= mul_ex(indata23, coef23);
-				multi13 <= mul_ex(indata25, coef25);
-				multi14 <= mul_ex(indata27, coef27);
+				multi1 <= indata1 * coef1;
+				multi2 <= indata3 * coef3;
+				multi3 <= indata5 * coef5;
+				multi4 <= indata7 * coef7;
+				multi5 <= indata9 * coef9;	
+				multi6 <= indata11 * coef11;
+				multi7 <= indata13 * coef13;
+				multi8 <= indata15 * coef15;
+				multi9 <= indata17 * coef17;
+				multi10 <= indata19 * coef19;
+				multi11 <= indata21 * coef21;
+				multi12 <= indata23 * coef23;
+				multi13 <= indata25 * coef25;
+				multi14 <= indata27 * coef27;
 			else
-				multi1 <= mul_ex(indata2, coef2);
-				multi2 <= mul_ex(indata4, coef4);
-				multi3 <= mul_ex(indata6, coef6);
-				multi4 <= mul_ex(indata8, coef8);
-				multi5 <= mul_ex(indata10, coef10);	
-				multi6 <= mul_ex(indata12, coef12);
-				multi7 <= mul_ex(indata14, coef14);
-				multi8 <= mul_ex(indata16, coef16);
-				multi9 <= mul_ex(indata18, coef18);
-				multi10 <= mul_ex(indata20, coef20);
-				multi11 <= mul_ex(indata22, coef22);
-				multi12 <= mul_ex(indata24, coef24);
-				multi13 <= mul_ex(indata26, coef26);
-				multi14 <= mul_ex(indata28, coef28);
+				multi1 <= indata2 * coef2;
+				multi2 <= indata4 * coef4;
+				multi3 <= indata6 * coef6;
+				multi4 <= indata8 * coef8;
+				multi5 <= indata10 * coef10;	
+				multi6 <= indata12 * coef12;
+				multi7 <= indata14 * coef14;
+				multi8 <= indata16 * coef16;
+				multi9 <= indata18 * coef18;
+				multi10 <= indata20 * coef20;
+				multi11 <= indata22 * coef22;
+				multi12 <= indata24 * coef24;
+				multi13 <= indata26 * coef26;
+				multi14 <= indata28 * coef28;
 			end if;
 		end if;
 	end process;
@@ -210,8 +210,20 @@ begin
 	sum_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			sum1 <= add_ex(multi1, multi2, multi3, multi4, multi5, multi6, multi7);
-			sum2 <= add_ex(multi8, multi9, multi10, multi11, multi12, multi13, multi14);
+			sum1 <= sign_extend_24_to_27(multi1)
+				+ sign_extend_24_to_27(multi2)
+				+ sign_extend_24_to_27(multi3)
+				+ sign_extend_24_to_27(multi4)
+				+ sign_extend_24_to_27(multi5)
+				+ sign_extend_24_to_27(multi6)
+				+ sign_extend_24_to_27(multi7);
+			sum2 <= sign_extend_24_to_27(multi8)
+				+ sign_extend_24_to_27(multi9)
+				+ sign_extend_24_to_27(multi10)
+				+ sign_extend_24_to_27(multi11)
+				+ sign_extend_24_to_27(multi12)
+				+ sign_extend_24_to_27(multi13)
+				+ sign_extend_24_to_27(multi14);
 		end if;
 	end process;
 
@@ -219,12 +231,17 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (toggle = '0') then
-				pre_out <= sum1 + sum2;
+				pre_out <= sign_extend_27_to_29(sum1)
+					+ sign_extend_27_to_29(sum2);
 			else
-				pre_out <= pre_out + sum1 + sum2;
+				pre_out <= pre_out
+					+ sign_extend_27_to_29(sum1)
+					+ sign_extend_27_to_29(sum2);
 			end if;
 		end if;
 	end process;
+
+	outdata <= out_reg;
 
 	out_p : process (clk80m)
 	begin
@@ -237,13 +254,7 @@ begin
 		end if;
 	end process;
 
-	out_p2 : process (clk80m)
-	begin
-		if (rising_edge(clk80m)) then
-			outdata <= out_reg;
-		end if;
-	end process;
-
+---testing... moving average.
 --	out_p : process (clk80m)
 --	begin
 --		if (rising_edge(clk80m)) then
