@@ -1,7 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.conv_std_logic_vector;
-use ieee.std_logic_unsigned.all;
+use ieee.std_logic_arith.all;
 use work.motorf.all;
 
 entity lpf_28tap is 
@@ -14,84 +13,84 @@ end lpf_28tap;
 
 architecture rtl of lpf_28tap is
 
-signal indata1 : std_logic_vector(11 downto 0);
-signal indata2 : std_logic_vector(11 downto 0);
-signal indata3 : std_logic_vector(11 downto 0);
-signal indata4 : std_logic_vector(11 downto 0);
-signal indata5 : std_logic_vector(11 downto 0);
-signal indata6 : std_logic_vector(11 downto 0);
-signal indata7 : std_logic_vector(11 downto 0);
-signal indata8 : std_logic_vector(11 downto 0);
-signal indata9 : std_logic_vector(11 downto 0);
-signal indata10 : std_logic_vector(11 downto 0);
-signal indata11 : std_logic_vector(11 downto 0);
-signal indata12 : std_logic_vector(11 downto 0);
-signal indata13 : std_logic_vector(11 downto 0);
-signal indata14 : std_logic_vector(11 downto 0);
-signal indata15 : std_logic_vector(11 downto 0);
-signal indata16 : std_logic_vector(11 downto 0);
-signal indata17 : std_logic_vector(11 downto 0);
-signal indata18 : std_logic_vector(11 downto 0);
-signal indata19 : std_logic_vector(11 downto 0);
-signal indata20 : std_logic_vector(11 downto 0);
-signal indata21 : std_logic_vector(11 downto 0);
-signal indata22 : std_logic_vector(11 downto 0);
-signal indata23 : std_logic_vector(11 downto 0);
-signal indata24 : std_logic_vector(11 downto 0);
-signal indata25 : std_logic_vector(11 downto 0);
-signal indata26 : std_logic_vector(11 downto 0);
-signal indata27 : std_logic_vector(11 downto 0);
-signal indata28 : std_logic_vector(11 downto 0);
-
 --coefficients
-constant coef1 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-190, 12);
-constant coef2 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-163, 12);
-constant coef3 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-114, 12);
-constant coef4 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-43, 12);
-constant coef5 : std_logic_vector(11 downto 0) := conv_std_logic_vector(47, 12);
-constant coef6 : std_logic_vector(11 downto 0) := conv_std_logic_vector(153, 12);
-constant coef7 : std_logic_vector(11 downto 0) := conv_std_logic_vector(270, 12);
-constant coef8 : std_logic_vector(11 downto 0) := conv_std_logic_vector(392, 12);
-constant coef9 : std_logic_vector(11 downto 0) := conv_std_logic_vector(514, 12);
-constant coef10 : std_logic_vector(11 downto 0) := conv_std_logic_vector(628, 12);
-constant coef11 : std_logic_vector(11 downto 0) := conv_std_logic_vector(729, 12);
-constant coef12 : std_logic_vector(11 downto 0) := conv_std_logic_vector(810, 12);
-constant coef13 : std_logic_vector(11 downto 0) := conv_std_logic_vector(867, 12);
-constant coef14 : std_logic_vector(11 downto 0) := conv_std_logic_vector(896, 12);
-constant coef15 : std_logic_vector(11 downto 0) := conv_std_logic_vector(896, 12);
-constant coef16 : std_logic_vector(11 downto 0) := conv_std_logic_vector(867, 12);
-constant coef17 : std_logic_vector(11 downto 0) := conv_std_logic_vector(810, 12);
-constant coef18 : std_logic_vector(11 downto 0) := conv_std_logic_vector(729, 12);
-constant coef19 : std_logic_vector(11 downto 0) := conv_std_logic_vector(628, 12);
-constant coef20 : std_logic_vector(11 downto 0) := conv_std_logic_vector(514, 12);
-constant coef21 : std_logic_vector(11 downto 0) := conv_std_logic_vector(392, 12);
-constant coef22 : std_logic_vector(11 downto 0) := conv_std_logic_vector(270, 12);
-constant coef23 : std_logic_vector(11 downto 0) := conv_std_logic_vector(153, 12);
-constant coef24 : std_logic_vector(11 downto 0) := conv_std_logic_vector(47, 12);
-constant coef25 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-43, 12);
-constant coef26 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-114, 12);
-constant coef27 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-163, 12);
-constant coef28 : std_logic_vector(11 downto 0) := conv_std_logic_vector(-190, 12);
+constant coef1 : signed(11 downto 0) := conv_signed(-190, 12);
+constant coef2 : signed(11 downto 0) := conv_signed(-163, 12);
+constant coef3 : signed(11 downto 0) := conv_signed(-114, 12);
+constant coef4 : signed(11 downto 0) := conv_signed(-43, 12);
+constant coef5 : signed(11 downto 0) := conv_signed(47, 12);
+constant coef6 : signed(11 downto 0) := conv_signed(153, 12);
+constant coef7 : signed(11 downto 0) := conv_signed(270, 12);
+constant coef8 : signed(11 downto 0) := conv_signed(392, 12);
+constant coef9 : signed(11 downto 0) := conv_signed(514, 12);
+constant coef10 : signed(11 downto 0) := conv_signed(628, 12);
+constant coef11 : signed(11 downto 0) := conv_signed(729, 12);
+constant coef12 : signed(11 downto 0) := conv_signed(810, 12);
+constant coef13 : signed(11 downto 0) := conv_signed(867, 12);
+constant coef14 : signed(11 downto 0) := conv_signed(896, 12);
+constant coef15 : signed(11 downto 0) := conv_signed(896, 12);
+constant coef16 : signed(11 downto 0) := conv_signed(867, 12);
+constant coef17 : signed(11 downto 0) := conv_signed(810, 12);
+constant coef18 : signed(11 downto 0) := conv_signed(729, 12);
+constant coef19 : signed(11 downto 0) := conv_signed(628, 12);
+constant coef20 : signed(11 downto 0) := conv_signed(514, 12);
+constant coef21 : signed(11 downto 0) := conv_signed(392, 12);
+constant coef22 : signed(11 downto 0) := conv_signed(270, 12);
+constant coef23 : signed(11 downto 0) := conv_signed(153, 12);
+constant coef24 : signed(11 downto 0) := conv_signed(47, 12);
+constant coef25 : signed(11 downto 0) := conv_signed(-43, 12);
+constant coef26 : signed(11 downto 0) := conv_signed(-114, 12);
+constant coef27 : signed(11 downto 0) := conv_signed(-163, 12);
+constant coef28 : signed(11 downto 0) := conv_signed(-190, 12);
 
-signal multi1 : std_logic_vector(23 downto 0);
-signal multi2 : std_logic_vector(23 downto 0);
-signal multi3 : std_logic_vector(23 downto 0);
-signal multi4 : std_logic_vector(23 downto 0);
-signal multi5 : std_logic_vector(23 downto 0);
-signal multi6 : std_logic_vector(23 downto 0);
-signal multi7 : std_logic_vector(23 downto 0);
-signal multi8 : std_logic_vector(23 downto 0);
-signal multi9 : std_logic_vector(23 downto 0);
-signal multi10 : std_logic_vector(23 downto 0);
-signal multi11 : std_logic_vector(23 downto 0);
-signal multi12 : std_logic_vector(23 downto 0);
-signal multi13 : std_logic_vector(23 downto 0);
-signal multi14 : std_logic_vector(23 downto 0);
+signal indata1 : signed(11 downto 0);
+signal indata2 : signed(11 downto 0);
+signal indata3 : signed(11 downto 0);
+signal indata4 : signed(11 downto 0);
+signal indata5 : signed(11 downto 0);
+signal indata6 : signed(11 downto 0);
+signal indata7 : signed(11 downto 0);
+signal indata8 : signed(11 downto 0);
+signal indata9 : signed(11 downto 0);
+signal indata10 : signed(11 downto 0);
+signal indata11 : signed(11 downto 0);
+signal indata12 : signed(11 downto 0);
+signal indata13 : signed(11 downto 0);
+signal indata14 : signed(11 downto 0);
+signal indata15 : signed(11 downto 0);
+signal indata16 : signed(11 downto 0);
+signal indata17 : signed(11 downto 0);
+signal indata18 : signed(11 downto 0);
+signal indata19 : signed(11 downto 0);
+signal indata20 : signed(11 downto 0);
+signal indata21 : signed(11 downto 0);
+signal indata22 : signed(11 downto 0);
+signal indata23 : signed(11 downto 0);
+signal indata24 : signed(11 downto 0);
+signal indata25 : signed(11 downto 0);
+signal indata26 : signed(11 downto 0);
+signal indata27 : signed(11 downto 0);
+signal indata28 : signed(11 downto 0);
 
-signal sum1 : std_logic_vector(26 downto 0);
-signal sum2 : std_logic_vector(26 downto 0);
-signal pre_out : std_logic_vector(28 downto 0);
-signal out_reg : std_logic_vector(15 downto 0);
+signal multi1 : signed(23 downto 0);
+signal multi2 : signed(23 downto 0);
+signal multi3 : signed(23 downto 0);
+signal multi4 : signed(23 downto 0);
+signal multi5 : signed(23 downto 0);
+signal multi6 : signed(23 downto 0);
+signal multi7 : signed(23 downto 0);
+signal multi8 : signed(23 downto 0);
+signal multi9 : signed(23 downto 0);
+signal multi10 : signed(23 downto 0);
+signal multi11 : signed(23 downto 0);
+signal multi12 : signed(23 downto 0);
+signal multi13 : signed(23 downto 0);
+signal multi14 : signed(23 downto 0);
+
+signal sum1 : signed(26 downto 0);
+signal sum2 : signed(26 downto 0);
+signal pre_out : signed(28 downto 0);
+signal out_reg : signed(15 downto 0);
 
 signal toggle : std_logic := '0';
 
@@ -109,7 +108,7 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (toggle = '1') then
-				indata1 <= indata;
+				indata1 <= signed(indata);
 				indata2 <= indata1;
 				indata3 <= indata2;
 				indata4 <= indata3;
@@ -241,7 +240,7 @@ begin
 		end if;
 	end process;
 
-	outdata <= out_reg;
+	outdata <= std_logic_vector(out_reg);
 
 	out_p : process (clk80m)
 	begin
@@ -253,40 +252,5 @@ begin
 			end if;
 		end if;
 	end process;
-
----testing... moving average.
---	out_p : process (clk80m)
---	begin
---		if (rising_edge(clk80m)) then
---			out_reg <= sign_extend_12_to_16(indata1)
---				+ sign_extend_12_to_16(indata2)
---				+ sign_extend_12_to_16(indata3)
---				+ sign_extend_12_to_16(indata4)
---				+ sign_extend_12_to_16(indata5)
---				+ sign_extend_12_to_16(indata6)
---				+ sign_extend_12_to_16(indata7)
---				+ sign_extend_12_to_16(indata8)
---				+ sign_extend_12_to_16(indata9)
---				+ sign_extend_12_to_16(indata10)
---				+ sign_extend_12_to_16(indata11)
---				+ sign_extend_12_to_16(indata12)
---				+ sign_extend_12_to_16(indata13)
---				+ sign_extend_12_to_16(indata14)
---				+ sign_extend_12_to_16(indata15)
---				+ sign_extend_12_to_16(indata16)
---				+ sign_extend_12_to_16(indata17)
---				+ sign_extend_12_to_16(indata18)
---				+ sign_extend_12_to_16(indata19)
---				+ sign_extend_12_to_16(indata20)
---				+ sign_extend_12_to_16(indata21)
---				+ sign_extend_12_to_16(indata22)
---				+ sign_extend_12_to_16(indata23)
---				+ sign_extend_12_to_16(indata24)
---				+ sign_extend_12_to_16(indata25)
---				+ sign_extend_12_to_16(indata26)
---				+ sign_extend_12_to_16(indata27)
---				+ sign_extend_12_to_16(indata28);
---		end if;
---	end process;
 
 end rtl;
