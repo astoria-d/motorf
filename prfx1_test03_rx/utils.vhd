@@ -9,13 +9,14 @@ package motorf is
 		) return std_logic_vector;
 
 --used in lpf
-	function sign_extend_24_to_27 (
-		signal indata_24 : in signed
+	function sign_extend_25_to_26 (
+		signal indata_25 : in signed
 		) return signed;
 
 --used in lpf
-	function sign_extend_27_to_29 (
-		signal indata_27 : in signed
+	function mul_ex(
+		signal indata12 : in signed;
+		constant coef12 : in signed
 		) return signed;
 
 end package motorf;
@@ -38,36 +39,37 @@ begin
 end sign_extend_12_to_30;
 
 --used in lpf
-function sign_extend_24_to_27 (
-	signal indata_24 : in signed
+function sign_extend_25_to_26 (
+	signal indata_25 : in signed
 	) return signed
 	is
-variable retdata : signed(26 downto 0);
+variable retdata : signed(25 downto 0);
 begin
-	if (indata_24(23) = '0') then
-		retdata := "000" & indata_24;
+	if (indata_25(24) = '0') then
+		retdata := "0" & indata_25;
 	else
-		retdata := "111" & indata_24;
+		retdata := "1" & indata_25;
 	end if;
 	return retdata;
-end sign_extend_24_to_27;
+end sign_extend_25_to_26;
 
 --used in lpf
-function sign_extend_27_to_29 (
-	signal indata_27 : in signed
+function mul_ex(
+	signal indata12 : in signed;
+	constant coef12 : in signed
 	) return signed
 	is
-variable retdata : signed(28 downto 0);
+variable tmp_mul24 : signed(23 downto 0);
+variable retdata : signed(24 downto 0);
 begin
-	if (indata_27(26) = '0') then
-		retdata := "00" & indata_27;
+	tmp_mul24 := indata12 * coef12;
+	if (tmp_mul24(23) = '0') then
+		retdata := "0" & tmp_mul24;
 	else
-		retdata := "11" & indata_27;
+		retdata := "1" & tmp_mul24;
 	end if;
 	return retdata;
-end sign_extend_27_to_29;
-
-
+end mul_ex;
 
 end package body motorf;
 
