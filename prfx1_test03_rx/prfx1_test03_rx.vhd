@@ -91,21 +91,29 @@ component lpf_28tap
 	);
 end component;
 
-component lpf_fir
+component bpf_32tap
 	port (
-	signal clk			: in std_logic;
-	signal indata     : in std_logic_vector(11 downto 0);
-	signal outdata    : out std_logic_vector(15 downto 0)
+	signal clk80m		: in std_logic;
+	signal indata       : in std_logic_vector(15 downto 0);
+	signal outdata      : out std_logic_vector(17 downto 0)
 	);
 end component;
 
-component bpf_fir
-	port (
-	signal clk			: in std_logic;
-	signal indata     : in std_logic_vector(15 downto 0);
-	signal outdata    : out std_logic_vector(17 downto 0)
-	);
-end component;
+--component lpf_fir
+--	port (
+--	signal clk			: in std_logic;
+--	signal indata     : in std_logic_vector(11 downto 0);
+--	signal outdata    : out std_logic_vector(15 downto 0)
+--	);
+--end component;
+--
+--component bpf_fir
+--	port (
+--	signal clk			: in std_logic;
+--	signal indata     : in std_logic_vector(15 downto 0);
+--	signal outdata    : out std_logic_vector(17 downto 0)
+--	);
+--end component;
 
 signal reset_n : std_logic;
 
@@ -169,6 +177,14 @@ begin
 		clk80m => clk80m,
 		indata => z_adc,
 		outdata => lp_filtered
+	);
+
+	--bpf
+	bpf_inst : bpf_32tap
+	PORT MAP (
+		clk80m => clk80m,
+		indata => lp_filtered,
+		outdata => bp_filtered
 	);
 
 --	lpf_inst : lpf_fir
