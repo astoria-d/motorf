@@ -4,9 +4,11 @@ use ieee.std_logic_arith.all;
 
 package motorf is
 
+---------------------------------------------------------------------------------
 --we also have ieee.numeric_std.resize function but
 --this function requires to be "signal"
 --in this project we carete own resize function for each signal
+---------------------------------------------------------------------------------
 
 
 -- used in zero offset

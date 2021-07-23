@@ -99,22 +99,6 @@ component bpf_32tap
 	);
 end component;
 
---component lpf_fir
---	port (
---	signal clk			: in std_logic;
---	signal indata     : in std_logic_vector(11 downto 0);
---	signal outdata    : out std_logic_vector(15 downto 0)
---	);
---end component;
---
---component bpf_fir
---	port (
---	signal clk			: in std_logic;
---	signal indata     : in std_logic_vector(15 downto 0);
---	signal outdata    : out std_logic_vector(17 downto 0)
---	);
---end component;
-
 signal reset_n : std_logic;
 
 signal clk80m     : std_logic;
@@ -165,6 +149,7 @@ begin
 		sdata => s_adc
 	);
 
+	--zero offset adjustment
 	z_ofs_inst : zero_offset port map (
 		clk80m => clk80m,
 		indata => s_adc,
@@ -187,20 +172,7 @@ begin
 		outdata => bp_filtered
 	);
 
---	lpf_inst : lpf_fir
---	PORT MAP (
---		clk => clk80m,
---		indata => z_adc,
---		outdata => lp_filtered
---	);
---
---	bpf_inst : bpf_fir
---	PORT MAP (
---		clk => clk80m,
---		indata => lp_filtered,
---		outdata => bp_filtered
---	);
---
+	--sync symbol
 	sync_symbol_inst : sync_symbol port map (
 		clk80m => clk80m,
 		in_data => s_adc,
