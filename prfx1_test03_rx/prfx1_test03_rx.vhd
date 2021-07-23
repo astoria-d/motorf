@@ -99,6 +99,15 @@ component bpf_32tap
 	);
 end component;
 
+component agc
+	port (
+	signal clk80m		: in std_logic;
+	signal indata     : in std_logic_vector(15 downto 0);
+	signal att_val		: out std_logic_vector(4 downto 0);
+	signal att_oe		: out std_logic
+	);
+end component;
+
 signal reset_n : std_logic;
 
 signal clk80m     : std_logic;
@@ -117,9 +126,6 @@ signal symbol_cnt : std_logic_vector(15 downto 0);
 begin
 
 	adc_clk <= clk40m;
-
-	attn_oe <= '1';
-	attn <= conv_std_logic_vector(16#10#, 5);
 
 	--PLL instance
 	pll_inst : pll PORT MAP (
@@ -172,6 +178,14 @@ begin
 		outdata => bp_filtered
 	);
 
+	--agc
+	agc_inst : agc
+	port map (
+		clk80m => clk80m,
+		indata => lp_filtered,
+		att_val => attn,
+		att_oe => attn_oe
+	);
 	--sync symbol
 	sync_symbol_inst : sync_symbol port map (
 		clk80m => clk80m,

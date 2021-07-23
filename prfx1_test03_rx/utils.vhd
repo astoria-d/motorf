@@ -38,6 +38,11 @@ package motorf is
 		signal indata_29 : in signed
 		) return signed;
 
+--used in agc
+	function sign_extend_16_to_17 (
+		signal indata_16 : in signed
+		) return signed;
+
 end package motorf;
 
 package body motorf is
@@ -122,6 +127,21 @@ begin
 	end if;
 	return retdata;
 end sign_extend_29_to_32;
+
+--used in agc
+	function sign_extend_16_to_17 (
+		signal indata_16 : in signed
+		) return signed
+	is
+variable retdata : signed(16 downto 0);
+begin
+	if (indata_16(15) = '0') then
+		retdata := "0" & indata_16;
+	else
+		retdata := "1" & indata_16;
+	end if;
+	return retdata;
+end sign_extend_16_to_17;
 
 end package body motorf;
 
