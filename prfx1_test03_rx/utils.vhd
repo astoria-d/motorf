@@ -43,6 +43,11 @@ package motorf is
 		signal indata_16 : in signed
 		) return signed;
 
+--used in sync_symbol
+	function sign_extend_18_to_19 (
+		signal indata_18 : in signed
+		) return signed;
+
 end package motorf;
 
 package body motorf is
@@ -142,6 +147,21 @@ begin
 	end if;
 	return retdata;
 end sign_extend_16_to_17;
+
+--used in sync_symbol
+	function sign_extend_18_to_19 (
+		signal indata_18 : in signed
+		) return signed
+	is
+variable retdata : signed(18 downto 0);
+begin
+	if (indata_18(indata_18'length - 1) = '0') then
+		retdata := "0" & indata_18;
+	else
+		retdata := "1" & indata_18;
+	end if;
+	return retdata;
+end sign_extend_18_to_19;
 
 end package body motorf;
 

@@ -74,15 +74,6 @@ component output_uart
 	);
 end component;
 
-component sync_symbol
-	port (
-	signal clk80m		: in std_logic;
-	signal in_data		: in std_logic_vector(11 downto 0);
-	signal symbol_num : out std_logic_vector(7 downto 0);
-	signal symbol_cnt : out std_logic_vector(15 downto 0)
-	);
-end component;
-
 component lpf_28tap
 	port (
 	signal clk80m		: in std_logic;
@@ -105,6 +96,15 @@ component agc
 	signal indata     : in std_logic_vector(15 downto 0);
 	signal att_val		: out std_logic_vector(4 downto 0);
 	signal att_oe		: out std_logic
+	);
+end component;
+
+component sync_symbol
+	port (
+	signal clk80m		: in std_logic;
+	signal indata		: in std_logic_vector(17 downto 0);
+	signal symbol_num : out std_logic_vector(7 downto 0);
+	signal symbol_cnt : out std_logic_vector(15 downto 0)
 	);
 end component;
 
@@ -186,10 +186,11 @@ begin
 		att_val => attn,
 		att_oe => attn_oe
 	);
+
 	--sync symbol
 	sync_symbol_inst : sync_symbol port map (
 		clk80m => clk80m,
-		in_data => s_adc,
+		indata => bp_filtered,
 		symbol_num => symbol_num,
 		symbol_cnt => symbol_cnt
 	);
