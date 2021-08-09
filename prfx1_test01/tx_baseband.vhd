@@ -112,6 +112,9 @@ signal bb_data_cos_cw : std_logic_vector(20 downto 0);
 signal tmp_i : std_logic_vector(20 downto 0);
 signal tmp_q : std_logic_vector(20 downto 0);
 
+signal reg_bb_i : std_logic_vector(15 downto 0);
+signal reg_bb_q : std_logic_vector(15 downto 0);
+
 function negative(
 	signal unsigned_data : in std_logic_vector
 	) return std_logic_vector
@@ -397,8 +400,6 @@ begin
 				next_sym_en <= '0';
 				tmp_i <= (others => '0');
 				tmp_q <= (others => '0');
-				bb_i <= (others => '0');
-				bb_q <= (others => '0');
 
 				bb_data_sin0 <= (others => '0');
 				bb_data_sin1 <= (others => '0');
@@ -437,9 +438,6 @@ begin
 				bb_data_cos_cw <= (others => '0');
 
 			else
-
-				bb_i <= tmp_i(20 downto 5);
-				bb_q <= tmp_q(20 downto 5);
 
 				bb_data_cos0 <= cast_signed(mem_data_cos0);
 				bb_data_cos1 <= cast_signed(mem_data_cos1);
@@ -584,6 +582,22 @@ begin
 						get_sym_q(bb_data_sin15, bb_data_cos15, tx_data(1 downto 0)) +
 						bb_data_sin_cw;
 				end if;
+			end if;
+		end if;
+	end process;
+
+	bb_i <= reg_bb_i;
+	bb_q <= reg_bb_q;
+
+   set_outp : process (clk16m)
+   begin
+		if (rising_edge(clk16m)) then
+			if (reset_n = '0') then
+				reg_bb_i <= (others => '0');
+				reg_bb_q <= (others => '0');
+			else
+				reg_bb_i <= tmp_i(20 downto 5);
+				reg_bb_q <= tmp_q(20 downto 5);
 			end if;
 		end if;
 	end process;

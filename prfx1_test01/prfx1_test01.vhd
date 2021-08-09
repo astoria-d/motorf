@@ -16,6 +16,7 @@ entity prfx1_test01 is
 
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
+	signal clk5m  		: out std_logic;
 	signal led1			: out std_logic;
 	signal led2			: out std_logic;
 	signal led3			: out std_logic
@@ -73,8 +74,9 @@ END component;
 component PLL
 	PORT
 	(
-		inclk0	: IN STD_LOGIC  := '0';
-		c0			: OUT STD_LOGIC 
+		inclk0		: IN STD_LOGIC  := '0';
+		c0		: OUT STD_LOGIC ;
+		c1		: OUT STD_LOGIC 
 	);
 END component;
 
@@ -183,7 +185,8 @@ begin
 	--PLL instance
 	PLL_inst : PLL PORT MAP (
 		inclk0	=> clk16m,
-		c0	 		=> clk80m
+		c0	 		=> clk80m,
+		c1	 		=> clk5m
 	);
 
 	--16mhz flipflop setting
