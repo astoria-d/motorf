@@ -1,0 +1,11 @@
+*.mem
+work
+msim_transcript
+transcript
+*.wlf
+_info
+rtl_work
+*.sdo
+*.vho
+*.xrf
+
