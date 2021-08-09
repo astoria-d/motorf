@@ -38,7 +38,11 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (conv_integer(symbol_cnt_reg) = 76 * 80 - 1) then
-				symbol_num_reg <= symbol_num_reg + 1;
+				if (conv_integer(symbol_num_reg) = 100 - 1) then
+					symbol_num_reg <= (others => '0');
+				else
+					symbol_num_reg <= symbol_num_reg + 1;
+				end if;
 			end if;
 		end if;
 	end process;
@@ -61,13 +65,16 @@ entity tx_data_gen is
 	PORT
 	(
 		signal clk80m : in std_logic;
-		signal tx_data : out std_logic_vector(31 downto 0)
+		signal symbol_cnt : in std_logic_vector(15 downto 0);
+		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal tx_data : out std_logic_vector(7 downto 0)
 	);
 end tx_data_gen;
 
 architecture rtl of tx_data_gen is
 
-signal outdata_reg : std_logic_vector(31 downto 0);
+signal outdata_reg : std_logic_vector(7 downto 0) := (others => '0');
+signal outdata_reg_old : std_logic_vector(7 downto 0) := (others => '0');
 
 begin
 
@@ -75,9 +82,12 @@ begin
 	set_p80m : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (conv_integer(outdata_reg) > 10000) then
+			if ((conv_integer(symbol_num) = 99) and (conv_integer(symbol_cnt) = 76 * 80 - 1)) then
+				outdata_reg_old <= outdata_reg;
 				outdata_reg <= (others => '0');
-			else
+			elsif ((conv_integer(symbol_num) = 2) and (conv_integer(symbol_cnt) = 76 * 80 - 1)) then
+				outdata_reg <= outdata_reg_old + 1;
+			elsif ((conv_integer(symbol_num) > 2) and (conv_integer(symbol_cnt) = 76 * 80 - 1)) then
 				outdata_reg <= outdata_reg + 1;
 			end if;
 		end if;

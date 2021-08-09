@@ -44,6 +44,16 @@ component timing_sync
 	);
 END component;
 
+component tx_data_gen
+	PORT
+	(
+		signal clk80m : in std_logic;
+		signal symbol_cnt : in std_logic_vector(15 downto 0);
+		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal tx_data : out std_logic_vector(7 downto 0)
+	);
+end component;
+
 component DDR_OUT
 	PORT
 	(
@@ -58,6 +68,7 @@ signal clk80m  : std_logic;
 
 signal wr_symbol_cnt : std_logic_vector(15 downto 0);
 signal wr_symbol_num : std_logic_vector(7 downto 0);
+signal tx_data : std_logic_vector(7 downto 0);
 
 begin
 
@@ -68,10 +79,20 @@ begin
 		c1	 		=> clk5m
 	);
 
+	--data generation and tranfer timing synchronizer
 	timing_inst : timing_sync port map (
 		clk80m => clk80m,
 		symbol_cnt => wr_symbol_cnt,
 		symbol_num => wr_symbol_num
+	);
+
+	--data generator
+	data_gen_inst : tx_data_gen PORT map
+	(
+		clk80m => clk80m,
+		symbol_cnt => wr_symbol_cnt,
+		symbol_num => wr_symbol_num,
+		tx_data => tx_data
 	);
 
 	--led signal handling
