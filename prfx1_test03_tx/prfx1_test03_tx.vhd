@@ -54,6 +54,18 @@ component tx_data_gen
 	);
 end component;
 
+component tx_baseband
+	PORT
+	(
+		signal clk80m : in std_logic;
+		signal symbol_cnt : in std_logic_vector(15 downto 0);
+		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal tx_data : in std_logic_vector(7 downto 0);
+		signal i_data : out std_logic_vector(15 downto 0);
+		signal q_data : out std_logic_vector(15 downto 0)
+	);
+end component;
+
 component DDR_OUT
 	PORT
 	(
@@ -66,9 +78,11 @@ END component;
 
 signal clk80m  : std_logic;
 
-signal wr_symbol_cnt : std_logic_vector(15 downto 0);
-signal wr_symbol_num : std_logic_vector(7 downto 0);
+signal symbol_cnt : std_logic_vector(15 downto 0);
+signal symbol_num : std_logic_vector(7 downto 0);
 signal tx_data : std_logic_vector(7 downto 0);
+signal i_data : std_logic_vector(15 downto 0);
+signal q_data : std_logic_vector(15 downto 0);
 
 begin
 
@@ -82,17 +96,36 @@ begin
 	--data generation and tranfer timing synchronizer
 	timing_inst : timing_sync port map (
 		clk80m => clk80m,
-		symbol_cnt => wr_symbol_cnt,
-		symbol_num => wr_symbol_num
+		symbol_cnt => symbol_cnt,
+		symbol_num => symbol_num
 	);
 
 	--data generator
 	data_gen_inst : tx_data_gen PORT map
 	(
 		clk80m => clk80m,
-		symbol_cnt => wr_symbol_cnt,
-		symbol_num => wr_symbol_num,
+		symbol_cnt => symbol_cnt,
+		symbol_num => symbol_num,
 		tx_data => tx_data
+	);
+
+	--baseband encoding
+	tx_baseband_inst : tx_baseband PORT map
+	(
+		clk80m => clk80m,
+		symbol_cnt => symbol_cnt,
+		symbol_num => symbol_num,
+		tx_data => tx_data,
+		i_data => i_data,
+		q_data => q_data
+	);
+
+	--DDR instance
+	DDR_OUT_inst : DDR_OUT PORT MAP (
+		datain_h	=> i_data (15 downto 2),
+		datain_l	=> q_data (15 downto 2),
+		outclock	=> clk80m,
+		dataout	=> dac
 	);
 
 	--led signal handling
