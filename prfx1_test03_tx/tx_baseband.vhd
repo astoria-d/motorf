@@ -383,12 +383,12 @@ begin
 		if (rising_edge(clk80m)) then
 			if (conv_integer(symbol_num) = 0) then
 				--symbol 0: no data
-				reg_i_data <= (others => '0');
-				reg_q_data <= (others => '0');
+				tmp_i := 0;
+				tmp_q := 0;
 			elsif (conv_integer(symbol_num) = 1) then
 				--symbol 1: pilot only
-				reg_i_data <= mem_data_cos_pilot;
-				reg_q_data <= mem_data_sin_pilot;
+				tmp_i := conv_integer(mem_data_cos_pilot);
+				tmp_q := conv_integer(mem_data_sin_pilot);
 			elsif (conv_integer(symbol_num) = 2) then
 				--symbol 2: define phase 0.
 				tmp_i := conv_integer(tmp_cos0 +
@@ -406,8 +406,7 @@ begin
 					tmp_cos12 +
 					tmp_cos13 +
 					tmp_cos14 +
-					tmp_cos15 +
-					tmp_cos_pilot) * 3 / 64;
+					tmp_cos15) * 5 / 64;
 				tmp_q := conv_integer(tmp_sin0 +
 					tmp_sin1 +
 					tmp_sin2 +
@@ -423,15 +422,14 @@ begin
 					tmp_sin12 +
 					tmp_sin13 +
 					tmp_sin14 +
-					tmp_sin15 +
-					tmp_sin_pilot) * 3 / 64;
-				reg_i_data <= conv_std_logic_vector(tmp_i, 16);
-				reg_q_data <= conv_std_logic_vector(tmp_q, 16);
+					tmp_sin15) * 5 / 64;
 			else
 				--baseband encoding
-				reg_i_data <= (others => '0');
-				reg_q_data <= (others => '0');
+				tmp_i := 0;
+				tmp_q := 0;
 			end if;
+			reg_i_data <= conv_std_logic_vector(tmp_i, 16);
+			reg_q_data <= conv_std_logic_vector(tmp_q, 16);
 		end if;
 	end process;
 
