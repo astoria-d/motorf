@@ -50,7 +50,7 @@ component tx_data_gen
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
-		signal tx_data : out std_logic_vector(7 downto 0)
+		signal tx_data : out std_logic_vector(31 downto 0)
 	);
 end component;
 
@@ -60,7 +60,7 @@ component tx_baseband
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
-		signal tx_data : in std_logic_vector(7 downto 0);
+		signal tx_data : in std_logic_vector(31 downto 0);
 		signal i_data : out std_logic_vector(15 downto 0);
 		signal q_data : out std_logic_vector(15 downto 0)
 	);
@@ -80,7 +80,7 @@ signal clk80m  : std_logic;
 
 signal symbol_cnt : std_logic_vector(15 downto 0);
 signal symbol_num : std_logic_vector(7 downto 0);
-signal tx_data : std_logic_vector(7 downto 0);
+signal tx_data : std_logic_vector(31 downto 0);
 signal i_data : std_logic_vector(15 downto 0);
 signal q_data : std_logic_vector(15 downto 0);
 

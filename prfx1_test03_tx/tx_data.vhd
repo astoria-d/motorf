@@ -67,14 +67,14 @@ entity tx_data_gen is
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
-		signal tx_data : out std_logic_vector(7 downto 0)
+		signal tx_data : out std_logic_vector(31 downto 0)
 	);
 end tx_data_gen;
 
 architecture rtl of tx_data_gen is
 
-signal outdata_reg : std_logic_vector(7 downto 0) := (others => '0');
-signal outdata_reg_old : std_logic_vector(7 downto 0) := (others => '0');
+signal outdata_reg : std_logic_vector(31 downto 0) := (others => '0');
+signal outdata_reg_old : std_logic_vector(31 downto 0) := (others => '0');
 
 begin
 
