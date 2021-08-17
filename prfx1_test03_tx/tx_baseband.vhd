@@ -474,41 +474,41 @@ begin
 --					encode_q(tmp_sin15, tmp_cos15, tx_data(1 downto 0))
 --				) * 5 / 64;
 				tmp_i := (
-					encode_i(tmp_cos0, tmp_sin0, tx_data(31 downto 30)) +
-					encode_i(tmp_sin1, tmp_cos1, tx_data(29 downto 28)) +
-					encode_i(tmp_sin2, tmp_cos2, tx_data(27 downto 26)) +
-					encode_i(tmp_sin3, tmp_cos3, tx_data(25 downto 24)) +
-					encode_i(tmp_sin4, tmp_cos4, tx_data(23 downto 22)) +
-					encode_i(tmp_sin5, tmp_cos5, tx_data(21 downto 20)) +
-					encode_i(tmp_sin6, tmp_cos6, tx_data(19 downto 18)) +
-					encode_i(tmp_sin7, tmp_cos7, tx_data(17 downto 16)) +
-					encode_i(tmp_sin8, tmp_cos8, tx_data(15 downto 14)) +
-					encode_i(tmp_sin9, tmp_cos9, tx_data(13 downto 12)) +
-					encode_i(tmp_sin10, tmp_cos10, tx_data(11 downto 10)) +
-					encode_i(tmp_sin11, tmp_cos11, tx_data(9 downto 8)) +
-					encode_i(tmp_sin12, tmp_cos12, tx_data(7 downto 6)) +
-					encode_i(tmp_sin13, tmp_cos13, tx_data(5 downto 4)) +
-					encode_i(tmp_sin14, tmp_cos14, tx_data(3 downto 2)) +
-					encode_i(tmp_sin15, tmp_cos15, tx_data(1 downto 0))
+					encode_i(tmp_cos0, tmp_sin0, tx_data(1 downto 0)) +
+					encode_i(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
+					encode_i(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
+					encode_i(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
+					encode_i(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
+					encode_i(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
+					encode_i(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
+					encode_i(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
+					encode_i(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
+					encode_i(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
+					encode_i(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
+					encode_i(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
+					encode_i(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
+					encode_i(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
+					encode_i(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
+					encode_i(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
 				) * 5 / 64;
 
 				tmp_q := (
-					encode_q(tmp_cos0, tmp_sin0, tx_data(31 downto 30)) +
-					encode_q(tmp_sin1, tmp_cos1, tx_data(29 downto 28)) +
-					encode_q(tmp_sin2, tmp_cos2, tx_data(27 downto 26)) +
-					encode_q(tmp_sin3, tmp_cos3, tx_data(25 downto 24)) +
-					encode_q(tmp_sin4, tmp_cos4, tx_data(23 downto 22)) +
-					encode_q(tmp_sin5, tmp_cos5, tx_data(21 downto 20)) +
-					encode_q(tmp_sin6, tmp_cos6, tx_data(19 downto 18)) +
-					encode_q(tmp_sin7, tmp_cos7, tx_data(17 downto 16)) +
-					encode_q(tmp_sin8, tmp_cos8, tx_data(15 downto 14)) +
-					encode_q(tmp_sin9, tmp_cos9, tx_data(13 downto 12)) +
-					encode_q(tmp_sin10, tmp_cos10, tx_data(11 downto 10)) +
-					encode_q(tmp_sin11, tmp_cos11, tx_data(9 downto 8)) +
-					encode_q(tmp_sin12, tmp_cos12, tx_data(7 downto 6)) +
-					encode_q(tmp_sin13, tmp_cos13, tx_data(5 downto 4)) +
-					encode_q(tmp_sin14, tmp_cos14, tx_data(3 downto 2)) +
-					encode_q(tmp_sin15, tmp_cos15, tx_data(1 downto 0))
+					encode_q(tmp_cos0, tmp_sin0, tx_data(1 downto 0)) +
+					encode_q(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
+					encode_q(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
+					encode_q(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
+					encode_q(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
+					encode_q(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
+					encode_q(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
+					encode_q(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
+					encode_q(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
+					encode_q(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
+					encode_q(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
+					encode_q(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
+					encode_q(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
+					encode_q(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
+					encode_q(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
+					encode_q(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
 				) * 5 / 64;
 			end if;
 			reg_i_data <= conv_std_logic_vector(tmp_i, 16);
