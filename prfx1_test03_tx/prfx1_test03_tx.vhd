@@ -66,6 +66,14 @@ component tx_baseband
 	);
 end component;
 
+component lpf_24tap
+	port (
+	signal clk80m		: in std_logic;
+	signal indata       : in std_logic_vector(15 downto 0);
+	signal outdata      : out std_logic_vector(15 downto 0)
+	);
+end component;
+
 component DDR_OUT
 	PORT
 	(
@@ -83,6 +91,8 @@ signal symbol_num : std_logic_vector(7 downto 0);
 signal tx_data : std_logic_vector(31 downto 0);
 signal i_data : std_logic_vector(15 downto 0);
 signal q_data : std_logic_vector(15 downto 0);
+signal i_lpf : std_logic_vector(15 downto 0);
+signal q_lpf : std_logic_vector(15 downto 0);
 
 begin
 
@@ -120,10 +130,21 @@ begin
 		q_data => q_data
 	);
 
+	lpf_24tap_i_inst : lpf_24tap port map (
+		clk80m => clk80m,
+		indata => i_data,
+		outdata => i_lpf
+	);
+	lpf_24tap_q_inst : lpf_24tap port map (
+		clk80m => clk80m,
+		indata => q_data,
+		outdata => q_lpf
+	);
+
 	--DDR instance
 	DDR_OUT_inst : DDR_OUT PORT MAP (
-		datain_h	=> i_data (15 downto 2),
-		datain_l	=> q_data (15 downto 2),
+		datain_h	=> i_lpf (15 downto 2),
+		datain_l	=> q_lpf (15 downto 2),
 		outclock	=> clk80m,
 		dataout	=> dac
 	);

@@ -34,45 +34,45 @@ constant END_SYM_NUM : integer := 99;
 constant END_SYM_CNT : integer := 76 * 80 - 1;
 constant END_ADDR_CNT : integer := 380 - 1;
 
-function encode_i(
+function gen_baseband_i(
 	signal sin_data : in signed;
 	signal cos_data : in signed;
 	signal sym : std_logic_vector
-	) return integer
+	) return signed
 	is
-variable outdata : integer;
+variable outdata : signed (sin_data'length - 1 DOWNTO 0);
 begin
 	if (sym = "00") then
-		outdata := conv_integer(cos_data);
+		outdata := cos_data;
 	elsif (sym = "01") then
-		outdata := -conv_integer(sin_data);
+		outdata := -sin_data;
 	elsif (sym = "10") then
-		outdata := -conv_integer(cos_data);
+		outdata := -cos_data;
 	else
-		outdata := conv_integer(sin_data);
+		outdata := sin_data;
 	end if;
 	return outdata;
-end encode_i;
+end gen_baseband_i;
 
-function encode_q(
+function gen_baseband_q(
 	signal sin_data : in signed;
 	signal cos_data : in signed;
 	signal sym : std_logic_vector
-	) return integer
+	) return signed
 	is
-variable outdata : integer;
+variable outdata : signed (sin_data'length - 1 DOWNTO 0);
 begin
 	if (sym = "00") then
-		outdata := conv_integer(sin_data);
+		outdata := sin_data;
 	elsif (sym = "01") then
-		outdata := conv_integer(cos_data);
+		outdata := cos_data;
 	elsif (sym = "10") then
-		outdata := -conv_integer(sin_data);
+		outdata := -sin_data;
 	else
-		outdata := -conv_integer(cos_data);
+		outdata := -cos_data;
 	end if;
 	return outdata;
-end encode_q;
+end gen_baseband_q;
 
 signal reg_i_data : std_logic_vector(15 downto 0);
 signal reg_q_data : std_logic_vector(15 downto 0);
@@ -148,6 +148,8 @@ signal tmp_cos12 : signed(20 downto 0);
 signal tmp_cos13 : signed(20 downto 0);
 signal tmp_cos14 : signed(20 downto 0);
 signal tmp_cos15 : signed(20 downto 0);
+
+constant zero_sig : std_logic_vector(1 downto 0) := "00";
 
 begin
 
@@ -423,11 +425,13 @@ begin
 				tmp_q := 0;
 			elsif (conv_integer(symbol_num) = 1) then
 				--symbol 1: pilot only
-				tmp_i := conv_integer(mem_data_cos_pilot);
-				tmp_q := conv_integer(mem_data_sin_pilot);
+				tmp_i := 11 * conv_integer(signed(mem_data_cos_pilot));
+				tmp_q := 11 * conv_integer(signed(mem_data_sin_pilot));
 			elsif (conv_integer(symbol_num) = 2) then
 				--symbol 2: define phase 0.
-				tmp_i := conv_integer(tmp_cos0 +
+				tmp_i := conv_integer(
+					signed(mem_data_cos_pilot) +
+					tmp_cos0 +
 					tmp_cos1 +
 					tmp_cos2 +
 					tmp_cos3 +
@@ -442,8 +446,11 @@ begin
 					tmp_cos12 +
 					tmp_cos13 +
 					tmp_cos14 +
-					tmp_cos15) * 5 / 64;
-				tmp_q := conv_integer(tmp_sin0 +
+					tmp_cos15
+				);
+				tmp_q := conv_integer(
+					signed(mem_data_sin_pilot) +
+					tmp_sin0 +
 					tmp_sin1 +
 					tmp_sin2 +
 					tmp_sin3 +
@@ -458,61 +465,52 @@ begin
 					tmp_sin12 +
 					tmp_sin13 +
 					tmp_sin14 +
-					tmp_sin15) * 5 / 64;
+					tmp_sin15
+				);
 			else
-				--baseband encoding
---				tmp_i := (
---					encode_i(tmp_sin12, tmp_cos12, tx_data(7 downto 6)) +
---					encode_i(tmp_sin13, tmp_cos13, tx_data(5 downto 4)) +
---					encode_i(tmp_sin14, tmp_cos14, tx_data(3 downto 2)) +
---					encode_i(tmp_sin15, tmp_cos15, tx_data(1 downto 0))
---				) * 5 / 64;
---				tmp_q := (
---					encode_q(tmp_sin12, tmp_cos12, tx_data(7 downto 6)) +
---					encode_q(tmp_sin13, tmp_cos13, tx_data(5 downto 4)) +
---					encode_q(tmp_sin14, tmp_cos14, tx_data(3 downto 2)) +
---					encode_q(tmp_sin15, tmp_cos15, tx_data(1 downto 0))
---				) * 5 / 64;
-				tmp_i := (
-					encode_i(tmp_cos0, tmp_sin0, tx_data(1 downto 0)) +
-					encode_i(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
-					encode_i(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
-					encode_i(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
-					encode_i(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
-					encode_i(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
-					encode_i(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
-					encode_i(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
-					encode_i(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
-					encode_i(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
-					encode_i(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
-					encode_i(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
-					encode_i(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
-					encode_i(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
-					encode_i(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
-					encode_i(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
-				) * 5 / 64;
+				--generate baseband
+				tmp_i := conv_integer(
+					signed(mem_data_cos_pilot) +
+					gen_baseband_i(tmp_sin0, tmp_cos0, tx_data(1 downto 0)) +
+					gen_baseband_i(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
+					gen_baseband_i(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
+					gen_baseband_i(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
+					gen_baseband_i(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
+					gen_baseband_i(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
+					gen_baseband_i(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
+					gen_baseband_i(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
+					gen_baseband_i(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
+					gen_baseband_i(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
+					gen_baseband_i(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
+					gen_baseband_i(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
+					gen_baseband_i(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
+					gen_baseband_i(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
+					gen_baseband_i(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
+					gen_baseband_i(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
+				);
 
-				tmp_q := (
-					encode_q(tmp_cos0, tmp_sin0, tx_data(1 downto 0)) +
-					encode_q(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
-					encode_q(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
-					encode_q(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
-					encode_q(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
-					encode_q(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
-					encode_q(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
-					encode_q(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
-					encode_q(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
-					encode_q(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
-					encode_q(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
-					encode_q(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
-					encode_q(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
-					encode_q(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
-					encode_q(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
-					encode_q(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
-				) * 5 / 64;
+				tmp_q := conv_integer(
+					signed(mem_data_sin_pilot) +
+					gen_baseband_q(tmp_sin0, tmp_cos0, tx_data(1 downto 0)) +
+					gen_baseband_q(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
+					gen_baseband_q(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
+					gen_baseband_q(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
+					gen_baseband_q(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
+					gen_baseband_q(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
+					gen_baseband_q(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
+					gen_baseband_q(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
+					gen_baseband_q(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
+					gen_baseband_q(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
+					gen_baseband_q(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
+					gen_baseband_q(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
+					gen_baseband_q(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
+					gen_baseband_q(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
+					gen_baseband_q(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
+					gen_baseband_q(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
+				);
 			end if;
-			reg_i_data <= conv_std_logic_vector(tmp_i, 16);
-			reg_q_data <= conv_std_logic_vector(tmp_q, 16);
+			reg_i_data <= conv_std_logic_vector(tmp_i * 3 / 64, 16);
+			reg_q_data <= conv_std_logic_vector(tmp_q * 3 / 64, 16);
 		end if;
 	end process;
 

@@ -53,6 +53,11 @@ package motorf is
 		signal indata_16 : in signed
 		) return signed;
 
+--used in lpf_24tap
+	function sign_extend_27_to_29 (
+		signal indata_27 : in signed
+		) return signed;
+
 end package motorf;
 
 package body motorf is
@@ -106,7 +111,7 @@ begin
 end mul_ex;
 
 --used in bpf
-	function mul_ex2(
+function mul_ex2(
 	signal indata16 : in signed;
 	constant coef12 : in signed
 	) return signed
@@ -124,7 +129,7 @@ begin
 end mul_ex2;
 
 --used in bpf
-	function sign_extend_29_to_32 (
+function sign_extend_29_to_32 (
 		signal indata_29 : in signed
 		) return signed
 	is
@@ -139,7 +144,7 @@ begin
 end sign_extend_29_to_32;
 
 --used in agc
-	function sign_extend_16_to_17 (
+function sign_extend_16_to_17 (
 		signal indata_16 : in signed
 		) return signed
 	is
@@ -169,7 +174,7 @@ begin
 end sign_extend_18_to_19;
 
 --used in tx_baseband
-	function sign_extend_16_to_21 (
+function sign_extend_16_to_21 (
 		signal indata_16 : in signed
 		) return signed
 	is
@@ -182,6 +187,22 @@ begin
 	end if;
 	return retdata;
 end sign_extend_16_to_21;
+
+--used in lpf_24tap
+function sign_extend_27_to_29 (
+		signal indata_27 : in signed
+		) return signed
+	is
+variable retdata : signed(28 downto 0);
+begin
+	if (indata_27(indata_27'length - 1) = '0') then
+		retdata := "00" & indata_27;
+	else
+		retdata := "11" & indata_27;
+	end if;
+	return retdata;
+end sign_extend_27_to_29;
+
 
 end package body motorf;
 
