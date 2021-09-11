@@ -151,16 +151,6 @@ signal y15 : signed (18 downto 0);
 signal y16 : signed (18 downto 0);
 signal y17 : signed (18 downto 0);
 
-signal shift0_x : signed (18 downto 0);
-signal shift1_x : signed (18 downto 0);
-signal shift2_x : signed (18 downto 0);
-signal shift3_x : signed (18 downto 0);
-signal shift4_x : signed (18 downto 0);
-signal shift5_x : signed (18 downto 0);
-signal shift6_x : signed (18 downto 0);
-signal shift7_x : signed (18 downto 0);
-signal shift8_x : signed (18 downto 0);
-signal shift9_x : signed (18 downto 0);
 signal shift10_x : signed (18 downto 0);
 signal shift11_x : signed (18 downto 0);
 signal shift12_x : signed (18 downto 0);
@@ -170,16 +160,6 @@ signal shift15_x : signed (18 downto 0);
 signal shift16_x : signed (18 downto 0);
 signal shift17_x : signed (18 downto 0);
 
-signal shift0_y : signed (18 downto 0);
-signal shift1_y : signed (18 downto 0);
-signal shift2_y : signed (18 downto 0);
-signal shift3_y : signed (18 downto 0);
-signal shift4_y : signed (18 downto 0);
-signal shift5_y : signed (18 downto 0);
-signal shift6_y : signed (18 downto 0);
-signal shift7_y : signed (18 downto 0);
-signal shift8_y : signed (18 downto 0);
-signal shift9_y : signed (18 downto 0);
 signal shift10_y : signed (18 downto 0);
 signal shift11_y : signed (18 downto 0);
 signal shift12_y : signed (18 downto 0);
@@ -228,187 +208,169 @@ begin
 		end if;
 	end process;
 
-	judge1 <= '0' when (temp0(temp0'length - 1) = '1') else
+	judge1 <= '0' when (temp0 < 0) else
 				'0' when (signed("00" & phase0(16 downto 0)) >= temp0) else
 				'1';
-	shift1_y_inst : sshift generic map (19, 1) port map (y0, shift1_y);
-	shift1_x_inst : sshift generic map (19, 1) port map (x0, shift1_x);
 	step1 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge1 = '1') then
 				temp1 <= temp0 - to_signed(38688, temp1'length);
-				x1 <= x0 + shift1_y;
-				y1 <= y0 - shift1_x;
+				x1 <= x0 + y0 / 2;
+				y1 <= y0 - x0 / 2;
 			else
 				temp1 <= temp0 + to_signed(38688, temp1'length);
-				x1 <= x0 - shift1_y;
-				y1 <= y0 + shift1_x;
+				x1 <= x0 - y0 / 2;
+				y1 <= y0 + x0 / 2;
 			end if;
 		end if;
 	end process;
 
-	judge2 <= '0' when (temp1(temp1'length - 1) = '1') else
+	judge2 <= '0' when (temp1 < 0) else
 				'0' when (signed("00" & phase1(16 downto 0)) >= temp1) else
 				'1';
-	shift2_y_inst : sshift generic map (19, 2) port map (y1, shift2_y);
-	shift2_x_inst : sshift generic map (19, 2) port map (x1, shift2_x);
 	step2 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge2 = '1') then
 				temp2 <= temp1 - to_signed(20441, temp2'length);
-				x2 <= x1 + shift2_y;
-				y2 <= y1 - shift2_x;
+				x2 <= x1 + y1 / 4;
+				y2 <= y1 - x1 / 4;
 			else
 				temp2 <= temp1 + to_signed(20441, temp2'length);
-				x2 <= x1 - shift2_y;
-				y2 <= y1 + shift2_x;
+				x2 <= x1 - y1 / 4;
+				y2 <= y1 + x1 / 4;
 			end if;
 		end if;
 	end process;
 
-	judge3 <= '0' when (temp2(temp2'length - 1) = '1') else
+	judge3 <= '0' when (temp2 < 0) else
 				'0' when (signed("00" & phase2(16 downto 0)) >= temp2) else
 				'1';
-	shift3_y_inst : sshift generic map (19, 3) port map (y2, shift3_y);
-	shift3_x_inst : sshift generic map (19, 3) port map (x2, shift3_x);
 	step3 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge3 = '1') then
 				temp3 <= temp2 - to_signed(10376, temp3'length);
-				x3 <= x2 + shift3_y;
-				y3 <= y2 - shift3_x;
+				x3 <= x2 + y2 / 8;
+				y3 <= y2 - x2 / 8;
 			else
 				temp3 <= temp2 + to_signed(10376, temp3'length);
-				x3 <= x2 - shift3_y;
-				y3 <= y2 + shift3_x;
+				x3 <= x2 - y2 / 8;
+				y3 <= y2 + x2 / 8;
 			end if;
 		end if;
 	end process;
 
-	judge4 <= '0' when (temp3(temp3'length - 1) = '1') else
+	judge4 <= '0' when (temp3 < 0) else
 				'0' when (signed("00" & phase3(16 downto 0)) >= temp3) else
 				'1';
-	shift4_y_inst : sshift generic map (19, 4) port map (y3, shift4_y);
-	shift4_x_inst : sshift generic map (19, 4) port map (x3, shift4_x);
 	step4 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge4 = '1') then
 				temp4 <= temp3 - to_signed(5208, temp4'length);
-				x4 <= x3 + shift4_y;
-				y4 <= y3 - shift4_x;
+				x4 <= x3 + y3 / 16;
+				y4 <= y3 - x3 / 16;
 			else
 				temp4 <= temp3 + to_signed(5208, temp4'length);
-				x4 <= x3 - shift4_y;
-				y4 <= y3 + shift4_x;
+				x4 <= x3 - y3 / 16;
+				y4 <= y3 + x3 / 16;
 			end if;
 		end if;
 	end process;
 
-	judge5 <= '0' when (temp4(temp4'length - 1) = '1') else
+	judge5 <= '0' when (temp4 < 0) else
 				'0' when (signed("00" & phase4(16 downto 0)) >= temp4) else
 				'1';
-	shift5_y_inst : sshift generic map (19, 5) port map (y4, shift5_y);
-	shift5_x_inst : sshift generic map (19, 5) port map (x4, shift5_x);
 	step5 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if(judge5 = '1') then
 				temp5 <= temp4 - to_signed(2606, temp4'length);
-				x5 <= x4 + shift5_y;
-				y5 <= y4 - shift5_x;
+				x5 <= x4 + y4 / 32;
+				y5 <= y4 - x4 / 32;
 			else
 				temp5 <= temp4 + to_signed(2606, temp4'length);
-				x5 <= x4 - shift5_y;
-				y5 <= y4 + shift5_x;
+				x5 <= x4 - y4 / 32;
+				y5 <= y4 + x4 / 32;
 			end if;
 		end if;
 	end process;
 
-	judge6 <= '0' when (temp5(temp5'length - 1) = '1') else
+	judge6 <= '0' when (temp5 < 0) else
 				'0' when (signed("00" & phase5(16 downto 0)) >= temp5) else
 				'1';
-	shift6_y_inst : sshift generic map (19, 6) port map (y5, shift6_y);
-	shift6_x_inst : sshift generic map (19, 6) port map (x5, shift6_x);
 	step6 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge6 = '1') then
 				temp6 <= temp5 - to_signed(1303, temp6'length);
-				x6 <= x5 + shift6_y;
-				y6 <= y5 - shift6_x;
+				x6 <= x5 + y5 / 64;
+				y6 <= y5 - x5 / 64;
 			else
 				temp6 <= temp5 + to_signed(1303, temp6'length);
-				x6 <= x5	- shift6_y;
-				y6 <= y5 + shift6_x;
+				x6 <= x5 - y5 / 64;
+				y6 <= y5 + x5 / 64;
 			end if;
 		end if;
 	end process;
 
-	judge7 <= '0' when (temp6(temp6'length - 1) = '1') else
+	judge7 <= '0' when (temp6 < 0) else
 				'0' when (signed("00" & phase6(16 downto 0)) >= temp6) else
 				'1';
-	shift7_y_inst : sshift generic map (19, 7) port map (y6, shift7_y);
-	shift7_x_inst : sshift generic map (19, 7) port map (x6, shift7_x);
 	step7 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge7 ='1') then
 				temp7 <= temp6 - to_signed(651, temp7'length);
-				x7 <= x6 + shift7_y;
-				y7 <= y6 - shift7_x;
+				x7 <= x6 + y6 / 128;
+				y7 <= y6 - x6 / 128;
 			else
 				temp7 <= temp6 + to_signed(651, temp7'length);
-				x7 <= x6 - shift7_y;
-				y7 <= y6 + shift7_x;
+				x7 <= x6 - y6 / 128;
+				y7 <= y6 + x6 / 128;
 			end if;
 		end if;
 	end process;
 
-	judge8 <= '0' when (temp7(temp7'length - 1) = '1') else
+	judge8 <= '0' when (temp7 < 0) else
 				'0' when (signed("00" & phase7(16 downto 0)) >= temp7) else
 				'1';
-	shift8_y_inst : sshift generic map (19, 8) port map (y7, shift8_y);
-	shift8_x_inst : sshift generic map (19, 8) port map (x7, shift8_x);
 	step8 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge8 = '1') then
 				temp8 <= temp7 - to_signed(325, temp8'length);
-				x8 <= x7 + shift8_y;
-				y8 <= y7 - shift8_x;
+				x8 <= x7 + y7 / 256;
+				y8 <= y7 - x7 / 256;
 			else
 				temp8 <= temp7 + to_signed(325, temp8'length);
-				x8 <= x7 - shift8_y;
-				y8 <= y7 + shift8_x;
+				x8 <= x7 - y7 / 256;
+				y8 <= y7 + x7 / 256;
 			end if;
 		end if;
 	end process;
 
-	judge9 <= '0' when (temp8(temp8'length - 1) = '1') else
+	judge9 <= '0' when (temp8 < 0) else
 				'0' when (signed("00" & phase8(16 downto 0)) >= temp8) else
 				'1';
-	shift9_y_inst : sshift generic map (19, 9) port map (y8, shift9_y);
-	shift9_x_inst : sshift generic map (19, 9) port map (x8, shift9_x);
 	step9 : process (clk)
 	begin
 		if (rising_edge(clk)) then
 			if (judge9 = '1') then
 				temp9 <= temp8 - to_signed(162, temp9'length);
-				x9 <= x8 + shift9_y;
-				y9 <= y8 - shift9_x;
+				x9 <= x8 + y8 / 512;
+				y9 <= y8 - x8 / 512;
 			else
 				temp9 <= temp8 + to_signed(162, temp9'length);
-				x9 <= x8 - shift9_y;
-				y9 <= y8 + shift9_x;
+				x9 <= x8 - y8 / 512;
+				y9 <= y8 + x8 / 512;
 			end if;
 		end if;
 	end process;
 
-	judge10 <= '0' when (temp9(temp9'length - 1) = '1') else
+	judge10 <= '0' when (temp9 < 0) else
 				'0' when (signed("00" & phase9(16 downto 0)) >= temp9) else
 				'1';
 	shift10_y_inst : sshift generic map (19, 10) port map (y9, shift10_y);
@@ -428,7 +390,7 @@ begin
 		end if;
 	end process;
 
-	judge11 <= '0' when (temp10(temp10'length - 1) = '1') else
+	judge11 <= '0' when (temp10 < 0) else
 				'0' when (signed("00" & phase10(16 downto 0)) >= temp10) else
 				'1';
 	shift11_y_inst : sshift generic map (19, 11) port map (y10, shift11_y);
@@ -448,7 +410,7 @@ begin
 		end if;
 	end process;
 
-	judge12 <= '0' when (temp11(temp11'length - 1) = '1') else
+	judge12 <= '0' when (temp11 < 0) else
 				'0' when (signed("00" & phase11(16 downto 0)) >= temp11) else
 				'1';
 	shift12_y_inst : sshift generic map (19, 12) port map (y11, shift12_y);
@@ -468,7 +430,7 @@ begin
 		end if;
 	end process;
 
-	judge13 <= '0' when (temp12(temp12'length - 1) = '1') else
+	judge13 <= '0' when (temp12 < 0) else
 				'0' when (signed("00" & phase12(16 downto 0)) >= temp12) else
 				'1';
 	shift13_y_inst : sshift generic map (19, 13) port map (y12, shift13_y);
@@ -488,7 +450,7 @@ begin
 		end if;
 	end process;
 
-	judge14 <= '0' when (temp13(temp13'length - 1) = '1') else
+	judge14 <= '0' when (temp13 < 0) else
 				'0' when (signed("00" & phase13(16 downto 0)) >= temp13) else
 				'1';
 	shift14_y_inst : sshift generic map (19, 14) port map (y13, shift14_y);
@@ -508,7 +470,7 @@ begin
 		end if;
 	end process;
 
-	judge15 <= '0' when (temp14(temp14'length - 1) = '1') else
+	judge15 <= '0' when (temp14 < 0) else
 				'0' when (signed("00" & phase14(16 downto 0)) >= temp14) else
 				'1';
 	shift15_y_inst : sshift generic map (19, 15) port map (y14, shift15_y);
@@ -528,7 +490,7 @@ begin
 		end if;
 	end process;
 
-	judge16 <= '0' when (temp15(temp15'length - 1) = '1') else
+	judge16 <= '0' when (temp15 < 0) else
 				'0' when (signed("00" & phase15(16 downto 0)) >= temp15) else
 				'1';
 	shift16_y_inst : sshift generic map (19, 16) port map (y15, shift16_y);
@@ -548,7 +510,7 @@ begin
 		end if;
 	end process;
 
-	judge17 <= '0' when (temp16(temp16'length - 1) = '1') else
+	judge17 <= '0' when (temp16 < 0) else
 				'0' when (signed("00" & phase16(16 downto 0)) >= temp16) else
 				'1';
 	shift17_y_inst : sshift generic map (19, 17) port map (y16, shift17_y);
