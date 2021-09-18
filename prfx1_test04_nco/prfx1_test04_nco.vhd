@@ -13,7 +13,7 @@ entity prfx1_test04_nco is
 	signal sdi			: out std_logic;
 	signal spics_dac	: out std_logic;
 
-	signal jtg_clk5	: out std_logic;
+	signal jtg_clk		: out std_logic;
 
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
@@ -81,11 +81,12 @@ signal cos : std_logic_vector(13 downto 0);
 
 signal dac_en : std_logic;
 signal dac_spi_data : std_logic_vector(15 downto 0);
-signal dac_spi_oe_n : std_logic;
+signal dac_spi_oe_n : std_logic := '1';
+signal dac_spi_rst_n : std_logic := '1';
 
 begin
 
-	jtg_clk5 <= clk80m;
+	jtg_clk <= clk80m;
 	dac_clk <= clk80m;
 	spiclk <= not clk16m;
 
@@ -114,7 +115,7 @@ begin
 	dac_spi_init_data_inst : dac_spi_init_data PORT MAP (
 		clk16m => clk16m,
 		oe_n => dac_spi_oe_n,
-		reset_n => '1',
+		reset_n => dac_spi_rst_n,
 		indata => dac_spi_data,
 		trig => dac_en
 	);
@@ -130,7 +131,7 @@ begin
 
 	--led signal handling
    led_p : process (clk80m)
-	variable cnt : std_logic_vector(24 downto 0);
+	variable cnt : std_logic_vector(24 downto 0) := (others => '0');
    begin
 		if (rising_edge(clk80m)) then
 			--sw1 = reset
@@ -139,11 +140,17 @@ begin
 				led2 <= '0';
 				led3 <= '0';
 				cnt := (others => '0');
+				dac_spi_rst_n <= '0';
+				dac_spi_oe_n <= '1';
 			else
 				led1 <= sw2;
 				led2 <= cnt(24);
 				led3 <= '1';
 				cnt := cnt + 1;
+				if (dac_spi_rst_n = '0' and cnt(24) = '0') then
+					dac_spi_rst_n <= '1';
+				end if;
+				dac_spi_oe_n <= not dac_spi_rst_n;
 			end if;
 		end if;
 	end process;

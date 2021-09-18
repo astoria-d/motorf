@@ -230,7 +230,6 @@ begin
 	variable cnt : integer range 0 to bus_size := 0;
    begin
 		if (rising_edge(clk16m)) then
-
 			if (trig = '1') then
 				cnt := 0;
 				spics <= '1';

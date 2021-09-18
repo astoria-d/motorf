@@ -16,16 +16,27 @@ vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test04_nco/spi_init.vhd}
 vsim -gui -l msim_transcript work.prfx1_test04_nco_test01
 
 
-add wave sim:/prfx1_test04_nco_test01/sim_board/clk16m
-add wave \
-sim:/prfx1_test04_nco_test01/sim_board/dac_clk \
-sim:/prfx1_test04_nco_test01/sim_board/spiclk \
-sim:/prfx1_test04_nco_test01/sim_board/sdi \
-sim:/prfx1_test04_nco_test01/sim_board/spics_dac
+add wave -label clk16m 		sim:/prfx1_test04_nco_test01/sim_board/clk16m
+add wave -label dac_clk 	sim:/prfx1_test04_nco_test01/sim_board/dac_clk
+add wave -label spiclk 		sim:/prfx1_test04_nco_test01/sim_board/spiclk
+add wave -label sdi 		sim:/prfx1_test04_nco_test01/sim_board/sdi
+add wave -label spics_dac 	sim:/prfx1_test04_nco_test01/sim_board/spics_dac
 
-add wave -position insertpoint sim:/prfx1_test04_nco_test01/sim_board/dac_spi_init_data_inst/*
 
-add wave -position insertpoint sim:/prfx1_test04_nco_test01/sim_board/dac_spi_out_inst/*
+add wave -divider dac_spi_init_data_inst
+add wave -label clk16m 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_init_data_inst/clk16m
+add wave -label oe_n 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_init_data_inst/oe_n
+add wave -label reset_n 				sim:/prfx1_test04_nco_test01/sim_board/dac_spi_init_data_inst/reset_n
+add wave -label indata 		-radix hex	sim:/prfx1_test04_nco_test01/sim_board/dac_spi_init_data_inst/indata
+add wave -label trig 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_init_data_inst/trig
+
+
+add wave -divider dac_spi_out_inst
+add wave -label clk16m 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_out_inst/clk16m
+add wave -label indata 		-radix hex	sim:/prfx1_test04_nco_test01/sim_board/dac_spi_out_inst/indata
+add wave -label trig 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_out_inst/trig
+add wave -label spics 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_out_inst/spics
+add wave -label sdi 					sim:/prfx1_test04_nco_test01/sim_board/dac_spi_out_inst/sdi
 
 
 run 10us
