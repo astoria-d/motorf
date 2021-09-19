@@ -74,6 +74,16 @@ component lpf_24tap
 	);
 end component;
 
+component upconv
+	port (
+		clk80m : in std_logic;
+		I : in std_logic_vector( 15 downto 0 );
+		Q : in std_logic_vector( 15 downto 0 );
+		I_IF : out std_logic_vector( 13 downto 0 );
+		Q_IF : out std_logic_vector( 13 downto 0 )
+	);
+end component;
+
 component DDR_OUT
 	PORT
 	(
@@ -93,6 +103,8 @@ signal i_data : std_logic_vector(15 downto 0);
 signal q_data : std_logic_vector(15 downto 0);
 signal i_lpf : std_logic_vector(15 downto 0);
 signal q_lpf : std_logic_vector(15 downto 0);
+signal i_if : std_logic_vector(13 downto 0);
+signal q_if : std_logic_vector(13 downto 0);
 
 begin
 
@@ -141,10 +153,18 @@ begin
 		outdata => q_lpf
 	);
 
+	upconv_inst : upconv port map (
+		clk80m => clk80m,
+		I => i_lpf,
+		Q => q_lpf,
+		I_IF => i_if,
+		Q_IF => q_if
+	);
+
 	--DDR instance
 	DDR_OUT_inst : DDR_OUT PORT MAP (
-		datain_h	=> i_lpf (15 downto 2),
-		datain_l	=> q_lpf (15 downto 2),
+		datain_h	=> i_if,
+		datain_l	=> q_if,
 		outclock	=> clk80m,
 		dataout	=> dac
 	);

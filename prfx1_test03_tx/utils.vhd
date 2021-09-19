@@ -38,7 +38,7 @@ package motorf is
 		signal indata_29 : in signed
 		) return signed;
 
---used in agc
+--used in agc, upconv
 	function sign_extend_16_to_17 (
 		signal indata_16 : in signed
 		) return signed;
@@ -143,7 +143,7 @@ begin
 	return retdata;
 end sign_extend_29_to_32;
 
---used in agc
+--used in agc, upconv
 function sign_extend_16_to_17 (
 		signal indata_16 : in signed
 		) return signed
@@ -202,7 +202,6 @@ begin
 	end if;
 	return retdata;
 end sign_extend_27_to_29;
-
 
 end package body motorf;
 
