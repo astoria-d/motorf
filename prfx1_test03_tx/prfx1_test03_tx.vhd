@@ -94,6 +94,39 @@ component DDR_OUT
 	);
 END component;
 
+component dac_spi_init_data
+   port (
+		signal clk16m     : in std_logic;
+		signal oe_n			: in std_logic;
+		signal reset_n		: in std_logic;
+		signal indata		: out std_logic_vector( 15 downto 0 );
+		signal trig			: out std_logic
+	);
+end component;
+
+component pll_spi_init_data
+   port (
+	signal clk16m     : in std_logic;
+	signal oe_n			: in std_logic;
+	signal reset_n		: in std_logic;
+	signal indata		: out std_logic_vector(31 downto 0);
+	signal trig			: out std_logic
+	);
+end component;
+
+component spi_out
+	generic (bus_size : integer := 16);
+   port (
+	signal clk16m     : in std_logic;
+	signal indata		: in std_logic_vector(bus_size - 1 downto 0);
+	signal trig			: in std_logic;
+
+	signal spics		: out std_logic;
+	signal sdi			: out std_logic
+	);
+end component;
+
+
 signal clk80m  : std_logic;
 
 signal symbol_cnt : std_logic_vector(15 downto 0);
@@ -105,6 +138,21 @@ signal i_lpf : std_logic_vector(15 downto 0);
 signal q_lpf : std_logic_vector(15 downto 0);
 signal i_if : std_logic_vector(13 downto 0);
 signal q_if : std_logic_vector(13 downto 0);
+
+signal dac_en : std_logic;
+signal dac_spi_data : std_logic_vector(15 downto 0);
+signal dac_spi_oe_n : std_logic := '1';
+signal dac_sdi : std_logic;
+signal dac_cs : std_logic;
+
+signal pll_en : std_logic;
+signal pll_spi_data : std_logic_vector(31 downto 0);
+signal pll_spi_oe_n : std_logic := '1';
+signal pll_sdi : std_logic;
+signal pll_cs : std_logic;
+
+constant CLK_16M_PS : integer := (1000 * 1000 / 16);
+constant WAIT_10US : integer := (10 * 1000 * 1000 / CLK_16M_PS);
 
 begin
 
@@ -142,6 +190,7 @@ begin
 		q_data => q_data
 	);
 
+	--lpf instance
 	lpf_24tap_i_inst : lpf_24tap port map (
 		clk80m => clk80m,
 		indata => i_data,
@@ -153,6 +202,7 @@ begin
 		outdata => q_lpf
 	);
 
+	--moto nco and upconv instance
 	upconv_inst : upconv port map (
 		clk80m => clk80m,
 		I => i_lpf,
@@ -168,6 +218,77 @@ begin
 		outclock	=> clk80m,
 		dataout	=> dac
 	);
+
+	dac_clk <= clk80m;
+
+	--dac parameter set module instance
+	dac_spi_init_data_inst : dac_spi_init_data PORT MAP (
+		clk16m => clk16m,
+		oe_n => dac_spi_oe_n,
+		reset_n => '1',
+		indata => dac_spi_data,
+		trig => dac_en
+	);
+
+	--spi output module for dac
+	dac_spi_out_inst : spi_out generic map (16) PORT MAP (
+		clk16m => clk16m,
+		indata=> dac_spi_data,
+		trig => dac_en,
+		sdi => dac_sdi,
+		spics => dac_cs
+	);
+
+	--pll parameter set module instance
+	pll_spi_init_data_inst : pll_spi_init_data port map (
+		clk16m => clk16m,
+		oe_n => pll_spi_oe_n,
+		reset_n => '1',
+		indata => pll_spi_data,
+		trig => pll_en
+		);
+
+	--pll output module for dac
+	pll_spi_out_inst : spi_out generic map (32) PORT MAP (
+		clk16m => clk16m,
+		indata=> pll_spi_data,
+		trig => pll_en,
+		sdi => pll_sdi,
+		spics => pll_cs
+	);
+
+	spiclk <= not clk16m;
+
+   spi_init_p : process (clk16m)
+	variable cnt : integer := 0;
+	variable init_done : boolean := false;
+   begin
+		if (rising_edge(clk16m)) then
+			spics_dac <= dac_cs;
+			spics_pll <= pll_cs;
+			if (init_done = false) then
+				if (cnt <= WAIT_10US) then
+					dac_spi_oe_n <= '1';
+					pll_spi_oe_n <= '1';
+					sdi <= '1';
+				elsif (cnt >= WAIT_10US and cnt < WAIT_10US * 2) then
+					dac_spi_oe_n <= '0';
+					pll_spi_oe_n <= '1';
+					sdi <= dac_sdi;
+				elsif (cnt >= WAIT_10US * 2 and cnt < WAIT_10US * 4) then
+					sdi <= pll_sdi;
+					dac_spi_oe_n <= '1';
+					pll_spi_oe_n <= '0';
+				elsif (cnt >= WAIT_10US * 4) then
+					dac_spi_oe_n <= '1';
+					pll_spi_oe_n <= '1';
+					sdi <= '1';
+					init_done := true;
+				end if;
+			end if;
+			cnt := cnt + 1;
+		end if;
+	end process;
 
 	--led signal handling
    led_p : process (clk16m)
