@@ -130,3 +130,174 @@ begin
 	end process;
 
 end rtl;
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+entity sync_carrier is
+	port (
+	signal clk80m		: in std_logic;
+	signal indata		: in std_logic_vector(17 downto 0);
+	signal outdata		: in std_logic_vector(31 downto 0);
+	signal symbol_num : out std_logic_vector(7 downto 0);
+	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal synchronized : out std_logic
+	);
+end sync_carrier;
+
+architecture rtl of sync_carrier is
+
+--why 26 bits??
+signal seq : std_logic_vector(25 downto 0) := (others => '0');
+
+signal saw_chk : std_logic_vector(9 downto 0) := (others => '0');
+signal nco_chk : std_logic_vector(9 downto 0) := (others => '0');
+
+signal shift_fir_input : signed(17 downto 0) := (others => '0');
+
+signal shift_sin : signed(15 downto 0) := (others => '0');
+signal sin_1 : signed(15 downto 0) := (others => '0');
+
+signal sync_lock : std_logic_vector(31 downto 0) := (others => '0');
+
+signal pk_cnt : std_logic_vector(23 downto 0) := (others => '0');
+signal minus_peak : signed(17 downto 0) := (others => '0');
+signal plus_peak : signed(17 downto 0) := (others => '0');
+signal peak_2_peak : signed(18 downto 0) := (others => '0');
+
+begin
+
+	seq_cnt_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			seq <= seq + conv_std_logic_vector(1, 26);
+		end if;
+	end process;
+
+	lpf_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (seq(3 downto 0) = 0) then
+				---create shifted fir of indata
+				shift_fir_input <= signed(indata);
+				shift_sin <= sin_1;
+			end if;
+		end if;
+	end process;
+
+	--create sawtooth wave to check sync with nco.
+	saw_indata_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (seq(3 downto 0) /= 0) then
+				saw_chk <= saw_chk;
+			elsif (saw_chk = 0 and nco_chk > 1 and nco_chk < 1023) then   -----1023 = "1111111111"
+				saw_chk <= (others => '0');
+			elsif (saw_chk /= 0 and saw_chk /= 1023 and saw_chk - 1 /= nco_chk and saw_chk /= nco_chk and saw_chk + 1 /= nco_chk ) then
+				saw_chk <= (others => '0');
+			elsif (saw_chk = 1023 and nco_chk > 0 and nco_chk < 1022) then-----1022 = "1111111110"
+				saw_chk <= (others => '0');
+			elsif (shift_fir_input <= 0 and signed(indata) > 0) then
+				saw_chk <= saw_chk + 1;
+			end if;
+		end if;
+	end process;
+
+	--create nco sawtooth wave.
+	saw_nco_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (seq(3 downto 0) /= 0) then
+				nco_chk <= nco_chk;
+			elsif (saw_chk = 0 and nco_chk > 1 and nco_chk < 1023) then
+				nco_chk <= (others => '0');
+			elsif (saw_chk = 0 and saw_chk /= 1023 and saw_chk - 1 /= nco_chk and saw_chk /= nco_chk and saw_chk + 1 /= nco_chk ) then
+				nco_chk <= (others => '0');
+			elsif (shift_sin <= 0 and signed(sin_1) > 0) then
+				nco_chk <= nco_chk + 1;
+			end if;
+		end if;
+	end process;
+
+	sync_lock_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (seq(3 downto 0) /= 0) then
+				sync_lock <= sync_lock;
+			elsif (saw_chk = 0 and nco_chk > 1 and nco_chk < 1023) then
+				sync_lock <= (others => '0');
+			elsif (saw_chk /= 0 and saw_chk /= 1023 and saw_chk - 1 /= nco_chk and saw_chk /= nco_chk and saw_chk + 1 /= nco_chk ) then
+				sync_lock <= (others => '0');
+			elsif (saw_chk = 1023 and nco_chk /= 0 and nco_chk < 1022) then
+				sync_lock <= (others => '0');
+			elsif (sync_lock < 1000 * 1000 * 100 * 40) then
+				sync_lock <= sync_lock + 1;
+			end if;
+		end if;
+	end process;
+
+	sync_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (sync_lock > 10000) then
+				synchronized <= seq(20);
+			else
+				synchronized <= '0';
+			end if;
+		end if;
+	end process;
+
+	peak_cnt_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (pk_cnt = 76 * 80 * 100 * 6 - 1) then
+				pk_cnt <= (others => '0');
+			else
+				pk_cnt <= pk_cnt + 1;
+			end if;
+		end if;
+	end process;
+
+	minus_peak_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (pk_cnt = 0) then
+				minus_peak <= signed(indata);
+			elsif (signed(indata) < minus_peak) then
+				minus_peak <= signed(indata);
+			end if;
+		end if;
+	end process;
+
+	plus_peak_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (pk_cnt = 0) then
+				plus_peak <= signed(indata);
+			elsif (signed(indata) > plus_peak) then
+				plus_peak <= signed(indata);
+			end if;
+		end if;
+	end process;
+
+	peak2peak_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (pk_cnt = 0) then
+				peak_2_peak <= plus_peak - minus_peak;
+			end if;
+		end if;
+	end process;
+
+end rtl;
+

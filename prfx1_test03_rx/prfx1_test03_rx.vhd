@@ -108,11 +108,22 @@ component sync_symbol
 	);
 end component;
 
+component sync_carrier
+	port (
+	signal clk80m		: in std_logic;
+	signal indata		: in std_logic_vector(17 downto 0);
+	signal outdata		: in std_logic_vector(31 downto 0);
+	signal symbol_num : out std_logic_vector(7 downto 0);
+	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal synchronized : out std_logic
+	);
+end component;
+
 signal reset_n : std_logic;
 
-signal clk80m     : std_logic;
-signal clk40m     : std_logic;
-signal clk12m     : std_logic;
+signal clk80m		: std_logic;
+signal clk40m		: std_logic;
+signal clk12m		: std_logic;
 
 signal raw_adc 		: std_logic_vector(11 downto 0);
 signal s_adc			: std_logic_vector(11 downto 0);
@@ -122,6 +133,9 @@ signal bp_filtered	: std_logic_vector(17 downto 0);
 
 signal symbol_num : std_logic_vector(7 downto 0);
 signal symbol_cnt : std_logic_vector(15 downto 0);
+
+signal carrier_sync	: std_logic_vector(31 downto 0);
+signal carrier_sync_stat	: std_logic;
 
 begin
 
@@ -195,6 +209,16 @@ begin
 		symbol_cnt => symbol_cnt
 	);
 
+	sync_carrier_inst :sync_carrier
+	port map (
+		clk80m => clk80m,
+		indata => bp_filtered,
+		outdata => carrier_sync,
+		symbol_num => symbol_num,
+		symbol_cnt => symbol_cnt,
+		synchronized => carrier_sync_stat
+	);
+
 	--spi output module for pll
 	pll_spi_out_inst : pll_spi_data port map (
 		clk16m => clk16m,
@@ -223,7 +247,7 @@ begin
 			else
 				led1 <= sw2;
 				led2 <= not sw2;
-				led3 <= '1';
+				led3 <= carrier_sync_stat;
 			end if;
 		end if;
 	end process;
