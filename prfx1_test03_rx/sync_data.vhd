@@ -141,8 +141,8 @@ end rtl;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity sync_carrier is
 	port (
@@ -175,12 +175,32 @@ signal minus_peak : signed(17 downto 0) := (others => '0');
 signal plus_peak : signed(17 downto 0) := (others => '0');
 signal peak_2_peak : signed(18 downto 0) := (others => '0');
 
+
+signal lp_filtered : signed(31 downto 0) := (others => '0');
+signal lp_gated : signed(31 downto 0) := (others => '0');
+
+signal multi_i : integer := 0;
+
+function sign_extend_18_to_19 (
+	signal indata_18 : in signed
+	) return signed
+is
+variable retdata : signed(18 downto 0);
+begin
+	if (indata_18(indata_18'length - 1) = '0') then
+		retdata := "0" & indata_18;
+	else
+		retdata := "1" & indata_18;
+	end if;
+	return retdata;
+end sign_extend_18_to_19;
+
 begin
 
 	seq_cnt_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			seq <= seq + conv_std_logic_vector(1, 26);
+			seq <= seq + 1;
 		end if;
 	end process;
 
@@ -294,10 +314,44 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (pk_cnt = 0) then
-				peak_2_peak <= plus_peak - minus_peak;
+				peak_2_peak <= sign_extend_18_to_19(plus_peak) - sign_extend_18_to_19(minus_peak);
 			end if;
 		end if;
 	end process;
+
+	pre_gate_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (peak_2_peak > 16384 * 4) then
+				lp_filtered <= to_signed(multi_i / 16 / 8, lp_filtered'length);
+			elsif (peak_2_peak > 8192 * 4) then
+				lp_filtered <= to_signed(multi_i / 8 / 8, lp_filtered'length);
+			elsif (peak_2_peak > 4096 * 4) then
+				lp_filtered <= to_signed(multi_i / 4 / 8, lp_filtered'length);
+			elsif (peak_2_peak > 2048 * 4) then
+				lp_filtered <= to_signed(multi_i / 2 / 8, lp_filtered'length);
+			elsif (peak_2_peak > 2048 * 2) then
+				lp_filtered <= to_signed(multi_i / 8, lp_filtered'length);
+			elsif (peak_2_peak > 2048) then
+				lp_filtered <= to_signed(multi_i / 4, lp_filtered'length);
+			else
+				lp_filtered <= to_signed(multi_i / 2, lp_filtered'length);
+			end if;
+		end if;
+	end process;
+
+--	gate_p : process (clk80m)
+--	begin
+--		if (rising_edge(clk80m)) then
+--			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
+--				lp_gated <= lp_filtered / 8;
+--			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
+--				lp_gated <= lp_filtered;
+--			else
+--				lp_gated <= 0;
+--			end if;
+--		end if;
+--	end process;
 
 end rtl;
 
