@@ -148,9 +148,9 @@ entity sync_carrier is
 	port (
 	signal clk80m		: in std_logic;
 	signal indata		: in std_logic_vector(17 downto 0);
-	signal outdata		: in std_logic_vector(31 downto 0);
-	signal symbol_num : out std_logic_vector(7 downto 0);
-	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal symbol_num : in std_logic_vector(7 downto 0);
+	signal symbol_cnt : in std_logic_vector(15 downto 0);
+	signal outdata		: out std_logic_vector(31 downto 0);
 	signal synchronized : out std_logic
 	);
 end sync_carrier;
@@ -340,18 +340,18 @@ begin
 		end if;
 	end process;
 
---	gate_p : process (clk80m)
---	begin
---		if (rising_edge(clk80m)) then
---			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
---				lp_gated <= lp_filtered / 8;
---			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
---				lp_gated <= lp_filtered;
---			else
---				lp_gated <= 0;
---			end if;
---		end if;
---	end process;
+	gate_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
+				lp_gated <= lp_filtered / 8;
+			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
+				lp_gated <= lp_filtered;
+			else
+				lp_gated <= (others => '0');
+			end if;
+		end if;
+	end process;
 
 end rtl;
 

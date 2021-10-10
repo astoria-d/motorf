@@ -112,9 +112,9 @@ component sync_carrier
 	port (
 	signal clk80m		: in std_logic;
 	signal indata		: in std_logic_vector(17 downto 0);
-	signal outdata		: in std_logic_vector(31 downto 0);
-	signal symbol_num : out std_logic_vector(7 downto 0);
-	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal symbol_num : in std_logic_vector(7 downto 0);
+	signal symbol_cnt : in std_logic_vector(15 downto 0);
+	signal outdata		: out std_logic_vector(31 downto 0);
 	signal synchronized : out std_logic
 	);
 end component;
@@ -213,9 +213,9 @@ begin
 	port map (
 		clk80m => clk80m,
 		indata => bp_filtered,
-		outdata => carrier_sync,
 		symbol_num => symbol_num,
 		symbol_cnt => symbol_cnt,
+		outdata => carrier_sync,
 		synchronized => carrier_sync_stat
 	);
 
