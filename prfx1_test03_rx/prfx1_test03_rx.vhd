@@ -66,14 +66,6 @@ component zero_offset
 	);
 end component;
 
-component output_uart
-	port (
-	signal clk80m		: in std_logic;
-	signal indata		: in std_logic_vector(11 downto 0);
-	signal uart_out	: out std_logic
-	);
-end component;
-
 component lpf_28tap
 	port (
 	signal clk80m		: in std_logic;
@@ -116,6 +108,14 @@ component sync_carrier
 	signal symbol_cnt : in std_logic_vector(15 downto 0);
 	signal outdata		: out std_logic_vector(31 downto 0);
 	signal synchronized : out std_logic
+	);
+end component;
+
+component output_uart
+	port (
+	signal clk80m		: in std_logic;
+	signal indata		: in std_logic_vector(31 downto 0);
+	signal uart_out	: out std_logic
 	);
 end component;
 
@@ -230,7 +230,7 @@ begin
 
 	uart_out_inst : output_uart port map (
 		clk80m => clk80m,
-		indata => s_adc,
+		indata => carrier_sync,
 		uart_out => uart_out
 	);
 
@@ -251,6 +251,5 @@ begin
 			end if;
 		end if;
 	end process;
-
 
 end rtl;

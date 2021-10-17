@@ -143,6 +143,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_arith.conv_std_logic_vector;
 
 entity sync_carrier is
 	port (
@@ -167,6 +168,9 @@ signal shift_fir_input : signed(17 downto 0) := (others => '0');
 
 signal shift_sin : signed(15 downto 0) := (others => '0');
 signal sin_1 : signed(15 downto 0) := (others => '0');
+signal cos_1 : signed(15 downto 0) := (others => '0');
+signal sin_l : signed(15 downto 0) := (others => '0');
+signal cos_l : signed(15 downto 0) := (others => '0');
 
 signal sync_lock : std_logic_vector(31 downto 0) := (others => '0');
 
@@ -177,7 +181,9 @@ signal peak_2_peak : signed(18 downto 0) := (others => '0');
 
 
 signal lp_filtered : signed(31 downto 0) := (others => '0');
-signal lp_gated : signed(31 downto 0) := (others => '0');
+signal lpf_gated : signed(31 downto 0) := (others => '0');
+signal lpf_out_sum : signed(31 downto 0) := (others => '0');
+signal lpf_out_offset : signed(31 downto 0) := (others => '0');
 
 signal multi_i : integer := 0;
 
@@ -194,6 +200,26 @@ begin
 	end if;
 	return retdata;
 end sign_extend_18_to_19;
+
+component cordic_nco
+	PORT
+	(
+		clk : in std_logic;
+		frq : in std_logic_vector( 31 downto 0 );
+		sin : out signed( 15 downto 0 );
+		cos : out signed( 15 downto 0 )
+	);
+end component;
+
+component multi_0
+	PORT
+	(
+		clock		: IN STD_LOGIC ;
+		dataa		: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
+		datab		: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
+		result		: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+	);
+end component;
 
 begin
 
@@ -344,14 +370,66 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
-				lp_gated <= lp_filtered / 8;
+				lpf_gated <= lp_filtered / 8;
 			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
-				lp_gated <= lp_filtered;
+				lpf_gated <= lp_filtered;
 			else
-				lp_gated <= (others => '0');
+				lpf_gated <= (others => '0');
 			end if;
 		end if;
 	end process;
+
+	gate_sum_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (symbol_cnt = 6 * 80) then
+				lpf_out_sum <= lpf_gated;
+			elsif (seq(3 downto 0) = 0) then
+				lpf_out_sum <= lpf_out_sum + lpf_gated;
+			end if;
+		end if;
+	end process;
+
+	gate_offset_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (symbol_cnt = 64 * 80 + 6 * 80 and lpf_out_sum > 0) then
+				lpf_out_offset <= lpf_out_offset + 395;
+			elsif (symbol_cnt = 64 * 80 + 6 * 80 and lpf_out_sum < 0) then
+				lpf_out_offset <= lpf_out_offset - 395;
+			end if;
+		end if;
+	end process;
+
+	mul_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			multi_i <= (to_integer(unsigned(indata)) * to_integer(cos_1)) / 4;
+		end if;
+	end process;
+
+	--//325kHz + 4kHz
+	cordic_nco_inst1 : cordic_nco PORT MAP (
+		clk => clk80m,
+		frq => conv_std_logic_vector(to_integer(17448304 - 53 + lpf_out_offset + lpf_gated), 32),
+		sin => sin_1,
+		cos => cos_1
+	);
+
+	--//upconv + 175KHz
+	cordic_nco_inst2 : cordic_nco PORT MAP (
+		clk => clk80m,
+		frq => conv_std_logic_vector(to_integer(9395240 + 53 - lpf_out_offset - lpf_gated), 32),
+		sin => sin_l,
+		cos => cos_l
+	);
+
+	mul_inst : multi_0 PORT MAP (
+		clock => clk80m,
+		dataa => STD_LOGIC_VECTOR(indata(17 downto 2)),
+		datab => STD_LOGIC_VECTOR(cos_l),
+		result => outdata
+	);
 
 end rtl;
 

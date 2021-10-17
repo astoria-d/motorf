@@ -6,7 +6,7 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 entity output_uart is 
 	port (
 	signal clk80m		: in std_logic;
-	signal indata		: in std_logic_vector(11 downto 0);
+	signal indata		: in std_logic_vector(31 downto 0);
 	signal uart_out	: out std_logic
 	);
 end output_uart;
