@@ -180,8 +180,8 @@ signal plus_peak : signed(17 downto 0) := (others => '0');
 signal peak_2_peak : signed(18 downto 0) := (others => '0');
 
 
-signal lp_filtered : signed(31 downto 0) := (others => '0');
-signal lpf_gated : signed(31 downto 0) := (others => '0');
+signal pre_gated_lpf : signed(31 downto 0) := (others => '0');
+signal gated_lpf : signed(31 downto 0) := (others => '0');
 signal lpf_out_sum : signed(31 downto 0) := (others => '0');
 signal lpf_out_offset : signed(31 downto 0) := (others => '0');
 
@@ -230,7 +230,7 @@ begin
 		end if;
 	end process;
 
-	lpf_p : process (clk80m)
+	pre_saw_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (seq(3 downto 0) = 0) then
@@ -292,11 +292,11 @@ begin
 		end if;
 	end process;
 
-	sync_p : process (clk80m)
+	sync_signal_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (sync_lock > 10000) then
-				synchronized <= seq(20);
+				synchronized <= seq(25);
 			else
 				synchronized <= '0';
 			end if;
@@ -349,19 +349,19 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (peak_2_peak > 16384 * 4) then
-				lp_filtered <= to_signed(multi_i / 16 / 8, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 16 / 8, pre_gated_lpf'length);
 			elsif (peak_2_peak > 8192 * 4) then
-				lp_filtered <= to_signed(multi_i / 8 / 8, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 8 / 8, pre_gated_lpf'length);
 			elsif (peak_2_peak > 4096 * 4) then
-				lp_filtered <= to_signed(multi_i / 4 / 8, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 4 / 8, pre_gated_lpf'length);
 			elsif (peak_2_peak > 2048 * 4) then
-				lp_filtered <= to_signed(multi_i / 2 / 8, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 2 / 8, pre_gated_lpf'length);
 			elsif (peak_2_peak > 2048 * 2) then
-				lp_filtered <= to_signed(multi_i / 8, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 8, pre_gated_lpf'length);
 			elsif (peak_2_peak > 2048) then
-				lp_filtered <= to_signed(multi_i / 4, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 4, pre_gated_lpf'length);
 			else
-				lp_filtered <= to_signed(multi_i / 2, lp_filtered'length);
+				pre_gated_lpf <= to_signed(multi_i / 2, pre_gated_lpf'length);
 			end if;
 		end if;
 	end process;
@@ -370,27 +370,27 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
-				lpf_gated <= lp_filtered / 8;
+				gated_lpf <= pre_gated_lpf / 8;
 			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
-				lpf_gated <= lp_filtered;
+				gated_lpf <= pre_gated_lpf;
 			else
-				lpf_gated <= (others => '0');
+				gated_lpf <= (others => '0');
 			end if;
 		end if;
 	end process;
 
-	gate_sum_p : process (clk80m)
+	lpf_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt = 6 * 80) then
-				lpf_out_sum <= lpf_gated;
+				lpf_out_sum <= gated_lpf;
 			elsif (seq(3 downto 0) = 0) then
-				lpf_out_sum <= lpf_out_sum + lpf_gated;
+				lpf_out_sum <= lpf_out_sum + gated_lpf;
 			end if;
 		end if;
 	end process;
 
-	gate_offset_p : process (clk80m)
+	offset_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt = 64 * 80 + 6 * 80 and lpf_out_sum > 0) then
@@ -401,7 +401,7 @@ begin
 		end if;
 	end process;
 
-	mul_p : process (clk80m)
+	multipler_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			multi_i <= (to_integer(unsigned(indata)) * to_integer(cos_1)) / 4;
@@ -409,22 +409,22 @@ begin
 	end process;
 
 	--//325kHz + 4kHz
-	cordic_nco_inst1 : cordic_nco PORT MAP (
+	pilot_nco_inst1 : cordic_nco PORT MAP (
 		clk => clk80m,
-		frq => conv_std_logic_vector(to_integer(17448304 - 53 + lpf_out_offset + lpf_gated), 32),
+		frq => conv_std_logic_vector(to_integer(17448304 - 53 + lpf_out_offset + gated_lpf), 32),
 		sin => sin_1,
 		cos => cos_1
 	);
 
 	--//upconv + 175KHz
-	cordic_nco_inst2 : cordic_nco PORT MAP (
+	out_nco_inst2 : cordic_nco PORT MAP (
 		clk => clk80m,
-		frq => conv_std_logic_vector(to_integer(9395240 + 53 - lpf_out_offset - lpf_gated), 32),
+		frq => conv_std_logic_vector(to_integer(9395240 + 53 - lpf_out_offset - gated_lpf), 32),
 		sin => sin_l,
 		cos => cos_l
 	);
 
-	mul_inst : multi_0 PORT MAP (
+	multipler_ip_inst : multi_0 PORT MAP (
 		clock => clk80m,
 		dataa => STD_LOGIC_VECTOR(indata(17 downto 2)),
 		datab => STD_LOGIC_VECTOR(cos_l),
