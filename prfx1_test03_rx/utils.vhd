@@ -199,7 +199,7 @@ is
 variable retdata : signed(31 downto 0);
 begin
 	retdata := indata_32;
-	for i in 0 to bits - 1 loop
+	for i in 0 to bits loop
 		retdata := sign_1bit_rshift_32(retdata);
 	end loop;
 	return retdata;
