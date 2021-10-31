@@ -141,9 +141,9 @@ end rtl;
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
-use ieee.numeric_std.all;
-use ieee.std_logic_arith.conv_std_logic_vector;
+use work.motorf.all;
 
 entity sync_carrier is
 	port (
@@ -185,21 +185,10 @@ signal gated_lpf : signed(31 downto 0) := (others => '0');
 signal lpf_out_sum : signed(31 downto 0) := (others => '0');
 signal lpf_out_offset : signed(31 downto 0) := (others => '0');
 
-signal multi_i : integer := 0;
+signal pilog_nco_freq : signed(31 downto 0) := (others => '0');
+signal upconv_nco_freq : signed(31 downto 0) := (others => '0');
 
-function sign_extend_18_to_19 (
-	signal indata_18 : in signed
-	) return signed
-is
-variable retdata : signed(18 downto 0);
-begin
-	if (indata_18(indata_18'length - 1) = '0') then
-		retdata := "0" & indata_18;
-	else
-		retdata := "1" & indata_18;
-	end if;
-	return retdata;
-end sign_extend_18_to_19;
+signal multi_i : signed(31 downto 0) := (others => '0');
 
 component cordic_nco
 	PORT
@@ -249,7 +238,7 @@ begin
 				saw_chk <= saw_chk;
 			elsif (saw_chk = 0 and nco_chk > 1 and nco_chk < 1023) then   -----1023 = "1111111111"
 				saw_chk <= (others => '0');
-			elsif (saw_chk /= 0 and saw_chk /= 1023 and saw_chk - 1 /= nco_chk and saw_chk /= nco_chk and saw_chk + 1 /= nco_chk ) then
+			elsif (saw_chk > 0 and saw_chk < 1023 and saw_chk - 1 /= nco_chk and saw_chk /= nco_chk and saw_chk + 1 /= nco_chk ) then
 				saw_chk <= (others => '0');
 			elsif (saw_chk = 1023 and nco_chk > 0 and nco_chk < 1022) then-----1022 = "1111111110"
 				saw_chk <= (others => '0');
@@ -284,9 +273,11 @@ begin
 				sync_lock <= (others => '0');
 			elsif (saw_chk /= 0 and saw_chk /= 1023 and saw_chk - 1 /= nco_chk and saw_chk /= nco_chk and saw_chk + 1 /= nco_chk ) then
 				sync_lock <= (others => '0');
-			elsif (saw_chk = 1023 and nco_chk /= 0 and nco_chk < 1022) then
+			elsif (saw_chk = 1023 and nco_chk > 0 and nco_chk < 1022) then
 				sync_lock <= (others => '0');
-			elsif (sync_lock < 1000 * 1000 * 100 * 40) then
+			elsif (sync_lock < "11101110011010110010100000000000") then
+				--11101110011010110010100000000000 is 1000 * 1000 * 100 * 40. 
+				--since it is larger than 4GB, the compiler complaints...
 				sync_lock <= sync_lock + 1;
 			end if;
 		end if;
@@ -349,19 +340,19 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (peak_2_peak > 16384 * 4) then
-				pre_gated_lpf <= to_signed(multi_i / 16 / 8, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 7);
 			elsif (peak_2_peak > 8192 * 4) then
-				pre_gated_lpf <= to_signed(multi_i / 8 / 8, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 6);
 			elsif (peak_2_peak > 4096 * 4) then
-				pre_gated_lpf <= to_signed(multi_i / 4 / 8, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 5);
 			elsif (peak_2_peak > 2048 * 4) then
-				pre_gated_lpf <= to_signed(multi_i / 2 / 8, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 4);
 			elsif (peak_2_peak > 2048 * 2) then
-				pre_gated_lpf <= to_signed(multi_i / 8, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 3);
 			elsif (peak_2_peak > 2048) then
-				pre_gated_lpf <= to_signed(multi_i / 4, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 2);
 			else
-				pre_gated_lpf <= to_signed(multi_i / 2, pre_gated_lpf'length);
+				pre_gated_lpf <= sign_rshift_32(multi_i, 1);
 			end if;
 		end if;
 	end process;
@@ -370,7 +361,7 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
-				gated_lpf <= pre_gated_lpf / 8;
+				gated_lpf <= sign_rshift_32(pre_gated_lpf, 3);
 			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
 				gated_lpf <= pre_gated_lpf;
 			else
@@ -402,24 +393,28 @@ begin
 	end process;
 
 	multipler_p : process (clk80m)
+	variable tmp_mul : signed(33 downto 0);
 	begin
 		if (rising_edge(clk80m)) then
-			multi_i <= (to_integer(unsigned(indata)) * to_integer(cos_1)) / 4;
+			tmp_mul := signed(indata) * cos_1;
+			multi_i <= tmp_mul(33 downto 2);
 		end if;
 	end process;
 
 	--//325kHz + 4kHz
+	pilog_nco_freq <= conv_signed(17448304 - 53, 32) + lpf_out_offset + gated_lpf;
 	pilot_nco_inst1 : cordic_nco PORT MAP (
 		clk => clk80m,
-		frq => conv_std_logic_vector(to_integer(17448304 - 53 + lpf_out_offset + gated_lpf), 32),
+		frq => std_logic_vector(pilog_nco_freq),
 		sin => sin_1,
 		cos => cos_1
 	);
 
 	--//upconv + 175KHz
+	upconv_nco_freq <= conv_signed(9395240 + 53, 32) - lpf_out_offset - gated_lpf;
 	out_nco_inst2 : cordic_nco PORT MAP (
 		clk => clk80m,
-		frq => conv_std_logic_vector(to_integer(9395240 + 53 - lpf_out_offset - gated_lpf), 32),
+		frq => std_logic_vector(upconv_nco_freq),
 		sin => sin_l,
 		cos => cos_l
 	);

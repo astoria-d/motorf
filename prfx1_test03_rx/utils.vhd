@@ -48,6 +48,17 @@ package motorf is
 		signal indata_18 : in signed
 		) return signed;
 
+---used by sign_rshift_32
+function sign_1bit_rshift_32 (
+	indata_32 : in signed
+	) return signed;
+
+--used in sync_carrier
+function sign_rshift_32 (
+	indata_32 : in signed;
+	bits : in integer 
+	) return signed;
+
 end package motorf;
 
 package body motorf is
@@ -162,6 +173,37 @@ begin
 	end if;
 	return retdata;
 end sign_extend_18_to_19;
+
+---used by sign_rshift_32
+function sign_1bit_rshift_32 (
+	indata_32 : in signed
+	) return signed
+is
+variable retdata : signed(31 downto 0);
+begin
+	if (indata_32(indata_32'length - 1) = '0') then
+		retdata := "0" & indata_32(indata_32'length - 1 downto 1);
+	else
+		retdata := "1" & indata_32(indata_32'length - 1 downto 1);
+	end if;
+	return retdata;
+end sign_1bit_rshift_32;
+
+
+--used in sync_carrier
+function sign_rshift_32 (
+	indata_32 : in signed;
+	bits : in integer 
+	) return signed
+is
+variable retdata : signed(31 downto 0);
+begin
+	retdata := indata_32;
+	for i in 0 to bits - 1 loop
+		retdata := sign_1bit_rshift_32(retdata);
+	end loop;
+	return retdata;
+end sign_rshift_32;
 
 end package body motorf;
 

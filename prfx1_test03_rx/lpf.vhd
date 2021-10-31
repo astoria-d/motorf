@@ -177,7 +177,7 @@ begin
 				multi2 <= mul_ex(indata3, coef3);
 				multi3 <= mul_ex(indata5, coef5);
 				multi4 <= mul_ex(indata7, coef7);
-				multi5 <= mul_ex(indata9, coef9);	
+				multi5 <= mul_ex(indata9, coef9);
 				multi6 <= mul_ex(indata11, coef11);
 				multi7 <= mul_ex(indata13, coef13);
 				multi8 <= mul_ex(indata15, coef15);
@@ -192,7 +192,7 @@ begin
 				multi2 <= mul_ex(indata4, coef4);
 				multi3 <= mul_ex(indata6, coef6);
 				multi4 <= mul_ex(indata8, coef8);
-				multi5 <= mul_ex(indata10, coef10);	
+				multi5 <= mul_ex(indata10, coef10);
 				multi6 <= mul_ex(indata12, coef12);
 				multi7 <= mul_ex(indata14, coef14);
 				multi8 <= mul_ex(indata16, coef16);
