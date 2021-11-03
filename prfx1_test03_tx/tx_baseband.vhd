@@ -12,6 +12,7 @@ entity tx_baseband is
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal pilot_only : in std_logic;
 		signal tx_data : in std_logic_vector(31 downto 0);
 		signal i_data : out std_logic_vector(15 downto 0);
 		signal q_data : out std_logic_vector(15 downto 0)
@@ -419,7 +420,10 @@ begin
 	variable tmp_q : integer;
 	begin
 		if (rising_edge(clk80m)) then
-			if (conv_integer(symbol_num) = 0) then
+			if (pilot_only = '1') then
+				tmp_i := 11 * conv_integer(signed(mem_data_cos_pilot));
+				tmp_q := 11 * conv_integer(signed(mem_data_sin_pilot));
+			elsif (conv_integer(symbol_num) = 0) then
 				--symbol 0: no data
 				tmp_i := 0;
 				tmp_q := 0;

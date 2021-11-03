@@ -60,6 +60,7 @@ component tx_baseband
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal pilot_only : in std_logic;
 		signal tx_data : in std_logic_vector(31 downto 0);
 		signal i_data : out std_logic_vector(15 downto 0);
 		signal q_data : out std_logic_vector(15 downto 0)
@@ -131,6 +132,8 @@ signal clk80m  : std_logic;
 
 signal symbol_cnt : std_logic_vector(15 downto 0);
 signal symbol_num : std_logic_vector(7 downto 0);
+signal pilot_only : std_logic;
+signal no_tx : std_logic;
 signal tx_data : std_logic_vector(31 downto 0);
 signal i_data : std_logic_vector(15 downto 0);
 signal q_data : std_logic_vector(15 downto 0);
@@ -138,6 +141,11 @@ signal i_lpf : std_logic_vector(15 downto 0);
 signal q_lpf : std_logic_vector(15 downto 0);
 signal i_if : std_logic_vector(13 downto 0);
 signal q_if : std_logic_vector(13 downto 0);
+signal ddr_in_h : std_logic_vector(13 downto 0);
+signal ddr_in_l : std_logic_vector(13 downto 0);
+
+
+
 
 signal dac_en : std_logic;
 signal dac_spi_data : std_logic_vector(15 downto 0);
@@ -185,6 +193,7 @@ begin
 		clk80m => clk80m,
 		symbol_cnt => symbol_cnt,
 		symbol_num => symbol_num,
+		pilot_only => pilot_only,
 		tx_data => tx_data,
 		i_data => i_data,
 		q_data => q_data
@@ -211,14 +220,29 @@ begin
 		Q_IF => q_if
 	);
 
+	--control reset signal before ddr input
+	ddr_in_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (no_tx = '0') then
+				-- tx is enabled
+				ddr_in_h <= i_if;
+				ddr_in_l <= q_if;
+			else
+				-- tx is disabled. zero output
+				ddr_in_h <= (others => '0');
+				ddr_in_l <= (others => '0');
+			end if;
+		end if;
+	end process;
+
 	--DDR instance
 	DDR_OUT_inst : DDR_OUT PORT MAP (
-		datain_h	=> i_if,
-		datain_l	=> q_if,
+		datain_h	=> ddr_in_h,
+		datain_l	=> ddr_in_l,
 		outclock	=> clk80m,
 		dataout	=> dac
 	);
-
 	dac_clk <= clk80m;
 
 	--dac parameter set module instance
@@ -295,7 +319,10 @@ begin
 	variable cnt : std_logic_vector(23 downto 0);
    begin
 		if (rising_edge(clk16m)) then
-			--sw1 = reset
+			--sw1 = no tx
+			--sw2 = pilot only
+			no_tx <= sw1;
+			pilot_only <= sw2;
 			if (sw1 = '1') then
 				led1 <= '0';
 				led2 <= '0';
