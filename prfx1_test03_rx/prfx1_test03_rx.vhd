@@ -96,7 +96,8 @@ component sync_symbol
 	signal clk80m		: in std_logic;
 	signal indata		: in std_logic_vector(17 downto 0);
 	signal symbol_num : out std_logic_vector(7 downto 0);
-	signal symbol_cnt : out std_logic_vector(15 downto 0)
+	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal pilot_only	: out std_logic
 	);
 end component;
 
@@ -106,6 +107,7 @@ component sync_carrier
 	signal indata		: in std_logic_vector(17 downto 0);
 	signal symbol_num : in std_logic_vector(7 downto 0);
 	signal symbol_cnt : in std_logic_vector(15 downto 0);
+	signal pilot_only	: in std_logic;
 	signal outdata		: out std_logic_vector(31 downto 0);
 	signal synchronized : out std_logic
 	);
@@ -133,6 +135,7 @@ signal bp_filtered	: std_logic_vector(17 downto 0);
 
 signal symbol_num : std_logic_vector(7 downto 0);
 signal symbol_cnt : std_logic_vector(15 downto 0);
+signal pilot_only	: std_logic;
 
 signal carrier_sync	: std_logic_vector(31 downto 0);
 signal carrier_sync_stat	: std_logic;
@@ -206,7 +209,8 @@ begin
 		clk80m => clk80m,
 		indata => bp_filtered,
 		symbol_num => symbol_num,
-		symbol_cnt => symbol_cnt
+		symbol_cnt => symbol_cnt,
+		pilot_only => pilot_only
 	);
 
 	sync_carrier_inst :sync_carrier
@@ -215,6 +219,7 @@ begin
 		indata => bp_filtered,
 		symbol_num => symbol_num,
 		symbol_cnt => symbol_cnt,
+		pilot_only => pilot_only,
 		outdata => carrier_sync,
 		synchronized => carrier_sync_stat
 	);

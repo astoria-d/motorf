@@ -8,7 +8,8 @@ entity sync_symbol is
 	signal clk80m		: in std_logic;
 	signal indata		: in std_logic_vector(17 downto 0);
 	signal symbol_num : out std_logic_vector(7 downto 0);
-	signal symbol_cnt : out std_logic_vector(15 downto 0)
+	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal pilot_only	: out std_logic
 	);
 end sync_symbol;
 
@@ -129,6 +130,31 @@ begin
 		end if;
 	end process;
 
+	--pilot check
+	pilot_p : process (clk80m)
+	variable clk_cnt : integer := 0;
+	variable frame : integer := 0;
+	begin
+		if (rising_edge(clk80m)) then
+			if (symbol_num_reg = conv_std_logic_vector(0, 8)) then
+				if (clk_cnt = 76 * 80 * 100 - 1) then
+					clk_cnt := 0;
+					frame := frame + 1;
+					if (frame > 10) then
+						--if zero symbol continued more than 10 frames, assume pilot mode.
+						pilot_only <= '1';
+					end if;
+				else
+					clk_cnt := clk_cnt + 1;
+				end if;
+			else
+				clk_cnt := 0;
+				frame := 0;
+				pilot_only <= '0';
+			end if;
+		end if;
+	end process;
+
 end rtl;
 
 
@@ -151,6 +177,7 @@ entity sync_carrier is
 	signal indata		: in std_logic_vector(17 downto 0);
 	signal symbol_num : in std_logic_vector(7 downto 0);
 	signal symbol_cnt : in std_logic_vector(15 downto 0);
+	signal pilot_only	: in std_logic;
 	signal outdata		: out std_logic_vector(31 downto 0);
 	signal synchronized : out std_logic
 	);
@@ -173,6 +200,7 @@ signal sin_l : signed(15 downto 0) := (others => '0');
 signal cos_l : signed(15 downto 0) := (others => '0');
 
 signal sync_lock : std_logic_vector(31 downto 0) := (others => '0');
+signal reg_sync : std_logic;
 
 signal pk_cnt : std_logic_vector(23 downto 0) := (others => '0');
 signal minus_peak : signed(17 downto 0) := (others => '0');
@@ -283,13 +311,14 @@ begin
 		end if;
 	end process;
 
+	synchronized <= reg_sync;
 	sync_signal_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (sync_lock > 10000) then
-				synchronized <= seq(25);
+				reg_sync <= seq(25);
 			else
-				synchronized <= '0';
+				reg_sync <= '0';
 			end if;
 		end if;
 	end process;
@@ -360,7 +389,9 @@ begin
 	gate_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
+			if (pilot_only = '1') then
+				gated_lpf <= sign_rshift_32(pre_gated_lpf, 3);
+			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num = 1) then
 				gated_lpf <= sign_rshift_32(pre_gated_lpf, 3);
 			elsif (symbol_cnt > 6 * 80 and symbol_cnt < 6 * 80 + 64 * 80 and symbol_num /= 0) then
 				gated_lpf <= pre_gated_lpf;
@@ -384,7 +415,12 @@ begin
 	offset_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (symbol_cnt = 64 * 80 + 6 * 80 and lpf_out_sum > 0) then
+			if (pilot_only = '1' and lpf_out_offset > 2147480 and reg_sync = '0') then
+				--2147480 = 40kHz. sweep +/- 40 kHz
+				lpf_out_offset <= conv_signed(-2147480, 32);
+			elsif (pilot_only = '1' and seq(3 downto 0) = 0 and reg_sync = '0') then
+				lpf_out_offset <= lpf_out_offset + 1;
+			elsif (symbol_cnt = 64 * 80 + 6 * 80 and lpf_out_sum > 0) then
 				lpf_out_offset <= lpf_out_offset + 395;
 			elsif (symbol_cnt = 64 * 80 + 6 * 80 and lpf_out_sum < 0) then
 				lpf_out_offset <= lpf_out_offset - 395;
