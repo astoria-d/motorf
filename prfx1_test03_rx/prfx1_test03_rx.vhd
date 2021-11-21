@@ -113,10 +113,21 @@ component sync_carrier
 	);
 end component;
 
+component demodulator
+	port (
+	signal clk80m		: in std_logic;
+	signal symbol_num : in std_logic_vector(7 downto 0);
+	signal symbol_cnt : in std_logic_vector(15 downto 0);
+	signal indata		: in std_logic_vector(31 downto 0);
+	signal out_byte	: out std_logic_vector(7 downto 0);
+	signal out_en		: out std_logic
+	);
+end component;
+
 component output_uart
 	port (
 	signal clk80m		: in std_logic;
-	signal indata		: in std_logic_vector(31 downto 0);
+	signal indata		: in std_logic_vector(7 downto 0);
 	signal uart_out	: out std_logic
 	);
 end component;
@@ -137,8 +148,11 @@ signal symbol_num : std_logic_vector(7 downto 0);
 signal symbol_cnt : std_logic_vector(15 downto 0);
 signal pilot_only	: std_logic;
 
-signal carrier_sync	: std_logic_vector(31 downto 0);
+signal upcon_data	: std_logic_vector(31 downto 0);
 signal carrier_sync_stat	: std_logic;
+
+signal demod_out	: std_logic_vector(7 downto 0);
+signal demod_out_en	: std_logic;
 
 begin
 
@@ -213,6 +227,7 @@ begin
 		pilot_only => pilot_only
 	);
 
+	--sync carrier
 	sync_carrier_inst :sync_carrier
 	port map (
 		clk80m => clk80m,
@@ -220,8 +235,19 @@ begin
 		symbol_num => symbol_num,
 		symbol_cnt => symbol_cnt,
 		pilot_only => pilot_only,
-		outdata => carrier_sync,
+		outdata => upcon_data,
 		synchronized => carrier_sync_stat
+	);
+
+	--demodulator
+	demod_inst : demodulator
+	port map (
+	clk80m		=> clk80m,
+	symbol_num => symbol_num,
+	symbol_cnt => symbol_cnt,
+	indata		=> upcon_data,
+	out_byte		=> demod_out,
+	out_en		=> demod_out_en
 	);
 
 	--spi output module for pll
@@ -235,7 +261,7 @@ begin
 
 	uart_out_inst : output_uart port map (
 		clk80m => clk80m,
-		indata => carrier_sync,
+		indata => demod_out,
 		uart_out => uart_out
 	);
 
@@ -251,7 +277,7 @@ begin
 				led3 <= '0';
 			else
 				led1 <= sw2;
-				led2 <= not sw2;
+				led2 <= demod_out_en;
 				led3 <= carrier_sync_stat;
 			end if;
 		end if;

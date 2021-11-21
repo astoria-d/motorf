@@ -4,7 +4,7 @@
 -- MODULE: altsyncram 
 
 -- ============================================================
--- File Name: sin10.vhd
+-- File Name: wave_mem.vhd
 -- Megafunction Name(s):
 -- 			altsyncram
 --
@@ -67,7 +67,7 @@ BEGIN
 		intended_device_family => "Cyclone IV E",
 		lpm_hint => "ENABLE_RUNTIME_MOD=NO",
 		lpm_type => "altsyncram",
-		numwords_a => 380,
+		numwords_a => 512,
 		operation_mode => "ROM",
 		outdata_aclr_a => "NONE",
 		outdata_reg_a => "CLOCK0",
@@ -105,8 +105,8 @@ END SYN;
 -- Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 -- Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 -- Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
--- Retrieval info: PRIVATE: MIFfilename STRING "sin-10.mif"
--- Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "380"
+-- Retrieval info: PRIVATE: MIFfilename STRING "wave-cos0.mif"
+-- Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "512"
 -- Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
 -- Retrieval info: PRIVATE: RegAddr NUMERIC "1"
 -- Retrieval info: PRIVATE: RegOutput NUMERIC "1"
@@ -120,11 +120,11 @@ END SYN;
 -- Retrieval info: CONSTANT: ADDRESS_ACLR_A STRING "NONE"
 -- Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 -- Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
--- Retrieval info: CONSTANT: INIT_FILE STRING "sin-10.mif"
+-- Retrieval info: CONSTANT: INIT_FILE STRING "wave-cos0.mif"
 -- Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 -- Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 -- Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
--- Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "380"
+-- Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "512"
 -- Retrieval info: CONSTANT: OPERATION_MODE STRING "ROM"
 -- Retrieval info: CONSTANT: OUTDATA_ACLR_A STRING "NONE"
 -- Retrieval info: CONSTANT: OUTDATA_REG_A STRING "CLOCK0"
@@ -137,9 +137,9 @@ END SYN;
 -- Retrieval info: CONNECT: @address_a 0 0 9 0 address 0 0 9 0
 -- Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
 -- Retrieval info: CONNECT: q 0 0 16 0 @q_a 0 0 16 0
--- Retrieval info: GEN_FILE: TYPE_NORMAL sin10.vhd TRUE
--- Retrieval info: GEN_FILE: TYPE_NORMAL sin10.inc FALSE
--- Retrieval info: GEN_FILE: TYPE_NORMAL sin10.cmp TRUE
--- Retrieval info: GEN_FILE: TYPE_NORMAL sin10.bsf FALSE
--- Retrieval info: GEN_FILE: TYPE_NORMAL sin10_inst.vhd FALSE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL wave_mem.vhd TRUE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL wave_mem.inc FALSE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL wave_mem.cmp TRUE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL wave_mem.bsf FALSE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL wave_mem_inst.vhd FALSE
 -- Retrieval info: LIB_FILE: altera_mf
