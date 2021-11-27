@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
---use work.motorf.all;
+use work.motorf.all;
 
 entity demodulator is
 	port (
@@ -10,7 +10,7 @@ entity demodulator is
 	signal symbol_num : in std_logic_vector(7 downto 0);
 	signal symbol_cnt : in std_logic_vector(15 downto 0);
 	signal indata		: in std_logic_vector(31 downto 0);
-	signal out_byte	: out std_logic_vector(7 downto 0);
+	signal out_word 	: out std_logic_vector(31 downto 0);
 	signal out_en		: out std_logic
 	);
 end demodulator;
@@ -94,73 +94,74 @@ signal multi_c : std_logic_vector(31 downto 0);
 
 constant offset : integer := 7 * 80;
 
-signal base_s0 : std_logic_vector(31 downto 0);
-signal base_s1 : std_logic_vector(31 downto 0);
-signal base_s2 : std_logic_vector(31 downto 0);
-signal base_s3 : std_logic_vector(31 downto 0);
-signal base_s4 : std_logic_vector(31 downto 0);
-signal base_s5 : std_logic_vector(31 downto 0);
-signal base_s6 : std_logic_vector(31 downto 0);
-signal base_s7 : std_logic_vector(31 downto 0);
-signal base_s8 : std_logic_vector(31 downto 0);
-signal base_s9 : std_logic_vector(31 downto 0);
-signal base_s10 : std_logic_vector(31 downto 0);
-signal base_s11 : std_logic_vector(31 downto 0);
-signal base_s12 : std_logic_vector(31 downto 0);
-signal base_s13 : std_logic_vector(31 downto 0);
-signal base_s14 : std_logic_vector(31 downto 0);
-signal base_s15 : std_logic_vector(31 downto 0);
+--work buffer for each carrier
+signal wdata_base_s0 : std_logic_vector(31 downto 0);
+signal wdata_base_s1 : std_logic_vector(31 downto 0);
+signal wdata_base_s2 : std_logic_vector(31 downto 0);
+signal wdata_base_s3 : std_logic_vector(31 downto 0);
+signal wdata_base_s4 : std_logic_vector(31 downto 0);
+signal wdata_base_s5 : std_logic_vector(31 downto 0);
+signal wdata_base_s6 : std_logic_vector(31 downto 0);
+signal wdata_base_s7 : std_logic_vector(31 downto 0);
+signal wdata_base_s8 : std_logic_vector(31 downto 0);
+signal wdata_base_s9 : std_logic_vector(31 downto 0);
+signal wdata_base_s10 : std_logic_vector(31 downto 0);
+signal wdata_base_s11 : std_logic_vector(31 downto 0);
+signal wdata_base_s12 : std_logic_vector(31 downto 0);
+signal wdata_base_s13 : std_logic_vector(31 downto 0);
+signal wdata_base_s14 : std_logic_vector(31 downto 0);
+signal wdata_base_s15 : std_logic_vector(31 downto 0);
 
-signal base_c0 : std_logic_vector(31 downto 0);
-signal base_c1 : std_logic_vector(31 downto 0);
-signal base_c2 : std_logic_vector(31 downto 0);
-signal base_c3 : std_logic_vector(31 downto 0);
-signal base_c4 : std_logic_vector(31 downto 0);
-signal base_c5 : std_logic_vector(31 downto 0);
-signal base_c6 : std_logic_vector(31 downto 0);
-signal base_c7 : std_logic_vector(31 downto 0);
-signal base_c8 : std_logic_vector(31 downto 0);
-signal base_c9 : std_logic_vector(31 downto 0);
-signal base_c10 : std_logic_vector(31 downto 0);
-signal base_c11 : std_logic_vector(31 downto 0);
-signal base_c12 : std_logic_vector(31 downto 0);
-signal base_c13 : std_logic_vector(31 downto 0);
-signal base_c14 : std_logic_vector(31 downto 0);
-signal base_c15 : std_logic_vector(31 downto 0);
+signal wdata_base_c0 : std_logic_vector(31 downto 0);
+signal wdata_base_c1 : std_logic_vector(31 downto 0);
+signal wdata_base_c2 : std_logic_vector(31 downto 0);
+signal wdata_base_c3 : std_logic_vector(31 downto 0);
+signal wdata_base_c4 : std_logic_vector(31 downto 0);
+signal wdata_base_c5 : std_logic_vector(31 downto 0);
+signal wdata_base_c6 : std_logic_vector(31 downto 0);
+signal wdata_base_c7 : std_logic_vector(31 downto 0);
+signal wdata_base_c8 : std_logic_vector(31 downto 0);
+signal wdata_base_c9 : std_logic_vector(31 downto 0);
+signal wdata_base_c10 : std_logic_vector(31 downto 0);
+signal wdata_base_c11 : std_logic_vector(31 downto 0);
+signal wdata_base_c12 : std_logic_vector(31 downto 0);
+signal wdata_base_c13 : std_logic_vector(31 downto 0);
+signal wdata_base_c14 : std_logic_vector(31 downto 0);
+signal wdata_base_c15 : std_logic_vector(31 downto 0);
 
-signal result_s0 : std_logic_vector(31 downto 0);
-signal result_s1 : std_logic_vector(31 downto 0);
-signal result_s2 : std_logic_vector(31 downto 0);
-signal result_s3 : std_logic_vector(31 downto 0);
-signal result_s4 : std_logic_vector(31 downto 0);
-signal result_s5 : std_logic_vector(31 downto 0);
-signal result_s6 : std_logic_vector(31 downto 0);
-signal result_s7 : std_logic_vector(31 downto 0);
-signal result_s8 : std_logic_vector(31 downto 0);
-signal result_s9 : std_logic_vector(31 downto 0);
-signal result_s10 : std_logic_vector(31 downto 0);
-signal result_s11 : std_logic_vector(31 downto 0);
-signal result_s12 : std_logic_vector(31 downto 0);
-signal result_s13 : std_logic_vector(31 downto 0);
-signal result_s14 : std_logic_vector(31 downto 0);
-signal result_s15 : std_logic_vector(31 downto 0);
+signal wdata_s0 : std_logic_vector(31 downto 0);
+signal wdata_s1 : std_logic_vector(31 downto 0);
+signal wdata_s2 : std_logic_vector(31 downto 0);
+signal wdata_s3 : std_logic_vector(31 downto 0);
+signal wdata_s4 : std_logic_vector(31 downto 0);
+signal wdata_s5 : std_logic_vector(31 downto 0);
+signal wdata_s6 : std_logic_vector(31 downto 0);
+signal wdata_s7 : std_logic_vector(31 downto 0);
+signal wdata_s8 : std_logic_vector(31 downto 0);
+signal wdata_s9 : std_logic_vector(31 downto 0);
+signal wdata_s10 : std_logic_vector(31 downto 0);
+signal wdata_s11 : std_logic_vector(31 downto 0);
+signal wdata_s12 : std_logic_vector(31 downto 0);
+signal wdata_s13 : std_logic_vector(31 downto 0);
+signal wdata_s14 : std_logic_vector(31 downto 0);
+signal wdata_s15 : std_logic_vector(31 downto 0);
 
-signal result_c0 : std_logic_vector(31 downto 0);
-signal result_c1 : std_logic_vector(31 downto 0);
-signal result_c2 : std_logic_vector(31 downto 0);
-signal result_c3 : std_logic_vector(31 downto 0);
-signal result_c4 : std_logic_vector(31 downto 0);
-signal result_c5 : std_logic_vector(31 downto 0);
-signal result_c6 : std_logic_vector(31 downto 0);
-signal result_c7 : std_logic_vector(31 downto 0);
-signal result_c8 : std_logic_vector(31 downto 0);
-signal result_c9 : std_logic_vector(31 downto 0);
-signal result_c10 : std_logic_vector(31 downto 0);
-signal result_c11 : std_logic_vector(31 downto 0);
-signal result_c12 : std_logic_vector(31 downto 0);
-signal result_c13 : std_logic_vector(31 downto 0);
-signal result_c14 : std_logic_vector(31 downto 0);
-signal result_c15 : std_logic_vector(31 downto 0);
+signal wdata_c0 : std_logic_vector(31 downto 0);
+signal wdata_c1 : std_logic_vector(31 downto 0);
+signal wdata_c2 : std_logic_vector(31 downto 0);
+signal wdata_c3 : std_logic_vector(31 downto 0);
+signal wdata_c4 : std_logic_vector(31 downto 0);
+signal wdata_c5 : std_logic_vector(31 downto 0);
+signal wdata_c6 : std_logic_vector(31 downto 0);
+signal wdata_c7 : std_logic_vector(31 downto 0);
+signal wdata_c8 : std_logic_vector(31 downto 0);
+signal wdata_c9 : std_logic_vector(31 downto 0);
+signal wdata_c10 : std_logic_vector(31 downto 0);
+signal wdata_c11 : std_logic_vector(31 downto 0);
+signal wdata_c12 : std_logic_vector(31 downto 0);
+signal wdata_c13 : std_logic_vector(31 downto 0);
+signal wdata_c14 : std_logic_vector(31 downto 0);
+signal wdata_c15 : std_logic_vector(31 downto 0);
 
 ---aggregate base/result
 signal base_s : std_logic_vector(31 downto 0);
@@ -177,8 +178,6 @@ signal conste_i : signed(31 downto 0);
 signal conste_q : signed(31 downto 0);
 
 begin
-
-	out_en <= '1';
 
 	addr_p : process (clk80m)
 	begin
@@ -223,7 +222,7 @@ begin
 	cos14_inst : wave_mem generic map ("wave-cos14.mif") PORT MAP ( address => rom_addr, clock => clk80m, q => rom_cos14 );
 	cos15_inst : wave_mem generic map ("wave-cos15.mif") PORT MAP ( address => rom_addr, clock => clk80m, q => rom_cos15 );
 
-	rom_sc_p : process (clk80m)
+	aggregate_rom_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt(3 downto 0) = 0) then
@@ -278,230 +277,308 @@ begin
 		end if;
 	end process;
 
-	---we do not have enough multipler. so share the circuit with the frequencies...
+	---we do not have enough multipler. so share the circuit across the different frequencies...
 	mul_s_ist : multi_0 PORT MAP ( clock => clk80m, dataa => indata(31 downto 16), datab => rom_s, result => multi_s );
 	mul_c_ist : multi_0 PORT MAP ( clock => clk80m, dataa => indata(31 downto 16), datab => rom_c, result => multi_c );
 
-	base_p : process (clk80m)
+	--calculate integral
+	work_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (symbol_cnt >= 7 + offset and symbol_cnt < 64 * 80 + 7 + offset and symbol_num =2) then
+			if (symbol_cnt >= 7 + offset and symbol_cnt < 7 + 16 + offset) then
 				if (symbol_cnt(3 downto 0) = 0) then
-					base_s0 <= multi_s;
-					base_c0 <= multi_c;
+					wdata_s0 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c0 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 1) then
-					base_s1 <= multi_s;
-					base_c1 <= multi_c;
+					wdata_s1 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c1 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 2) then
-					base_s2 <= multi_s;
-					base_c2 <= multi_c;
+					wdata_s2 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c2 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 3) then
-					base_s3 <= multi_s;
-					base_c3 <= multi_c;
+					wdata_s3 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c3 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 4) then
-					base_s4 <= multi_s;
-					base_c4 <= multi_c;
+					wdata_s4 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c4 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 5) then
-					base_s5 <= multi_s;
-					base_c5 <= multi_c;
+					wdata_s5 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c5 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 6) then
-					base_s6 <= multi_s;
-					base_c6 <= multi_c;
+					wdata_s6 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c6 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 7) then
-					base_s7 <= multi_s;
-					base_c7 <= multi_c;
+					wdata_s7 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c7 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 8) then
-					base_s8 <= multi_s;
-					base_c8 <= multi_c;
+					wdata_s8 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c8 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 9) then
-					base_s9 <= multi_s;
-					base_c9 <= multi_c;
+					wdata_s9 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c9 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 10) then
-					base_s10 <= multi_s;
-					base_c10 <= multi_c;
+					wdata_s10 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c10 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 11) then
-					base_s11 <= multi_s;
-					base_c11 <= multi_c;
+					wdata_s11 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c11 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 12) then
-					base_s12 <= multi_s;
-					base_c12 <= multi_c;
+					wdata_s12 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c12 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 13) then
-					base_s13 <= multi_s;
-					base_c13 <= multi_c;
+					wdata_s13 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c13 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 14) then
-					base_s14 <= multi_s;
-					base_c14 <= multi_c;
+					wdata_s14 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c14 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				else
-					base_s15 <= multi_s;
-					base_c15 <= multi_c;
+					wdata_s15 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c15 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				end if;
+			else
+				if (symbol_cnt(3 downto 0) = 0) then
+					wdata_s0 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c0 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 1) then
+					wdata_s1 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c1 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 2) then
+					wdata_s2 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c2 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 3) then
+					wdata_s3 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c3 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 4) then
+					wdata_s4 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c4 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 5) then
+					wdata_s5 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c5 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 6) then
+					wdata_s6 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c6 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 7) then
+					wdata_s7 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c7 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 8) then
+					wdata_s8 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c8 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 9) then
+					wdata_s9 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c9 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 10) then
+					wdata_s10 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c10 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 11) then
+					wdata_s11 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c11 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 12) then
+					wdata_s12 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c12 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 13) then
+					wdata_s13 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c13 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 14) then
+					wdata_s14 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c14 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
+				else
+					wdata_s15 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_s0'length);
+					wdata_c15 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_s0'length);
 				end if;
 			end if;
 		end if;
 	end process;
 
-	result_p : process (clk80m)
+	work_base_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (symbol_cnt >= 7 + offset and symbol_cnt < 64 * 80 + 7 + offset and symbol_num =2) then
+			if (symbol_cnt >= 7 + offset and symbol_cnt < 7 + 16 + offset  and symbol_num =2) then
 				if (symbol_cnt(3 downto 0) = 0) then
-					result_s0 <= multi_s;
-					result_c0 <= multi_c;
+					wdata_base_s0 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c0 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 1) then
-					result_s1 <= multi_s;
-					result_c1 <= multi_c;
+					wdata_base_s1 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c1 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 2) then
-					result_s2 <= multi_s;
-					result_c2 <= multi_c;
+					wdata_base_s2 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c2 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 3) then
-					result_s3 <= multi_s;
-					result_c3 <= multi_c;
+					wdata_base_s3 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c3 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 4) then
-					result_s4 <= multi_s;
-					result_c4 <= multi_c;
+					wdata_base_s4 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c4 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 5) then
-					result_s5 <= multi_s;
-					result_c5 <= multi_c;
+					wdata_base_s5 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c5 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 6) then
-					result_s6 <= multi_s;
-					result_c6 <= multi_c;
+					wdata_base_s6 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c6 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 7) then
-					result_s7 <= multi_s;
-					result_c7 <= multi_c;
+					wdata_base_s7 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c7 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 8) then
-					result_s8 <= multi_s;
-					result_c8 <= multi_c;
+					wdata_base_s8 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c8 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 9) then
-					result_s9 <= multi_s;
-					result_c9 <= multi_c;
+					wdata_base_s9 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c9 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 10) then
-					result_s10 <= multi_s;
-					result_c10 <= multi_c;
+					wdata_base_s10 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c10 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 11) then
-					result_s11 <= multi_s;
-					result_c11 <= multi_c;
+					wdata_base_s11 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c11 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 12) then
-					result_s12 <= multi_s;
-					result_c12 <= multi_c;
+					wdata_base_s12 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c12 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 13) then
-					result_s13 <= multi_s;
-					result_c13 <= multi_c;
+					wdata_base_s13 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c13 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				elsif (symbol_cnt(3 downto 0) = 14) then
-					result_s14 <= multi_s;
-					result_c14 <= multi_c;
+					wdata_base_s14 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c14 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				else
-					result_s15 <= multi_s;
-					result_c15 <= multi_c;
+					wdata_base_s15 <= conv_std_logic_vector(conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c15 <= conv_std_logic_vector(conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				end if;
+			else
+				if (symbol_cnt(3 downto 0) = 0) then
+					wdata_base_s0 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c0 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 1) then
+					wdata_base_s1 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c1 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 2) then
+					wdata_base_s2 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c2 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 3) then
+					wdata_base_s3 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c3 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 4) then
+					wdata_base_s4 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c4 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 5) then
+					wdata_base_s5 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c5 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 6) then
+					wdata_base_s6 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c6 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 7) then
+					wdata_base_s7 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c7 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 8) then
+					wdata_base_s8 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c8 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 9) then
+					wdata_base_s9 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c9 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 10) then
+					wdata_base_s10 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c10 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 11) then
+					wdata_base_s11 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c11 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 12) then
+					wdata_base_s12 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c12 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 13) then
+					wdata_base_s13 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c13 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				elsif (symbol_cnt(3 downto 0) = 14) then
+					wdata_base_s14 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c14 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
+				else
+					wdata_base_s15 <= conv_std_logic_vector(conv_integer(signed(result_s)) + conv_integer(signed(multi_s)) / 32, wdata_base_s0'length);
+					wdata_base_c15 <= conv_std_logic_vector(conv_integer(signed(result_c)) + conv_integer(signed(multi_c)) / 32, wdata_base_s0'length);
 				end if;
 			end if;
 		end if;
 	end process;
 
-	base_sc_p : process (clk80m)
+	aggregate_br_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_cnt(3 downto 0) = 0) then
-				base_s <= base_s0;
-				base_c <= base_c0;
+				base_s <= wdata_base_s0;
+				base_c <= wdata_base_c0;
+				result_s <= wdata_s0;
+				result_c <= wdata_c0;
 			elsif (symbol_cnt(3 downto 0) = 1) then
-				base_s <= base_s1;
-				base_c <= base_c1;
+				base_s <= wdata_base_s1;
+				base_c <= wdata_base_c1;
+				result_s <= wdata_s1;
+				result_c <= wdata_c1;
 			elsif (symbol_cnt(3 downto 0) = 2) then
-				base_s <= base_s2;
-				base_c <= base_c2;
+				base_s <= wdata_base_s2;
+				base_c <= wdata_base_c2;
+				result_s <= wdata_s2;
+				result_c <= wdata_c2;
 			elsif (symbol_cnt(3 downto 0) = 3) then
-				base_s <= base_s3;
-				base_c <= base_c3;
+				base_s <= wdata_base_s3;
+				base_c <= wdata_base_c3;
+				result_s <= wdata_s3;
+				result_c <= wdata_c3;
 			elsif (symbol_cnt(3 downto 0) = 4) then
-				base_s <= base_s4;
-				base_c <= base_c4;
+				base_s <= wdata_base_s4;
+				base_c <= wdata_base_c4;
+				result_s <= wdata_s4;
+				result_c <= wdata_c4;
 			elsif (symbol_cnt(3 downto 0) = 5) then
-				base_s <= base_s5;
-				base_c <= base_c5;
+				base_s <= wdata_base_s5;
+				base_c <= wdata_base_c5;
+				result_s <= wdata_s5;
+				result_c <= wdata_c5;
 			elsif (symbol_cnt(3 downto 0) = 6) then
-				base_s <= base_s6;
-				base_c <= base_c6;
+				base_s <= wdata_base_s6;
+				base_c <= wdata_base_c6;
+				result_s <= wdata_s6;
+				result_c <= wdata_c6;
 			elsif (symbol_cnt(3 downto 0) = 7) then
-				base_s <= base_s7;
-				base_c <= base_c7;
+				base_s <= wdata_base_s7;
+				base_c <= wdata_base_c7;
+				result_s <= wdata_s7;
+				result_c <= wdata_c7;
 			elsif (symbol_cnt(3 downto 0) = 8) then
-				base_s <= base_s8;
-				base_c <= base_c8;
+				base_s <= wdata_base_s8;
+				base_c <= wdata_base_c8;
+				result_s <= wdata_s8;
+				result_c <= wdata_c8;
 			elsif (symbol_cnt(3 downto 0) = 9) then
-				base_s <= base_s9;
-				base_c <= base_c9;
+				base_s <= wdata_base_s9;
+				base_c <= wdata_base_c9;
+				result_s <= wdata_s9;
+				result_c <= wdata_c9;
 			elsif (symbol_cnt(3 downto 0) = 10) then
-				base_s <= base_s10;
-				base_c <= base_c10;
+				base_s <= wdata_base_s10;
+				base_c <= wdata_base_c10;
+				result_s <= wdata_s10;
+				result_c <= wdata_c10;
 			elsif (symbol_cnt(3 downto 0) = 11) then
-				base_s <= base_s11;
-				base_c <= base_c11;
+				base_s <= wdata_base_s11;
+				base_c <= wdata_base_c11;
+				result_s <= wdata_s11;
+				result_c <= wdata_c11;
 			elsif (symbol_cnt(3 downto 0) = 12) then
-				base_s <= base_s12;
-				base_c <= base_c12;
+				base_s <= wdata_base_s12;
+				base_c <= wdata_base_c12;
+				result_s <= wdata_s12;
+				result_c <= wdata_c12;
 			elsif (symbol_cnt(3 downto 0) = 13) then
-				base_s <= base_s13;
-				base_c <= base_c13;
+				base_s <= wdata_base_s13;
+				base_c <= wdata_base_c13;
+				result_s <= wdata_s13;
+				result_c <= wdata_c13;
 			elsif (symbol_cnt(3 downto 0) = 14) then
-				base_s <= base_s14;
-				base_c <= base_c14;
+				base_s <= wdata_base_s14;
+				base_c <= wdata_base_c14;
+				result_s <= wdata_s14;
+				result_c <= wdata_c14;
 			else
-				base_s <= base_s15;
-				base_c <= base_c15;
-			end if;
-		end if;
-	end process;
-
-	result_sc_p : process (clk80m)
-	begin
-		if (rising_edge(clk80m)) then
-			if (symbol_cnt(3 downto 0) = 0) then
-				result_s <= result_s0;
-				result_c <= result_c0;
-			elsif (symbol_cnt(3 downto 0) = 1) then
-				result_s <= result_s1;
-				result_c <= result_c1;
-			elsif (symbol_cnt(3 downto 0) = 2) then
-				result_s <= result_s2;
-				result_c <= result_c2;
-			elsif (symbol_cnt(3 downto 0) = 3) then
-				result_s <= result_s3;
-				result_c <= result_c3;
-			elsif (symbol_cnt(3 downto 0) = 4) then
-				result_s <= result_s4;
-				result_c <= result_c4;
-			elsif (symbol_cnt(3 downto 0) = 5) then
-				result_s <= result_s5;
-				result_c <= result_c5;
-			elsif (symbol_cnt(3 downto 0) = 6) then
-				result_s <= result_s6;
-				result_c <= result_c6;
-			elsif (symbol_cnt(3 downto 0) = 7) then
-				result_s <= result_s7;
-				result_c <= result_c7;
-			elsif (symbol_cnt(3 downto 0) = 8) then
-				result_s <= result_s8;
-				result_c <= result_c8;
-			elsif (symbol_cnt(3 downto 0) = 9) then
-				result_s <= result_s9;
-				result_c <= result_c9;
-			elsif (symbol_cnt(3 downto 0) = 10) then
-				result_s <= result_s10;
-				result_c <= result_c10;
-			elsif (symbol_cnt(3 downto 0) = 11) then
-				result_s <= result_s11;
-				result_c <= result_c11;
-			elsif (symbol_cnt(3 downto 0) = 12) then
-				result_s <= result_s12;
-				result_c <= result_c12;
-			elsif (symbol_cnt(3 downto 0) = 13) then
-				result_s <= result_s13;
-				result_c <= result_c13;
-			elsif (symbol_cnt(3 downto 0) = 14) then
-				result_s <= result_s14;
-				result_c <= result_c14;
-			else
-				result_s <= result_s15;
-				result_c <= result_c15;
+				base_s <= wdata_base_s15;
+				base_c <= wdata_base_c15;
+				result_s <= wdata_s15;
+				result_c <= wdata_c15;
 			end if;
 		end if;
 	end process;
@@ -520,62 +597,52 @@ begin
 		end if;
 	end process;
 
-	out_byte0_p : process (clk80m)
+	out_word_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (conste_i > conste_q and -conste_i <= conste_q) then
-				out_byte(1 downto 0) <= "00";
-			elsif (conste_i <= conste_q and -conste_i <= conste_q) then
-				out_byte(1 downto 0) <= "01";
-			elsif (conste_i <= conste_q and -conste_i > conste_q) then
-				out_byte(1 downto 0) <= "10";
-			elsif (conste_i > conste_q and -conste_i > conste_q) then
-				out_byte(1 downto 0) <= "11";
+			if (symbol_cnt(3 downto 0) = 0) then
+				out_word(1 downto 0) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 1) then
+				out_word(3 downto 2) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 2) then
+				out_word(5 downto 4) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 3) then
+				out_word(7 downto 6) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 4) then
+				out_word(9 downto 8) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 5) then
+				out_word(11 downto 10) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 6) then
+				out_word(13 downto 12) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 7) then
+				out_word(15 downto 14) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 8) then
+				out_word(17 downto 16) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 9) then
+				out_word(19 downto 18) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 10) then
+				out_word(21 downto 20) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 11) then
+				out_word(23 downto 22) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 12) then
+				out_word(25 downto 24) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 13) then
+				out_word(27 downto 26) <= decode_data(conste_i, conste_q);
+			elsif (symbol_cnt(3 downto 0) = 14) then
+				out_word(29 downto 28) <= decode_data(conste_i, conste_q);
+			else
+				out_word(31 downto 30) <= decode_data(conste_i, conste_q);
 			end if;
 		end if;
 	end process;
 
-	out_byte1_p : process (clk80m)
+	out_en_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (conste_i > conste_q and -conste_i <= conste_q) then
-				out_byte(3 downto 2) <= "00";
-			elsif (conste_i <= conste_q and -conste_i <= conste_q) then
-				out_byte(3 downto 2) <= "01";
-			elsif (conste_i <= conste_q and -conste_i > conste_q) then
-				out_byte(3 downto 2) <= "10";
-			elsif (conste_i > conste_q and -conste_i > conste_q) then
-				out_byte(3 downto 2) <= "11";
-			end if;
-		end if;
-	end process;
-
-	out_byte2_p : process (clk80m)
-	begin
-		if (rising_edge(clk80m)) then
-			if (conste_i > conste_q and -conste_i <= conste_q) then
-				out_byte(5 downto 4) <= "00";
-			elsif (conste_i <= conste_q and -conste_i <= conste_q) then
-				out_byte(5 downto 4) <= "01";
-			elsif (conste_i <= conste_q and -conste_i > conste_q) then
-				out_byte(5 downto 4) <= "10";
-			elsif (conste_i > conste_q and -conste_i > conste_q) then
-				out_byte(5 downto 4) <= "11";
-			end if;
-		end if;
-	end process;
-
-	out_byte3_p : process (clk80m)
-	begin
-		if (rising_edge(clk80m)) then
-			if (conste_i > conste_q and -conste_i <= conste_q) then
-				out_byte(7 downto 6) <= "00";
-			elsif (conste_i <= conste_q and -conste_i <= conste_q) then
-				out_byte(7 downto 6) <= "01";
-			elsif (conste_i <= conste_q and -conste_i > conste_q) then
-				out_byte(7 downto 6) <= "10";
-			elsif (conste_i > conste_q and -conste_i > conste_q) then
-				out_byte(7 downto 6) <= "11";
+			if (symbol_num = 0 and symbol_cnt = 64 * 80 + 13 + 4 + 16 + offset) then
+				out_en <= '1';
+			else
+				out_en <= '0';
 			end if;
 		end if;
 	end process;

@@ -119,7 +119,7 @@ component demodulator
 	signal symbol_num : in std_logic_vector(7 downto 0);
 	signal symbol_cnt : in std_logic_vector(15 downto 0);
 	signal indata		: in std_logic_vector(31 downto 0);
-	signal out_byte	: out std_logic_vector(7 downto 0);
+	signal out_word 	: out std_logic_vector(31 downto 0);
 	signal out_en		: out std_logic
 	);
 end component;
@@ -151,8 +151,11 @@ signal pilot_only	: std_logic;
 signal upcon_data	: std_logic_vector(31 downto 0);
 signal carrier_sync_stat	: std_logic;
 
-signal demod_out	: std_logic_vector(7 downto 0);
+signal demod_out	: std_logic_vector(31 downto 0);
 signal demod_out_en	: std_logic;
+
+signal uart_data	: std_logic_vector(7 downto 0);
+
 
 begin
 
@@ -246,7 +249,7 @@ begin
 	symbol_num => symbol_num,
 	symbol_cnt => symbol_cnt,
 	indata		=> upcon_data,
-	out_byte		=> demod_out,
+	out_word		=> demod_out,
 	out_en		=> demod_out_en
 	);
 
@@ -261,9 +264,31 @@ begin
 
 	uart_out_inst : output_uart port map (
 		clk80m => clk80m,
-		indata => demod_out,
+		indata => uart_data,
 		uart_out => uart_out
 	);
+
+	--convert to 8 bit uart data
+	uart_gen_p : process (clk16m)
+	variable cnt : integer;
+	begin
+		if (rising_edge(clk16m)) then
+			if (demod_out_en = '1') then
+				cnt := 0;
+			else
+				cnt := cnt + 1;
+			end if;
+			if (cnt < 6080 / 4) then
+				uart_data <= demod_out(7 downto 0);
+			elsif (cnt < 6080 / 4 * 2) then
+				uart_data <= demod_out(15 downto 8);
+			elsif (cnt < 6080 / 4 * 3) then
+				uart_data <= demod_out(23 downto 16);
+			else
+				uart_data <= demod_out(31 downto 24);
+			end if;
+		end if;
+	end process;
 
 	--led signal handling
 	led_p : process (clk16m)

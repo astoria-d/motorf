@@ -59,6 +59,12 @@ function sign_rshift_32 (
 	bits : in integer 
 	) return signed;
 
+--decode data from constellation diagram
+function decode_data (
+	conste_i : in signed(31 downto 0);
+	conste_q : in signed(31 downto 0)
+	) return std_logic_vector;
+
 end package motorf;
 
 package body motorf is
@@ -204,6 +210,26 @@ begin
 	end loop;
 	return retdata;
 end sign_rshift_32;
+
+function decode_data (
+	conste_i : in signed(31 downto 0);
+	conste_q : in signed(31 downto 0)
+	) return std_logic_vector
+is
+variable retdata : std_logic_vector(1 downto 0);
+begin
+	if (conste_i > conste_q and -conste_i <= conste_q) then
+		retdata := "00";
+	elsif (conste_i <= conste_q and -conste_i <= conste_q) then
+		retdata := "01";
+	elsif (conste_i <= conste_q and -conste_i > conste_q) then
+		retdata := "10";
+	elsif (conste_i > conste_q and -conste_i > conste_q) then
+		retdata := "11";
+	end if;
+	return retdata;
+end decode_data;
+
 
 end package body motorf;
 
