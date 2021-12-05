@@ -7,7 +7,7 @@ entity prfx1_test03_rx is
 	port (
 	signal clk16m     : in std_logic;
 	signal adc 			: in std_logic_vector(11 downto 0);
-	signal clk5m     	: out std_logic;
+	signal jtag_clk   : out std_logic;
 	signal adc_clk		: out std_logic;
 
 	signal attn			: out std_logic_vector(4 downto 0);
@@ -137,6 +137,7 @@ signal reset_n : std_logic;
 signal clk80m		: std_logic;
 signal clk40m		: std_logic;
 signal clk12m		: std_logic;
+signal clk5m     	: std_logic;
 
 signal raw_adc 		: std_logic_vector(11 downto 0);
 signal s_adc			: std_logic_vector(11 downto 0);
@@ -160,6 +161,7 @@ signal uart_data	: std_logic_vector(7 downto 0);
 begin
 
 	adc_clk <= clk40m;
+	jtag_clk <= clk80m;
 
 	--PLL instance
 	pll_inst : pll PORT MAP (
