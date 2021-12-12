@@ -6,6 +6,7 @@ use ieee.std_logic_arith.conv_std_logic_vector;
 entity output_uart is 
 	port (
 	signal clk80m		: in std_logic;
+	signal in_en		: in std_logic;
 	signal indata		: in std_logic_vector(7 downto 0);
 	signal uart_out	: out std_logic
 	);
@@ -23,9 +24,12 @@ begin
 	variable oval : std_logic_vector (7 downto 0);
 	begin
 		if (rising_edge(clk80m)) then
-			cnt := cnt + 1;
-			oval := HEX_CH_BASE + indata;
-			uart_out <= oval(conv_integer(cnt));
+			if (in_en = '1') then
+				cnt := (others => '1');
+			else
+				cnt := cnt - 1;
+			end if;
+			uart_out <= indata(conv_integer(cnt));
 		end if;
 	end process;
 

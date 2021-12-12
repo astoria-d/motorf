@@ -15,7 +15,7 @@ vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test03_rx/simulation/models
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test03_rx/wave_mem.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test03_rx/utils.vhd}
 vcom -93 -work work {E:/daisuke/rf/repo/motorf/prfx1_test03_rx/lpf.vhd}
-vlog -work work {E:/daisuke/rf/repo/motorf/prfx1_test03_rx/MY_FIR.v}
+##vlog -work work {E:/daisuke/rf/repo/motorf/prfx1_test03_rx/MY_FIR.v}
 
 vsim work.testbench_prfx1_test01
 

@@ -127,6 +127,7 @@ end component;
 component output_uart
 	port (
 	signal clk80m		: in std_logic;
+	signal in_en		: in std_logic;
 	signal indata		: in std_logic_vector(7 downto 0);
 	signal uart_out	: out std_logic
 	);
@@ -156,12 +157,14 @@ signal demod_out	: std_logic_vector(31 downto 0);
 signal demod_out_en	: std_logic;
 
 signal uart_data	: std_logic_vector(7 downto 0);
+signal uart_data_en	: std_logic;
 
 
 begin
 
 	adc_clk <= clk40m;
-	jtag_clk <= clk80m;
+--	jtag_clk <= clk80m;
+	jtag_clk <= clk5m;
 
 	--PLL instance
 	pll_inst : pll PORT MAP (
@@ -266,28 +269,29 @@ begin
 
 	uart_out_inst : output_uart port map (
 		clk80m => clk80m,
+		in_en => uart_data_en,
 		indata => uart_data,
 		uart_out => uart_out
 	);
 
 	--convert to 8 bit uart data
 	uart_gen_p : process (clk16m)
-	variable cnt : integer;
 	begin
 		if (rising_edge(clk16m)) then
-			if (demod_out_en = '1') then
-				cnt := 0;
-			else
-				cnt := cnt + 1;
-			end if;
-			if (cnt < 6080 / 4) then
+			if (symbol_cnt = 6080 / 4) then
 				uart_data <= demod_out(7 downto 0);
-			elsif (cnt < 6080 / 4 * 2) then
+				uart_data_en <= '1';
+			elsif (symbol_cnt = 6080 / 4 * 2) then
 				uart_data <= demod_out(15 downto 8);
-			elsif (cnt < 6080 / 4 * 3) then
+				uart_data_en <= '1';
+			elsif (symbol_cnt = 6080 / 4 * 3) then
 				uart_data <= demod_out(23 downto 16);
-			else
+				uart_data_en <= '1';
+			elsif (symbol_cnt = 6080 ) then
 				uart_data <= demod_out(31 downto 24);
+				uart_data_en <= '1';
+			else
+				uart_data_en <= '0';
 			end if;
 		end if;
 	end process;
