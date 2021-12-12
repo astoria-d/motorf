@@ -133,6 +133,16 @@ component output_uart
 	);
 end component;
 
+component debug_stub
+	port (
+	signal clk80m		: in std_logic;
+	signal reset_n		: in std_logic;
+	signal symbol_num : out std_logic_vector(7 downto 0);
+	signal symbol_cnt : out std_logic_vector(15 downto 0);
+	signal testdata		: out std_logic_vector(31 downto 0)
+	);
+end component;
+
 signal reset_n : std_logic;
 
 signal clk80m		: std_logic;
@@ -226,25 +236,35 @@ begin
 		att_oe => attn_oe
 	);
 
-	--sync symbol
-	sync_symbol_inst : sync_symbol port map (
-		clk80m => clk80m,
-		indata => bp_filtered,
-		symbol_num => symbol_num,
-		symbol_cnt => symbol_cnt,
-		pilot_only => pilot_only
-	);
+--	--sync symbol
+--	sync_symbol_inst : sync_symbol port map (
+--		clk80m => clk80m,
+--		indata => bp_filtered,
+--		symbol_num => symbol_num,
+--		symbol_cnt => symbol_cnt,
+--		pilot_only => pilot_only
+--	);
+--
+--	--sync carrier
+--	sync_carrier_inst :sync_carrier
+--	port map (
+--		clk80m => clk80m,
+--		indata => bp_filtered,
+--		symbol_num => symbol_num,
+--		symbol_cnt => symbol_cnt,
+--		pilot_only => pilot_only,
+--		outdata => upcon_data,
+--		synchronized => carrier_sync_stat
+--	);
 
-	--sync carrier
-	sync_carrier_inst :sync_carrier
+	--for debugging
+	debut_inst : debug_stub
 	port map (
-		clk80m => clk80m,
-		indata => bp_filtered,
-		symbol_num => symbol_num,
-		symbol_cnt => symbol_cnt,
-		pilot_only => pilot_only,
-		outdata => upcon_data,
-		synchronized => carrier_sync_stat
+	clk80m		=> clk80m,
+	reset_n		=> reset_n,
+	symbol_num => symbol_num,
+	symbol_cnt => symbol_cnt,
+	testdata		=> upcon_data
 	);
 
 	--demodulator
