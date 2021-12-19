@@ -132,8 +132,8 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (reset_n = '0') then
+				work_num <= "00000010";
 				work_cnt <= (others => '0');
-				work_num <= (others => '0');
 			else
 				if (work_cnt = 6080 - 1) then
 					work_cnt <= (others => '0');
@@ -156,21 +156,11 @@ begin
 	symbol_num <= work_num;
 
 	in_rom_addr_p : process (clk80m)
-	variable cnt : integer := 0;
+	variable tmp : integer;
 	begin
 		if (rising_edge(clk80m)) then
-			if (reset_n = '0') then
-				cnt := 0;
-			else
-				if (work_cnt = 6080 - 1) then
-					cnt := 0;
-				else
-					if (work_cnt(3 downto 0) = 0) then
-						cnt := cnt + 1;
-					end if;
-				end if;
-			end if;
-			in_rom_addr <= conv_std_logic_vector(cnt, in_rom_addr'length);
+			tmp := (conv_integer(unsigned(work_num)) - 1) * 380 + conv_integer(unsigned(work_cnt)) / 16;
+			in_rom_addr <= conv_std_logic_vector(tmp, in_rom_addr'length);
 		end if;
 	end process;
 
