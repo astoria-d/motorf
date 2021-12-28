@@ -185,87 +185,87 @@ begin
 		c3	 		=> clk5m
 	);
 
-	--raw adc
-	clk_80m_p : process (clk80m)
-	begin
-		if (rising_edge(clk80m)) then
-			if (reset_n = '0') then
-				raw_adc <= (others => '0');
-			else
-				raw_adc <= adc;
-			end if;
-		end if;
-	end process;
-
-	--convert from raw adc value to signed adc
-	conv_u2s_inst : conv_signed port map (
-		clk80m => clk80m,
-		udata => raw_adc,
-		sdata => s_adc
-	);
-
-	--zero offset adjustment
-	z_ofs_inst : zero_offset port map (
-		clk80m => clk80m,
-		indata => s_adc,
-		outdata => z_adc
-	);
-
-	--lpf
-	lpf_inst : lpf_28tap
-	PORT MAP (
-		clk80m => clk80m,
-		indata => z_adc,
-		outdata => lp_filtered
-	);
-
-	--bpf
-	bpf_inst : bpf_32tap
-	PORT MAP (
-		clk80m => clk80m,
-		indata => lp_filtered,
-		outdata => bp_filtered
-	);
-
-	--agc
-	agc_inst : agc
-	port map (
-		clk80m => clk80m,
-		indata => lp_filtered,
-		att_val => attn,
-		att_oe => attn_oe
-	);
-
-	--sync symbol
-	sync_symbol_inst : sync_symbol port map (
-		clk80m => clk80m,
-		indata => bp_filtered,
-		symbol_num => symbol_num,
-		symbol_cnt => symbol_cnt,
-		pilot_only => pilot_only
-	);
-
-	--sync carrier
-	sync_carrier_inst :sync_carrier
-	port map (
-		clk80m => clk80m,
-		indata => bp_filtered,
-		symbol_num => symbol_num,
-		symbol_cnt => symbol_cnt,
-		pilot_only => pilot_only,
-		outdata => upcon_data,
-		synchronized => carrier_sync_stat
-	);
-
---	--for rtl simulation
---	debut_inst : debug_stub
---	port map (
---	clk80m		=> clk80m,
---	reset_n		=> reset_n,
---	symbol_num => symbol_num,
---	symbol_cnt => symbol_cnt,
---	testdata		=> upcon_data
+--	--raw adc
+--	clk_80m_p : process (clk80m)
+--	begin
+--		if (rising_edge(clk80m)) then
+--			if (reset_n = '0') then
+--				raw_adc <= (others => '0');
+--			else
+--				raw_adc <= adc;
+--			end if;
+--		end if;
+--	end process;
+--
+--	--convert from raw adc value to signed adc
+--	conv_u2s_inst : conv_signed port map (
+--		clk80m => clk80m,
+--		udata => raw_adc,
+--		sdata => s_adc
 --	);
+--
+--	--zero offset adjustment
+--	z_ofs_inst : zero_offset port map (
+--		clk80m => clk80m,
+--		indata => s_adc,
+--		outdata => z_adc
+--	);
+--
+--	--lpf
+--	lpf_inst : lpf_28tap
+--	PORT MAP (
+--		clk80m => clk80m,
+--		indata => z_adc,
+--		outdata => lp_filtered
+--	);
+--
+--	--bpf
+--	bpf_inst : bpf_32tap
+--	PORT MAP (
+--		clk80m => clk80m,
+--		indata => lp_filtered,
+--		outdata => bp_filtered
+--	);
+--
+--	--agc
+--	agc_inst : agc
+--	port map (
+--		clk80m => clk80m,
+--		indata => lp_filtered,
+--		att_val => attn,
+--		att_oe => attn_oe
+--	);
+--
+--	--sync symbol
+--	sync_symbol_inst : sync_symbol port map (
+--		clk80m => clk80m,
+--		indata => bp_filtered,
+--		symbol_num => symbol_num,
+--		symbol_cnt => symbol_cnt,
+--		pilot_only => pilot_only
+--	);
+--
+--	--sync carrier
+--	sync_carrier_inst :sync_carrier
+--	port map (
+--		clk80m => clk80m,
+--		indata => bp_filtered,
+--		symbol_num => symbol_num,
+--		symbol_cnt => symbol_cnt,
+--		pilot_only => pilot_only,
+--		outdata => upcon_data,
+--		synchronized => carrier_sync_stat
+--	);
+
+	--for rtl simulation
+	debut_inst : debug_stub
+	port map (
+	clk80m		=> clk80m,
+	reset_n		=> reset_n,
+	symbol_num => symbol_num,
+	symbol_cnt => symbol_cnt,
+	testdata		=> upcon_data
+	);
 
 	--demodulator
 	demod_inst : demodulator

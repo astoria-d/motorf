@@ -27,7 +27,7 @@ add wave -label symbol_cnt -radix decimal  sim:/testbench_prfx1_test01/sim_board
 #add wave -label input_data -radix decimal  -analog -min -80000 -max 80000 -height 100 sim:/testbench_prfx1_test01/sim_board/demod_inst/indata
 
 
-add wave -label indata -radix decimal  -analog -min -80000 -max 80000 -height 100 sim:/testbench_prfx1_test01/sim_board/demod_inst/indata
+add wave -label indata -radix decimal  -analog -min -2147483648 -max 2147483648 -height 100 sim:/testbench_prfx1_test01/sim_board/demod_inst/indata
 add wave -label indata -radix hex sim:/testbench_prfx1_test01/sim_board/demod_inst/indata
 add wave -label indata_hi -radix hex {sim:/testbench_prfx1_test01/sim_board/demod_inst/indata[31:16]}
 add wave -label indata_hi -radix decimal {sim:/testbench_prfx1_test01/sim_board/demod_inst/indata[31:16]}
@@ -84,31 +84,32 @@ add wave -label conste_q -radix decimal  sim:/testbench_prfx1_test01/sim_board/d
 add wave -label out_word -radix hex  sim:/testbench_prfx1_test01/sim_board/demod_inst/out_word
 add wave -label out_en sim:/testbench_prfx1_test01/sim_board/demod_inst/out_en
 
-#
-#add wave -divider wdata_c
-#
-#add wave -label wdata_c0 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c0
-#add wave -label wdata_c1 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c1
-#add wave -label wdata_c2 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c2
-#add wave -label wdata_c3 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c3
-#add wave -label wdata_c4 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c4
-#add wave -label wdata_c5 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c5
-#add wave -label wdata_c6 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c6
-#add wave -label wdata_c7 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c7
-#add wave -label wdata_c8 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c8
-#add wave -label wdata_c9 -radix decimal  -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c9
-#add wave -label wdata_c10 -radix decimal -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c10
-#add wave -label wdata_c11 -radix decimal -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c11
-#add wave -label wdata_c12 -radix decimal -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c12
-#add wave -label wdata_c13 -radix decimal -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c13
-#add wave -label wdata_c14 -radix decimal -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c14
-#add wave -label wdata_c15 -radix decimal -analog -min -40000 -max 40000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c15
-#
+
+add wave -divider wdata_c
+
+add wave -label wdata_c0 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c0
+add wave -label wdata_c1 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c1
+add wave -label wdata_c2 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c2
+add wave -label wdata_c3 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c3
+add wave -label wdata_c4 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c4
+add wave -label wdata_c5 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c5
+add wave -label wdata_c6 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c6
+add wave -label wdata_c7 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c7
+add wave -label wdata_c8 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c8
+add wave -label wdata_c9 -radix decimal  -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c9
+add wave -label wdata_c10 -radix decimal -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c10
+add wave -label wdata_c11 -radix decimal -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c11
+add wave -label wdata_c12 -radix decimal -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c12
+add wave -label wdata_c13 -radix decimal -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c13
+add wave -label wdata_c14 -radix decimal -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c14
+add wave -label wdata_c15 -radix decimal -analog -min -1000000000 -max 1000000000 -height 100  sim:/testbench_prfx1_test01/sim_board/demod_inst/wdata_c15
+
 run 15us
 
 wave zoom full
 
-run 150us
+run 80us
+run 70us
 
 wave zoom full
 
