@@ -576,38 +576,38 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			if (symbol_num > 2 and symbol_cnt >= offset + 7 + integ_end + 1 + 5 + 2 and symbol_cnt < offset + 7 + integ_end + 1 + 5 + 2 + 16) then
-				if (symbol_cnt(3 downto 0) = 6) then
-					out_word(1 downto 0) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 7) then
-					out_word(3 downto 2) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 8) then
-					out_word(5 downto 4) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 9) then
-					out_word(7 downto 6) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 10) then
-					out_word(9 downto 8) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 11) then
-					out_word(11 downto 10) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 12) then
-					out_word(13 downto 12) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 13) then
-					out_word(15 downto 14) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 14) then
+				if (symbol_cnt(3 downto 0) = 15) then
 					out_word(17 downto 16) <= decode_data(conste_i, conste_q);
-				elsif (symbol_cnt(3 downto 0) = 15) then
-					out_word(19 downto 18) <= decode_data(conste_i, conste_q);
 				elsif (symbol_cnt(3 downto 0) = 0) then
-					out_word(21 downto 20) <= decode_data(conste_i, conste_q);
+					out_word(19 downto 18) <= decode_data(conste_i, conste_q);
 				elsif (symbol_cnt(3 downto 0) = 1) then
-					out_word(23 downto 22) <= decode_data(conste_i, conste_q);
+					out_word(21 downto 20) <= decode_data(conste_i, conste_q);
 				elsif (symbol_cnt(3 downto 0) = 2) then
-					out_word(25 downto 24) <= decode_data(conste_i, conste_q);
+					out_word(23 downto 22) <= decode_data(conste_i, conste_q);
 				elsif (symbol_cnt(3 downto 0) = 3) then
-					out_word(27 downto 26) <= decode_data(conste_i, conste_q);
+					out_word(25 downto 24) <= decode_data(conste_i, conste_q);
 				elsif (symbol_cnt(3 downto 0) = 4) then
+					out_word(27 downto 26) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 5) then
 					out_word(29 downto 28) <= decode_data(conste_i, conste_q);
-				else
+				elsif (symbol_cnt(3 downto 0) = 6) then
 					out_word(31 downto 30) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 7) then
+					out_word(1 downto 0) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 8) then
+					out_word(3 downto 2) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 9) then
+					out_word(5 downto 4) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 10) then
+					out_word(7 downto 6) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 11) then
+					out_word(9 downto 8) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 12) then
+					out_word(11 downto 10) <= decode_data(conste_i, conste_q);
+				elsif (symbol_cnt(3 downto 0) = 13) then
+					out_word(13 downto 12) <= decode_data(conste_i, conste_q);
+				else
+					out_word(15 downto 14) <= decode_data(conste_i, conste_q);
 				end if;
 			end if;
 		end if;
