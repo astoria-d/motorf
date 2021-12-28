@@ -236,36 +236,36 @@ begin
 		att_oe => attn_oe
 	);
 
---	--sync symbol
---	sync_symbol_inst : sync_symbol port map (
---		clk80m => clk80m,
---		indata => bp_filtered,
---		symbol_num => symbol_num,
---		symbol_cnt => symbol_cnt,
---		pilot_only => pilot_only
---	);
---
---	--sync carrier
---	sync_carrier_inst :sync_carrier
---	port map (
---		clk80m => clk80m,
---		indata => bp_filtered,
---		symbol_num => symbol_num,
---		symbol_cnt => symbol_cnt,
---		pilot_only => pilot_only,
---		outdata => upcon_data,
---		synchronized => carrier_sync_stat
---	);
-
-	--for debugging
-	debut_inst : debug_stub
-	port map (
-	clk80m		=> clk80m,
-	reset_n		=> reset_n,
-	symbol_num => symbol_num,
-	symbol_cnt => symbol_cnt,
-	testdata		=> upcon_data
+	--sync symbol
+	sync_symbol_inst : sync_symbol port map (
+		clk80m => clk80m,
+		indata => bp_filtered,
+		symbol_num => symbol_num,
+		symbol_cnt => symbol_cnt,
+		pilot_only => pilot_only
 	);
+
+	--sync carrier
+	sync_carrier_inst :sync_carrier
+	port map (
+		clk80m => clk80m,
+		indata => bp_filtered,
+		symbol_num => symbol_num,
+		symbol_cnt => symbol_cnt,
+		pilot_only => pilot_only,
+		outdata => upcon_data,
+		synchronized => carrier_sync_stat
+	);
+
+--	--for rtl simulation
+--	debut_inst : debug_stub
+--	port map (
+--	clk80m		=> clk80m,
+--	reset_n		=> reset_n,
+--	symbol_num => symbol_num,
+--	symbol_cnt => symbol_cnt,
+--	testdata		=> upcon_data
+--	);
 
 	--demodulator
 	demod_inst : demodulator
