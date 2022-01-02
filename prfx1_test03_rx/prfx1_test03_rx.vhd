@@ -17,7 +17,9 @@ entity prfx1_test03_rx is
 	signal sdi			: out std_logic;
 	signal spics_pll	: out std_logic;
 
-	signal uart_out	: out std_logic;
+	signal ftdi_clk	: out std_logic;
+	signal ftdi_txd	: out std_logic;
+	signal ftdi_rxd	: in std_logic;
 
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
@@ -124,12 +126,12 @@ component demodulator
 	);
 end component;
 
-component output_uart
+component uart_out
 	port (
-	signal clk80m		: in std_logic;
-	signal in_en		: in std_logic;
-	signal indata		: in std_logic_vector(7 downto 0);
-	signal uart_out	: out std_logic
+	signal clk80m			: in std_logic;
+	signal uart_en			: in std_logic;
+	signal uart_data		: in std_logic_vector(7 downto 0);
+	signal uart_txd		: out std_logic
 	);
 end component;
 
@@ -175,6 +177,7 @@ begin
 	adc_clk <= clk40m;
 --	jtag_clk <= clk80m;
 	jtag_clk <= clk5m;
+	ftdi_clk <= clk12m;
 
 	--PLL instance
 	pll_inst : pll PORT MAP (
@@ -287,13 +290,6 @@ begin
 		sdi => sdi
 	);
 
-	uart_out_inst : output_uart port map (
-		clk80m => clk80m,
-		in_en => uart_data_en,
-		indata => uart_data,
-		uart_out => uart_out
-	);
-
 	--convert to 8 bit uart data
 	uart_gen_p : process (clk16m)
 	begin
@@ -315,6 +311,14 @@ begin
 			end if;
 		end if;
 	end process;
+
+	--output uart rx data
+	uart_out_inst : uart_out port map (
+		clk80m => clk80m,
+		uart_en => uart_data_en,
+		uart_data => uart_data,
+		uart_txd => ftdi_txd
+	);
 
 	--led signal handling
 	led_p : process (clk16m)
