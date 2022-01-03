@@ -16,6 +16,10 @@ entity prfx1_test03_tx is
 
 	signal clk5m  		: out std_logic;
 
+	signal ftdi_clk	: out std_logic;
+	signal ftdi_txd	: out std_logic;
+	signal ftdi_rxd	: in std_logic;
+
 	signal sw1     	: in std_logic;
 	signal sw2     	: in std_logic;
 	signal led1			: out std_logic;
@@ -26,14 +30,16 @@ end prfx1_test03_tx;
 
 architecture rtl of prfx1_test03_tx is
 
-component PLL
+component pll
 	PORT
 	(
 		inclk0		: IN STD_LOGIC  := '0';
 		c0		: OUT STD_LOGIC ;
-		c1		: OUT STD_LOGIC 
+		c1		: OUT STD_LOGIC ;
+		c2		: OUT STD_LOGIC ;
+		c3		: OUT STD_LOGIC
 	);
-END component;
+end component;
 
 component timing_sync
 	PORT
@@ -50,6 +56,7 @@ component tx_data_gen
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal uart_rxd : in std_logic;
 		signal tx_data : out std_logic_vector(31 downto 0)
 	);
 end component;
@@ -129,6 +136,7 @@ end component;
 
 
 signal clk80m  : std_logic;
+signal clk40m  : std_logic;
 
 signal symbol_cnt : std_logic_vector(15 downto 0);
 signal symbol_num : std_logic_vector(7 downto 0);
@@ -165,10 +173,12 @@ constant WAIT_10US : integer := (10 * 1000 * 1000 / CLK_16M_PS);
 begin
 
 	--PLL instance
-	PLL_inst : PLL PORT MAP (
+	pll_inst : pll PORT MAP (
 		inclk0	=> clk16m,
 		c0	 		=> clk80m,
-		c1	 		=> clk5m
+		c1	 		=> clk40m,
+		c2	 		=> ftdi_clk,
+		c3	 		=> clk5m
 	);
 
 	--data generation and tranfer timing synchronizer
@@ -184,6 +194,7 @@ begin
 		clk80m => clk80m,
 		symbol_cnt => symbol_cnt,
 		symbol_num => symbol_num,
+		uart_rxd => ftdi_rxd,
 		tx_data => tx_data
 	);
 
