@@ -67,6 +67,7 @@ entity tx_data_gen is
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal inc_data : in std_logic;
 		signal uart_rxd : in std_logic;
 		signal tx_data : out std_logic_vector(31 downto 0)
 	);
@@ -206,12 +207,26 @@ begin
 	end process;
 
 	--output data is set at the init frame.
-	tx_data <= outdata_reg;
-	set_p80m : process (clk80m)
+	set_uart_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if ((symbol_num = 1) and (symbol_cnt = 1)) then
 				outdata_reg <= outdata_3 & outdata_2 & outdata_1 & outdata_0;
+			end if;
+		end if;
+	end process;
+
+	set_output_p : process (clk80m)
+	variable cnt : std_logic_vector (31 downto 0) := (others => '0');
+	begin
+		if (rising_edge(clk80m)) then
+			if ((symbol_num = 0) and (symbol_cnt = 0)) then
+				cnt := cnt + 1;
+			end if;
+			if (inc_data = '0') then
+				tx_data <= outdata_reg;
+			else
+				tx_data <= cnt;
 			end if;
 		end if;
 	end process;

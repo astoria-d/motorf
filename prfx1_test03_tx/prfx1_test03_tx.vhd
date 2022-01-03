@@ -56,6 +56,7 @@ component tx_data_gen
 		signal clk80m : in std_logic;
 		signal symbol_cnt : in std_logic_vector(15 downto 0);
 		signal symbol_num : in std_logic_vector(7 downto 0);
+		signal inc_data : in std_logic;
 		signal uart_rxd : in std_logic;
 		signal tx_data : out std_logic_vector(31 downto 0)
 	);
@@ -142,6 +143,8 @@ signal symbol_cnt : std_logic_vector(15 downto 0);
 signal symbol_num : std_logic_vector(7 downto 0);
 signal pilot_only : std_logic;
 signal no_tx : std_logic;
+signal inc_data : std_logic;
+
 signal tx_data : std_logic_vector(31 downto 0);
 signal i_data : std_logic_vector(15 downto 0);
 signal q_data : std_logic_vector(15 downto 0);
@@ -194,6 +197,7 @@ begin
 		clk80m => clk80m,
 		symbol_cnt => symbol_cnt,
 		symbol_num => symbol_num,
+		inc_data => inc_data,
 		uart_rxd => ftdi_rxd,
 		tx_data => tx_data
 	);
@@ -332,8 +336,10 @@ begin
 		if (rising_edge(clk16m)) then
 			--sw1 = no tx
 			--sw2 = pilot only
-			no_tx <= sw1;
-			pilot_only <= sw2;
+			--sw1 and sw2 = increment data
+			no_tx <= sw1 and not sw2;
+			pilot_only <= sw2 and not sw1;
+			inc_data <= sw1 and sw2;
 			if (sw1 = '1') then
 				led1 <= '0';
 				led2 <= '0';

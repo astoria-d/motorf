@@ -29,7 +29,8 @@ type uart_status is (
 	);
 
 constant clk_freq			: integer := 80000000;
-constant baud_rate		: integer := 921600;
+constant baud_rate		: integer := 230400;
+--constant baud_rate		: integer := 1200;
 constant divider			: integer := clk_freq / baud_rate;
 
 signal cur_state			: uart_status;
