@@ -84,6 +84,20 @@ component uart_in
 	);
 end component;
 
+component fifo
+	PORT
+	(
+		clock		: IN STD_LOGIC ;
+		data		: IN STD_LOGIC_VECTOR (7 DOWNTO 0);
+		rdreq		: IN STD_LOGIC ;
+		wrreq		: IN STD_LOGIC ;
+		empty		: OUT STD_LOGIC ;
+		full		: OUT STD_LOGIC ;
+		q		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+		usedw		: OUT STD_LOGIC_VECTOR (3 DOWNTO 0)
+	);
+end component;
+
 type tx_data_status is (
 	TD_IDLE,
 	TD_ESCAPE,
@@ -92,18 +106,25 @@ type tx_data_status is (
 
 constant escape_char : std_logic_vector(7 downto 0) := (others => '1');
 constant escape_idle : std_logic_vector(7 downto 0) := (others => '0');
+constant END_SYM_CNT : integer := 76 * 80;
 
-signal outdata_reg : std_logic_vector(31 downto 0) := (others => '0');
-signal uart_data : std_logic_vector(7 downto 0);
+signal inc_cnt : std_logic_vector (31 downto 0) := (others => '0');
+signal uart_data_tmp : std_logic_vector(7 downto 0);
 signal uart_data_latch : std_logic_vector(7 downto 0);
 signal uart_en : std_logic;
-signal outdata_0 : std_logic_vector(7 downto 0);
-signal outdata_1 : std_logic_vector(7 downto 0);
-signal outdata_2 : std_logic_vector(7 downto 0);
-signal outdata_3 : std_logic_vector(7 downto 0);
+
+signal fifo_input : std_logic_vector(7 downto 0);
+signal fifo_output : std_logic_vector(7 downto 0);
+signal fifo_rd : std_logic;
+signal fifo_wr : std_logic;
+signal fifo_empty : std_logic;
+signal fifo_full : std_logic;
+signal fifo_cnt : std_logic_vector(3 downto 0);
+
+signal output_cnt : std_logic_vector(3 downto 0);
+
 
 signal cur_state : tx_data_status;
-signal next_state : tx_data_status;
 
 begin
 
@@ -111,97 +132,88 @@ begin
 	PORT MAP (
 		clk80m => clk80m,
 		uart_rxd => uart_rxd,
-		uart_data => uart_data,
+		uart_data => uart_data_tmp,
 		uart_en => uart_en
 	);
 
-	set_nx_stat_p : process (clk80m)
+	input_fifo_inst : fifo
+	PORT MAP (
+		clock		=> clk80m,
+		data		=> fifo_input,
+		rdreq		=> fifo_rd,
+		wrreq		=> fifo_wr,
+		empty		=> fifo_empty,
+		full		=> fifo_full,
+		q			=> fifo_output,
+		usedw		=> fifo_cnt
+	);
+
+	set_stat_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			case cur_state is
 			when TD_IDLE =>
 				if (uart_en = '1') then
-					uart_data_latch <= uart_data;
-					if (uart_data = escape_char or uart_data = escape_idle) then
-						next_state <= TD_ESCAPE;
+					if (uart_data_tmp = escape_char or uart_data_tmp = escape_idle) then
+						cur_state <= TD_ESCAPE;
 					else
-						next_state <= TD_LATCH;
+						cur_state <= TD_LATCH;
 					end if;
 				end if;
 			when TD_ESCAPE =>
-				next_state <= TD_LATCH;
+				cur_state <= TD_LATCH;
 			when TD_LATCH =>
-				next_state <= TD_IDLE;
+				cur_state <= TD_IDLE;
 			end case;
 		end if;
 	end process;
 
-	set_cr_stat_p : process (clk80m)
+	data_latch_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (((symbol_num = 0) or (symbol_num = 25) or (symbol_num = 50) or (symbol_num = 75)) and (symbol_cnt = 0)) then
-				cur_state <= next_state;
+			if (uart_en = '1') then
+				uart_data_latch <= uart_data_tmp;
 			end if;
 		end if;
 	end process;
 
-	--data is captured at the beginning of 1/4 frame.
-	set_data0_p : process (clk80m)
+	data_fifo_in_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if ((symbol_num = 0) and (symbol_cnt = 1)) then
-				if (cur_state = TD_ESCAPE) then
-					outdata_0 <= escape_char;
-				elsif (cur_state = TD_LATCH) then
-					outdata_0 <= uart_data_latch;
-				else
-					outdata_0 <= escape_idle;
-				end if;
+			if (cur_state = TD_ESCAPE) then
+				fifo_input <= escape_char;
+				fifo_wr <= '1';
+			elsif (cur_state = TD_LATCH) then
+				fifo_input <= uart_data_latch;
+				fifo_wr <= '1';
+			else
+				fifo_wr <= '0';
 			end if;
 		end if;
 	end process;
 
-	set_data1_p : process (clk80m)
+	data_fifo_rd_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if ((symbol_num = 25) and (symbol_cnt = 1)) then
-				if (cur_state = TD_ESCAPE) then
-					outdata_1 <= escape_char;
-				elsif (cur_state = TD_LATCH) then
-					outdata_1 <= uart_data_latch;
-				else
-					outdata_1 <= escape_idle;
-				end if;
+			if ((symbol_num > 2) and (symbol_cnt = 0) and (fifo_empty = '0')) then
+				fifo_rd <= '1';
+			elsif ((symbol_num > 2) and (symbol_cnt = 1) and (fifo_empty = '0')) then
+				fifo_rd <= '1';
+			elsif ((symbol_num > 2) and (symbol_cnt = 2) and (fifo_empty = '0')) then
+				fifo_rd <= '1';
+			elsif ((symbol_num > 2) and (symbol_cnt = 3) and (fifo_empty = '0')) then
+				fifo_rd <= '1';
+			else
+				fifo_rd <= '0';
 			end if;
 		end if;
 	end process;
 
-	set_data2_p : process (clk80m)
+	data_cnt_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if ((symbol_num = 50) and (symbol_cnt = 1)) then
-				if (cur_state = TD_ESCAPE) then
-					outdata_2 <= escape_char;
-				elsif (cur_state = TD_LATCH) then
-					outdata_2 <= uart_data_latch;
-				else
-					outdata_2 <= escape_idle;
-				end if;
-			end if;
-		end if;
-	end process;
-
-	set_data3_p : process (clk80m)
-	begin
-		if (rising_edge(clk80m)) then
-			if ((symbol_num = 75) and (symbol_cnt = 1)) then
-				if (cur_state = TD_ESCAPE) then
-					outdata_3 <= escape_char;
-				elsif (cur_state = TD_LATCH) then
-					outdata_3 <= uart_data_latch;
-				else
-					outdata_3 <= escape_idle;
-				end if;
+			if ((symbol_num > 2) and (symbol_cnt = 0)) then
+				output_cnt <= fifo_cnt;
 			end if;
 		end if;
 	end process;
@@ -210,23 +222,51 @@ begin
 	set_uart_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if ((symbol_num = 1) and (symbol_cnt = 1)) then
-				outdata_reg <= outdata_3 & outdata_2 & outdata_1 & outdata_0;
+			if ((symbol_num > 2) and (symbol_cnt = 2)) then
+--				outdata_reg <= outdata_3 & outdata_2 & outdata_1 & outdata_0;
+				inc_cnt <= inc_cnt + 1;
 			end if;
 		end if;
 	end process;
 
 	set_output_p : process (clk80m)
-	variable cnt : std_logic_vector (31 downto 0) := (others => '0');
 	begin
 		if (rising_edge(clk80m)) then
-			if ((symbol_num = 0) and (symbol_cnt = 0)) then
-				cnt := cnt + 1;
-			end if;
 			if (inc_data = '0') then
-				tx_data <= outdata_reg;
+				if ((symbol_num > 2) and (symbol_cnt = 2)) then
+					if (output_cnt > 0) then
+						tx_data(7 downto 0) <= fifo_output;
+					else
+						tx_data(7 downto 0) <= escape_idle;
+					end if;
+				end if;
+
+				if ((symbol_num > 2) and (symbol_cnt = 3)) then
+					if (output_cnt > 1) then
+						tx_data(15 downto 8) <= fifo_output;
+					else
+						tx_data(15 downto 8) <= escape_idle;
+					end if;
+				end if;
+
+				if ((symbol_num > 2) and (symbol_cnt = 4)) then
+					if (output_cnt > 2) then
+						tx_data(23 downto 16) <= fifo_output;
+					else
+						tx_data(23 downto 16) <= escape_idle;
+					end if;
+				end if;
+
+				if ((symbol_num > 2) and (symbol_cnt = 5)) then
+					if (output_cnt > 3) then
+						tx_data(31 downto 24) <= fifo_output;
+					else
+						tx_data(31 downto 24) <= escape_idle;
+					end if;
+				end if;
+
 			else
-				tx_data <= cnt;
+				tx_data <= inc_cnt;
 			end if;
 		end if;
 	end process;

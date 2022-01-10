@@ -75,6 +75,7 @@ begin
 	return outdata;
 end gen_baseband_q;
 
+signal tx_data_reg : std_logic_vector(31 downto 0);
 signal reg_i_data : std_logic_vector(15 downto 0);
 signal reg_q_data : std_logic_vector(15 downto 0);
 
@@ -415,6 +416,15 @@ begin
 		end if;
 	end process;
 
+	indata_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if ((symbol_num > 2) and (symbol_cnt = 0)) then
+				tx_data_reg <= tx_data;
+			end if;
+		end if;
+	end process;
+
 	bb_p : process (clk80m)
 	variable tmp_i : integer;
 	variable tmp_q : integer;
@@ -475,42 +485,42 @@ begin
 				--generate baseband
 				tmp_i := conv_integer(
 					signed(mem_data_cos_pilot) +
-					gen_baseband_i(tmp_sin0, tmp_cos0, tx_data(1 downto 0)) +
-					gen_baseband_i(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
-					gen_baseband_i(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
-					gen_baseband_i(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
-					gen_baseband_i(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
-					gen_baseband_i(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
-					gen_baseband_i(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
-					gen_baseband_i(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
-					gen_baseband_i(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
-					gen_baseband_i(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
-					gen_baseband_i(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
-					gen_baseband_i(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
-					gen_baseband_i(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
-					gen_baseband_i(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
-					gen_baseband_i(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
-					gen_baseband_i(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
+					gen_baseband_i(tmp_sin0, tmp_cos0, tx_data_reg(1 downto 0)) +
+					gen_baseband_i(tmp_sin1, tmp_cos1, tx_data_reg(3 downto 2)) +
+					gen_baseband_i(tmp_sin2, tmp_cos2, tx_data_reg(5 downto 4)) +
+					gen_baseband_i(tmp_sin3, tmp_cos3, tx_data_reg(7 downto 6)) +
+					gen_baseband_i(tmp_sin4, tmp_cos4, tx_data_reg(9 downto 8)) +
+					gen_baseband_i(tmp_sin5, tmp_cos5, tx_data_reg(11 downto 10)) +
+					gen_baseband_i(tmp_sin6, tmp_cos6, tx_data_reg(13 downto 12)) +
+					gen_baseband_i(tmp_sin7, tmp_cos7, tx_data_reg(15 downto 14)) +
+					gen_baseband_i(tmp_sin8, tmp_cos8, tx_data_reg(17 downto 16)) +
+					gen_baseband_i(tmp_sin9, tmp_cos9, tx_data_reg(19 downto 18)) +
+					gen_baseband_i(tmp_sin10, tmp_cos10, tx_data_reg(21 downto 20)) +
+					gen_baseband_i(tmp_sin11, tmp_cos11, tx_data_reg(23 downto 22)) +
+					gen_baseband_i(tmp_sin12, tmp_cos12, tx_data_reg(25 downto 24)) +
+					gen_baseband_i(tmp_sin13, tmp_cos13, tx_data_reg(27 downto 26)) +
+					gen_baseband_i(tmp_sin14, tmp_cos14, tx_data_reg(29 downto 28)) +
+					gen_baseband_i(tmp_sin15, tmp_cos15, tx_data_reg(31 downto 30))
 				);
 
 				tmp_q := conv_integer(
 					signed(mem_data_sin_pilot) +
-					gen_baseband_q(tmp_sin0, tmp_cos0, tx_data(1 downto 0)) +
-					gen_baseband_q(tmp_sin1, tmp_cos1, tx_data(3 downto 2)) +
-					gen_baseband_q(tmp_sin2, tmp_cos2, tx_data(5 downto 4)) +
-					gen_baseband_q(tmp_sin3, tmp_cos3, tx_data(7 downto 6)) +
-					gen_baseband_q(tmp_sin4, tmp_cos4, tx_data(9 downto 8)) +
-					gen_baseband_q(tmp_sin5, tmp_cos5, tx_data(11 downto 10)) +
-					gen_baseband_q(tmp_sin6, tmp_cos6, tx_data(13 downto 12)) +
-					gen_baseband_q(tmp_sin7, tmp_cos7, tx_data(15 downto 14)) +
-					gen_baseband_q(tmp_sin8, tmp_cos8, tx_data(17 downto 16)) +
-					gen_baseband_q(tmp_sin9, tmp_cos9, tx_data(19 downto 18)) +
-					gen_baseband_q(tmp_sin10, tmp_cos10, tx_data(21 downto 20)) +
-					gen_baseband_q(tmp_sin11, tmp_cos11, tx_data(23 downto 22)) +
-					gen_baseband_q(tmp_sin12, tmp_cos12, tx_data(25 downto 24)) +
-					gen_baseband_q(tmp_sin13, tmp_cos13, tx_data(27 downto 26)) +
-					gen_baseband_q(tmp_sin14, tmp_cos14, tx_data(29 downto 28)) +
-					gen_baseband_q(tmp_sin15, tmp_cos15, tx_data(31 downto 30))
+					gen_baseband_q(tmp_sin0, tmp_cos0, tx_data_reg(1 downto 0)) +
+					gen_baseband_q(tmp_sin1, tmp_cos1, tx_data_reg(3 downto 2)) +
+					gen_baseband_q(tmp_sin2, tmp_cos2, tx_data_reg(5 downto 4)) +
+					gen_baseband_q(tmp_sin3, tmp_cos3, tx_data_reg(7 downto 6)) +
+					gen_baseband_q(tmp_sin4, tmp_cos4, tx_data_reg(9 downto 8)) +
+					gen_baseband_q(tmp_sin5, tmp_cos5, tx_data_reg(11 downto 10)) +
+					gen_baseband_q(tmp_sin6, tmp_cos6, tx_data_reg(13 downto 12)) +
+					gen_baseband_q(tmp_sin7, tmp_cos7, tx_data_reg(15 downto 14)) +
+					gen_baseband_q(tmp_sin8, tmp_cos8, tx_data_reg(17 downto 16)) +
+					gen_baseband_q(tmp_sin9, tmp_cos9, tx_data_reg(19 downto 18)) +
+					gen_baseband_q(tmp_sin10, tmp_cos10, tx_data_reg(21 downto 20)) +
+					gen_baseband_q(tmp_sin11, tmp_cos11, tx_data_reg(23 downto 22)) +
+					gen_baseband_q(tmp_sin12, tmp_cos12, tx_data_reg(25 downto 24)) +
+					gen_baseband_q(tmp_sin13, tmp_cos13, tx_data_reg(27 downto 26)) +
+					gen_baseband_q(tmp_sin14, tmp_cos14, tx_data_reg(29 downto 28)) +
+					gen_baseband_q(tmp_sin15, tmp_cos15, tx_data_reg(31 downto 30))
 				);
 			end if;
 			reg_i_data <= conv_std_logic_vector(tmp_i * 3 / 64, 16);

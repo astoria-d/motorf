@@ -15,7 +15,7 @@ end uart_in;
 architecture rtl of uart_in is
 
 type uart_status is (
-	IDLE,
+	UT_IDLE,
 	UT_START,
 	UT_DATA0,
 	UT_DATA1,
@@ -28,8 +28,11 @@ type uart_status is (
 	UT_STOP
 	);
 
+--baseband data rate is 408,421.
+--so uart must be slower than 408421 bps.
 constant clk_freq			: integer := 80000000;
-constant baud_rate		: integer := 230400;
+constant baud_rate		: integer := 460800;
+--constant baud_rate		: integer := 230400;
 --constant baud_rate		: integer := 1200;
 constant divider			: integer := clk_freq / baud_rate;
 
@@ -44,7 +47,7 @@ begin
 	begin
 		if (rising_edge(clk80m)) then
 			case cur_state is
-			when IDLE =>
+			when UT_IDLE =>
 				if uart_rxd = '0' then
 					next_state <= UT_START;
 				end if;
@@ -67,7 +70,11 @@ begin
 			when UT_DATA7 =>
 				next_state <= UT_STOP;
 			when UT_STOP =>
-				next_state <= IDLE;
+				if uart_rxd = '0' then
+					next_state <= UT_START;
+				else
+					next_state <= UT_IDLE;
+				end if;
 			end case;
 		end if;
 	end process;
@@ -75,7 +82,7 @@ begin
 	uart_cr_stat_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (cur_state = IDLE and next_state = UT_START) then
+			if ((cur_state = UT_IDLE or cur_state = UT_STOP) and next_state = UT_START) then
 				cur_state <= next_state;
 				uart_cnt <= 0;
 			elsif (uart_cnt > divider) then
@@ -117,12 +124,10 @@ begin
 	uart_en_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (uart_cnt = divider / 2) then
-				if (cur_state = UT_STOP) then
-					uart_en <= '1';
-				else
-					uart_en <= '0';
-				end if;
+			if (uart_cnt = divider / 2 and cur_state = UT_STOP) then
+				uart_en <= '1';
+			else
+				uart_en <= '0';
 			end if;
 		end if;
 	end process;
