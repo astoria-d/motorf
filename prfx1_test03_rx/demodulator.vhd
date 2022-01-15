@@ -616,7 +616,7 @@ begin
 	out_en_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
-			if (symbol_num > 2 and symbol_cnt >= offset + 7 + integ_end + 1 + 5 + 2 + 16) then
+			if (symbol_num > 2 and symbol_cnt = offset + 7 + integ_end + 1 + 5 + 2 + 16 + 1) then
 				out_en <= '1';
 			else
 				out_en <= '0';
