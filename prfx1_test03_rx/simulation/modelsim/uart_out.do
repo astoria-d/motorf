@@ -21,12 +21,17 @@ add wave -label demod_out -radix hex sim:/uart_test_banch/sim_board/demod_out
 
 add wave -divider wdata_c
 
-add wave -label uart_data -radix hex  sim:/uart_test_banch/sim_board/uart_out_inst/uart_data
+
+add wave -label uart_data_en  sim:/uart_test_banch/sim_board/uart_data_en
+add wave -label uart_data -radix hex  sim:/uart_test_banch/sim_board/uart_data
+add wave -label ftdi_txd  sim:/uart_test_banch/sim_board/ftdi_txd
 
 
+
+#run 50us
 run 200us
 
 wave zoom full
 
-#run 300us
+run 300us
 

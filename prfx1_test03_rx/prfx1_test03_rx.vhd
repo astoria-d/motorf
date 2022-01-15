@@ -188,122 +188,122 @@ begin
 		c3	 		=> clk5m
 	);
 
---	--raw adc
---	clk_80m_p : process (clk80m)
---	begin
---		if (rising_edge(clk80m)) then
---			if (reset_n = '0') then
---				raw_adc <= (others => '0');
---			else
---				raw_adc <= adc;
---			end if;
---		end if;
---	end process;
---
---	--convert from raw adc value to signed adc
---	conv_u2s_inst : conv_signed port map (
---		clk80m => clk80m,
---		udata => raw_adc,
---		sdata => s_adc
---	);
---
---	--zero offset adjustment
---	z_ofs_inst : zero_offset port map (
---		clk80m => clk80m,
---		indata => s_adc,
---		outdata => z_adc
---	);
---
---	--lpf
---	lpf_inst : lpf_28tap
---	PORT MAP (
---		clk80m => clk80m,
---		indata => z_adc,
---		outdata => lp_filtered
---	);
---
---	--bpf
---	bpf_inst : bpf_32tap
---	PORT MAP (
---		clk80m => clk80m,
---		indata => lp_filtered,
---		outdata => bp_filtered
---	);
---
---	--agc
---	agc_inst : agc
---	port map (
---		clk80m => clk80m,
---		indata => lp_filtered,
---		att_val => attn,
---		att_oe => attn_oe
---	);
---
---	--sync symbol
---	sync_symbol_inst : sync_symbol port map (
---		clk80m => clk80m,
---		indata => bp_filtered,
---		symbol_num => symbol_num,
---		symbol_cnt => symbol_cnt,
---		pilot_only => pilot_only
---	);
---
---	--sync carrier
---	sync_carrier_inst :sync_carrier
---	port map (
---		clk80m => clk80m,
---		indata => bp_filtered,
---		symbol_num => symbol_num,
---		symbol_cnt => symbol_cnt,
---		pilot_only => pilot_only,
---		outdata => upcon_data,
---		synchronized => carrier_sync_stat
---	);
---
---	--demodulator
---	demod_inst : demodulator
---	port map (
---	clk80m		=> clk80m,
---	symbol_num => symbol_num,
---	symbol_cnt => symbol_cnt,
---	indata		=> upcon_data,
---	out_word		=> demod_out,
---	out_en		=> demod_out_en
---	);
---
---	--spi output module for pll
---	pll_spi_out_inst : pll_spi_data port map (
---		clk16m => clk16m,
---		reset_n => reset_n,
---		spiclk => spiclk,
---		spics => spics_pll,
---		sdi => sdi
---	);
+	--raw adc
+	clk_80m_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if (reset_n = '0') then
+				raw_adc <= (others => '0');
+			else
+				raw_adc <= adc;
+			end if;
+		end if;
+	end process;
 
-	--for rtl simulation
-	debut_inst : debug_stub
-	port map (
-	clk80m		=> clk80m,
-	reset_n		=> reset_n,
-	symbol_num => symbol_num,
-	symbol_cnt => symbol_cnt,
-	testdata		=> demod_out
+	--convert from raw adc value to signed adc
+	conv_u2s_inst : conv_signed port map (
+		clk80m => clk80m,
+		udata => raw_adc,
+		sdata => s_adc
 	);
 
+	--zero offset adjustment
+	z_ofs_inst : zero_offset port map (
+		clk80m => clk80m,
+		indata => s_adc,
+		outdata => z_adc
+	);
+
+	--lpf
+	lpf_inst : lpf_28tap
+	PORT MAP (
+		clk80m => clk80m,
+		indata => z_adc,
+		outdata => lp_filtered
+	);
+
+	--bpf
+	bpf_inst : bpf_32tap
+	PORT MAP (
+		clk80m => clk80m,
+		indata => lp_filtered,
+		outdata => bp_filtered
+	);
+
+	--agc
+	agc_inst : agc
+	port map (
+		clk80m => clk80m,
+		indata => lp_filtered,
+		att_val => attn,
+		att_oe => attn_oe
+	);
+
+	--sync symbol
+	sync_symbol_inst : sync_symbol port map (
+		clk80m => clk80m,
+		indata => bp_filtered,
+		symbol_num => symbol_num,
+		symbol_cnt => symbol_cnt,
+		pilot_only => pilot_only
+	);
+
+	--sync carrier
+	sync_carrier_inst :sync_carrier
+	port map (
+		clk80m => clk80m,
+		indata => bp_filtered,
+		symbol_num => symbol_num,
+		symbol_cnt => symbol_cnt,
+		pilot_only => pilot_only,
+		outdata => upcon_data,
+		synchronized => carrier_sync_stat
+	);
+
+	--demodulator
+	demod_inst : demodulator
+	port map (
+	clk80m		=> clk80m,
+	symbol_num => symbol_num,
+	symbol_cnt => symbol_cnt,
+	indata		=> upcon_data,
+	out_word		=> demod_out,
+	out_en		=> demod_out_en
+	);
+
+	--spi output module for pll
+	pll_spi_out_inst : pll_spi_data port map (
+		clk16m => clk16m,
+		reset_n => reset_n,
+		spiclk => spiclk,
+		spics => spics_pll,
+		sdi => sdi
+	);
+
+--	--for rtl simulation
+--	debut_inst : debug_stub
+--	port map (
+--	clk80m		=> clk80m,
+--	reset_n		=> reset_n,
+--	symbol_num => symbol_num,
+--	symbol_cnt => symbol_cnt,
+--	testdata		=> demod_out
+--	);
+
 	--convert to 8 bit uart data
-	uart_gen_p : process (clk16m)
+	uart_gen_p : process (clk80m)
 	begin
-		if (rising_edge(clk16m)) then
-			if (symbol_cnt = 6080 / 4) then
+		if (rising_edge(clk80m)) then
+			if (symbol_cnt = 2) then
 				uart_data <= demod_out(7 downto 0);
 				uart_data_en <= '1';
-			elsif (symbol_cnt = 6080 / 4 * 2) then
+			elsif (symbol_cnt = 6080 / 4 * 1 + 2) then
 				uart_data <= demod_out(15 downto 8);
 				uart_data_en <= '1';
-			elsif (symbol_cnt = 6080 / 4 * 3) then
+			elsif (symbol_cnt = 6080 / 4 * 2 + 2) then
 				uart_data <= demod_out(23 downto 16);
 				uart_data_en <= '1';
-			elsif (symbol_cnt = 6080 ) then
+			elsif (symbol_cnt = 6080 / 4 * 3 + 2) then
 				uart_data <= demod_out(31 downto 24);
 				uart_data_en <= '1';
 			else
