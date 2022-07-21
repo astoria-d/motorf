@@ -135,36 +135,42 @@ end demodulator_dummy;
 
 architecture rtl of demodulator_dummy is
 
-signal clk_cnt : std_logic_vector (10 downto 0);
-constant input_data_div		: integer := 196 * 8;
+constant escape_char : std_logic_vector(7 downto 0) := (others => '1');
+constant escape_idle : std_logic_vector(7 downto 0) := (others => '0');
 
+---demodulator 1 frame is 6080 clocks.
+---divide by 4 to create 8 bit data stream.
+constant input_data_period		: integer := 6080 / 4;
 constant uart_start_time : time := 10 us;
-signal uart_start : std_logic;
 
-signal baseband_data	: std_logic_vector(7 downto 0);
-signal baseband_data_en	: std_logic;
+
+signal clk_cnt : std_logic_vector (10 downto 0);
+signal data_cnt : std_logic_vector (3 downto 0);
+signal uart_start : std_logic;
 
 begin
 
-	out_en <= baseband_data_en;
-
+	--- modelsim
 	--- start testing.
---	uart_data_in: process
---	begin
---		uart_start <= '0';
---		wait for uart_start_time;
---		uart_start <= '1';
---		wait;
---	end process;
-	uart_start <= '1';
+	uart_data_in: process
+	begin
+		uart_start <= '0';
+		wait for uart_start_time;
+		uart_start <= '1';
+		wait;
+	end process;
 
-	uart_clk_p : process (clk80m)
+	-- for actual hardware
+	--	uart_start <= '1';
+
+	---dummy demod clock counter
+	data_clk_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (reset_n = '0') then
 				clk_cnt <= (others => '0');
 			else
-				if (clk_cnt = input_data_div) then
+				if (clk_cnt = input_data_period) then
 					clk_cnt <= (others => '0');
 				else
 					clk_cnt <= clk_cnt + 1;
@@ -173,34 +179,50 @@ begin
 		end if;
 	end process;
 
-	baseband_data_p : process (clk80m)
+	out_data_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (reset_n = '0' or uart_start = '0') then
-				baseband_data <= (others => '0');
+				out_word <= (others => '0');
+				data_cnt <= (others => '0');
 			else
 				if (clk_cnt = 0) then
-					baseband_data <= baseband_data + 1;
-					if (baseband_data(2) = '0') then
-						out_word <= (others => '0');
+					data_cnt <= data_cnt + 1;
+					if (data_cnt = conv_std_logic_vector(2, data_cnt'length)) then
+						-- escape "00000000"
+						out_word <= escape_char;
+					elsif (data_cnt = conv_std_logic_vector(3, data_cnt'length)) then
+						out_word <= escape_idle;
+					elsif (data_cnt = conv_std_logic_vector(6, data_cnt'length)) then
+						-- escape "11111111"
+						out_word <= escape_char;
+					elsif (data_cnt = conv_std_logic_vector(7, data_cnt'length)) then
+						out_word <= escape_char;
+					elsif (data_cnt = conv_std_logic_vector(9, data_cnt'length)) then
+						out_word <= conv_std_logic_vector(16#64#, out_word'length);
+					elsif (data_cnt = conv_std_logic_vector(10, data_cnt'length)) then
+						out_word <= conv_std_logic_vector(16#65#, out_word'length);
+					elsif (data_cnt = conv_std_logic_vector(11, data_cnt'length)) then
+						out_word <= conv_std_logic_vector(16#2E#, out_word'length);
 					else
-						out_word <= baseband_data;
+						out_word <= (others => '0');
 					end if;
 				end if;
 			end if;
 		end if;
 	end process;
 
-	baseband_data_en_p : process (clk80m)
+	en_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			if (reset_n = '0' or uart_start = '0') then
-				baseband_data_en <= '0';
+				out_en <= '0';
 			else
-				if (clk_cnt = 1) then
-					baseband_data_en <= '1';
+				-- output on clock=10
+				if (clk_cnt = 10) then
+					out_en <= '1';
 				else
-					baseband_data_en <= '0';
+					out_en <= '0';
 				end if;
 			end if;
 		end if;

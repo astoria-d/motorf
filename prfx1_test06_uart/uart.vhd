@@ -28,25 +28,35 @@ type uart_status is (
 	UT_STOP
 	);
 
+type escape_status is (
+	ES_NORMAL,
+	ES_ESCAPE_NEXT,
+	ES_IDLE
+	);
+
 constant clk_freq			: integer := 80000000;
 constant baud_rate		: integer := 921600;
 constant divider			: integer := clk_freq / baud_rate;
 
+constant escape_char : std_logic_vector(7 downto 0) := (others => '1');
+constant escape_idle : std_logic_vector(7 downto 0) := (others => '0');
+
+signal uart_clk_cnt 	: integer;
 signal cur_state			: uart_status;
 signal next_state			: uart_status;
+signal reg_uart_out		: std_logic;
 signal reg_uart_data		: std_logic_vector(7 downto 0);
+signal cur_escape		: escape_status;
 
 begin
-
 
 	uart_nx_stat_p : process (clk80m)
 	begin
 		if (rising_edge(clk80m)) then
 			case cur_state is
 			when IDLE =>
-				if uart_en = '1' then
+				if reg_uart_out = '1' and cur_escape = ES_NORMAL then
 					next_state <= UT_START;
-					reg_uart_data <= uart_data;
 				end if;
 			when UT_START =>
 				next_state <= UT_DATA0;
@@ -74,18 +84,56 @@ begin
 		end if;
 	end process;
 
+	reg_uart_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if uart_en = '1' then
+				reg_uart_data <= uart_data;
+			end if;
+		end if;
+	end process;
+
+	reg_uart_out_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if uart_en = '1' then
+				reg_uart_out <= '1';
+			else
+				reg_uart_out <= '0';
+			end if;
+		end if;
+	end process;
+
 	uart_cr_stat_p : process (clk80m)
-	variable cnt : integer := 0;
 	begin
 		if (rising_edge(clk80m)) then
 			if (next_state = UT_START) then
 				cur_state <= next_state;
-				cnt := 0;
-			elsif (cnt < divider) then
-				cnt := cnt + 1;
+				uart_clk_cnt <= 0;
+			elsif (uart_clk_cnt < divider) then
+				uart_clk_cnt <= uart_clk_cnt + 1;
 			else
 				cur_state <= next_state;
-				cnt := 0;
+				uart_clk_cnt <= 0;
+			end if;
+		end if;
+	end process;
+
+	escape_p : process (clk80m)
+	begin
+		if (rising_edge(clk80m)) then
+			if uart_en = '1' then
+				if (cur_escape = ES_ESCAPE_NEXT) then
+					cur_escape <= ES_NORMAL;
+				else
+					if uart_data = escape_char then
+						cur_escape <= ES_ESCAPE_NEXT;
+					elsif uart_data = escape_idle then
+						cur_escape <= ES_IDLE;
+					else
+						cur_escape <= ES_NORMAL;
+					end if;
+				end if;
 			end if;
 		end if;
 	end process;
